@@ -54,9 +54,8 @@ volMatrix)
   \item{params}{Input parameter list}
 }
 \details{
-  This function is based on sample code (in C++) and data shipped with
-  \code{QuantLib} Version 0.3.10. It extends work of Dirk
-  Eddelbuettel who wrote the original version of \code{RQuantLib}.
+  This function is based on \code{QuantLib} Version 0.3.10. It
+  introduces support for fixed-income instruments in \code{RQuantLib}.
   
   At present only a small number of the many parameters that can be set
   in \code{QuantLib} are exposed by this function. Some of the

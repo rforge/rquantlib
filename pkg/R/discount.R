@@ -1,4 +1,20 @@
-## Dominick Samperi, 9/5/2005
+##  RQuantLib R code for DiscountCurve
+##
+##  Copyright (C) 2005  Dominick Samperi
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 DiscountCurve <- function(params, tsQuotes, times) {
   UseMethod("DiscountCurve")
@@ -10,7 +26,7 @@ DiscountCurve.default <- function(params, tsQuotes, times) {
   # input here...
 
   # Check that params is properly formatted.
-  if(class(params) != "list" || length(params) == 0) {
+  if(!is.list(params) || length(params) == 0) {
     stop("The params parameter must be a non-empty list");
   }
 
@@ -31,16 +47,50 @@ DiscountCurve.default <- function(params, tsQuotes, times) {
     stop("Please specify these paramters")
   }
 
-  # Check that the term structure quotes are properly formatted.
-  if(class(tsQuotes) != "list" || length(tsQuotes) == 0) {
-    stop("Term structure quotes must be a non-empty list");
+    # Check format of tradeDate
+  if(!is.numeric(params$tradeDate) || length(params$tradeDate) != 3) {
+    stop("Invalid tradeDate value");
   }
-  if(length(tsQuotes) != length(names(tsQuotes))) {
-    stop("Term structure quotes must include labels");
+  
+
+  # Check tradeDate
+  if(!is.numeric(params$tradeDate) || length(params$tradeDate) != 3) {
+    stop("Invalid tradeDate value");
+  }
+  
+  # Check settleDate
+  if(!is.numeric(params$settleDate) || length(params$settleDate) != 3) {
+    stop("Invalid settleDate value");
   }
 
+  # Check dt
+  if(!is.numeric(params$dt)) {
+    stop("dt paramter must be numeric")
+  }
+
+  # Check interpWhat
+  if(!is.character(params$interpWhat)) {
+    stop("interpWhat must be a character string")
+  }
+
+  # Check interpHow
+  if(!is.character(params$interpHow)) {
+    stop("interpHow must be a character string")
+  }
+  
+  # Check that the term structure quotes are properly formatted.
+  if(!is.list(tsQuotes) || length(tsQuotes) == 0) {
+    stop("Term structure quotes must be a non-empty list")
+  }
+  if(length(tsQuotes) != length(names(tsQuotes))) {
+    stop("Term structure quotes must include labels")
+  }
+  if(!is.numeric(unlist(tsQuotes))) {
+    stop("Term structure quotes must have numeric values")
+  }
+  
   # Check the times vector
-  if(class(times) != "numeric" || length(times) == 0)
+  if(!is.numeric(times) || length(times) == 0)
     stop("The times parameter must be a non-emptry numeric vector")
     
   # Finally ready to make the call...
@@ -49,8 +99,10 @@ DiscountCurve.default <- function(params, tsQuotes, times) {
   val
 }
 
-plot.DiscountCurve <- function(obj,...) {
-  savepar <- par(mfrow=c(3,1))
+plot.DiscountCurve <- function(obj,setpar=TRUE,...) {
+  if(setpar) {
+      savepar <- par(mfrow=c(3,1))
+  }
   if(names(tsQuotes)[1] == "flat") {
     # Don't want to plot noise when we look at a flat yield curve
     plot(c(obj$times[1],obj$times[length(obj$times)]), c(0,.5),type='n',
@@ -71,5 +123,7 @@ plot.DiscountCurve <- function(obj,...) {
   plot(obj$times, obj$discounts, type='l',
        main=paste('discounts (',obj$params$interpHow,obj$params$interpWhat,')'),
        xlab='time',ylab='discount')
-  par(savepar)
+  if(setpar) {
+      par(savepar)
+  }
 }

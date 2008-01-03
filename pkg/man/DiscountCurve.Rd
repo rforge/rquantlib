@@ -65,9 +65,8 @@ DiscountCurve(params, tsQuotes, times)
   \item{params}{The input parameter list}
 }
 \details{
-  This function is based on sample code (in C++) and data shipped with
-  \code{QuantLib} Version 0.3.10. It extends work of Dirk
-  Eddelbuettel who wrote the original version of \code{RQuantLib}.
+  This function is based on \code{QuantLib} Version 0.3.10. It
+  introduces support for fixed-income instruments in \code{RQuantLib}.
   
   Forward rates and zero rates are computed assuming continuous
   compounding, so the forward rate \eqn{f} over the
@@ -105,13 +104,14 @@ DiscountCurve(params, tsQuotes, times)
 
 \examples{
 
+savepar <- par(mfrow=c(3,3))
+
 # This data is taken from sample code shipped with QuantLib 0.3.10.
-savepar <- par(mfrow=c(3,2))
 params <- list(tradeDate=c(15, 2, 2002),
                settleDate=c(19, 2, 2002),
                dt=.25,
                interpWhat="discount",
-               interpHow="spline")
+               interpHow="loglinear")
 
 tsQuotes <- list(d1w  =0.0382,
                  d1m  =0.0372,
@@ -130,9 +130,20 @@ tsQuotes <- list(d1w  =0.0382,
 
 times <- seq(0,10,.1)
 
+# Loglinear interpolation of discount factors
 curves <- DiscountCurve(params, tsQuotes, times)
+plot(curves,setpar=F)
 
-plot(curves)
+# Linear interpolation of discount factors
+params$interpHow="linear"
+curves <- DiscountCurve(params, tsQuotes, times)
+plot(curves,setpar=F)
+
+# Spline interpolation of discount factors
+params$interpHow="spline"
+curves <- DiscountCurve(params, tsQuotes, times)
+plot(curves,setpar=F)
+
 par(savepar)
 
 }

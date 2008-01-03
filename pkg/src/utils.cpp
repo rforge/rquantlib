@@ -1,7 +1,7 @@
 
 // RQuantLib -- R interface to the QuantLib libraries
 //
-// Copyright 2002, 2003, 2004, 2005  Dirk Eddelbuettel <edd@debian.org>
+// Copyright 2002, 2003, 2004, 2005 Dirk Eddelbuettel <edd@debian.org>
 //
 // $Id: utils.cc,v 1.8 2005/08/07 02:01:23 edd Exp $
 //
@@ -90,13 +90,13 @@ void freeIntVector(int *vec) {
     free(vec);
 }
 
-// Cannot be sure that R will hand us a vector of doubles, so we
-// have to check for integer type and cast.
 double *allocDoubleVector(SEXP a, int *size) {
     int i, dim1;
     dim1 = length(a);
     if(dim1 == 0)
 	error("null vector in unpackDoubleVector\n");
+    // We guard against  the possibility that R might pass an integer vector.
+    // Can be prevented using R code: temp <- as.double(a).
     int isInt = isInteger(a);
     double *vec = (double *)malloc(sizeof(double)*dim1);
     if(isInt) {
@@ -115,8 +115,6 @@ void freeDoubleVector(double *vec) {
     free(vec);
 }
 
-// Cannot be sure that R will hand us a matrix of doubles, so we
-// have to check for integer type and cast.
 // By default R stores a matrix by columns. For compatibility with C/C++
 // we need to override this by specifying byrow=T (otherwise, you will
 // get the transpose).
@@ -125,6 +123,8 @@ double **allocDoubleMatrix(SEXP a, int *dim1, int *dim2) {
     SEXP dimAttr = getAttrib(a, R_DimSymbol);
     d1 = INTEGER(dimAttr)[0];
     d2 = INTEGER(dimAttr)[1];
+    // We guard against  the possibility that R might pass an integer matrix.
+    // Can be prevented using R code: temp <- as.double(a), dim(temp) <- dim(a)
     int isInt = isInteger(a);
     double *m = (double *)malloc(sizeof(double)*d1*d2);
     double **p = (double **)malloc(sizeof(double *)*d1);
