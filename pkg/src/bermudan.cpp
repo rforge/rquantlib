@@ -1,20 +1,18 @@
-//  RQuantLib function BermudanSwaption
+// RQuantLib function BermudanSwaption
 //
-//  Copyright (C) 2005  Dominick Samperi
+// Copyright 2005 Dominick Samperi
 //
-//  This program is free software; you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation; either version 2 of the License, or
-//  (at your option) any later version.
+// $Id: bermudan.cpp,v 1.1 2005/10/12 03:53:42 edd Exp $
 //
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
+// This program is part of the RQuantLib library for R (GNU S).
+// It is made available under the terms of the GNU General Public
+// License, version 2, or at your option, any later version.
 //
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// This program is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied
+// warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+// PURPOSE.  See the GNU General Public License for more
+// details.
 
 #include "rquantlib.hpp"
 
@@ -43,43 +41,42 @@ void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
     }	
 }	
 
-RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes, 
+RcppExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes, 
 				       SEXP maturities, SEXP tenors, 
 				       SEXP vols) {
-    SEXP rl;
-    int *swaptionMat, *swapLengths;
-    double **swaptionVols;
-
+    SEXP rl=0;
     try {
 
+	// Parameter wrapper classes.
+	RcppParams rparam(params);
+	RcppNamedList tslist(tsQuotes);
+
 	Size i;
+	int *swaptionMat=0, *swapLengths=0;
+	double **swaptionVols=0;
 
 	double notional = 10000; // prices in basis points
 
-	Date todaysDate = getDateValueAt(params, 0);
-	Date settlementDate = getDateValueAt(params, 1);
+
+	Date todaysDate = rparam.getDateValue("tradeDate");
+	Date settlementDate = rparam.getDateValue("settleDate");
 	RQLContext::instance().settleDate = settlementDate;
         Settings::instance().evaluationDate() = todaysDate;
 
-	int payFixed = getIntValueAt(params, 2);
-	bool payFixedRate = (payFixed == 1) ? true : false;
+	bool payFixedRate = rparam.getBoolValue("payFixed");
 
-	double strike = getDoubleValueAt(params, 3);
+	double strike = rparam.getDoubleValue("strike");
 
-	char *method = getStringValueAt(params, 4);
+	string method = rparam.getStringValue("method");
 
-	char *firstQuoteName = getNameAt(tsQuotes,0);
+	string firstQuoteName = tslist.getName(0);
 
-	char *interpWhat, *interpHow;
-	if(strcmp(firstQuoteName,"flat") != 0) {
+	string interpWhat, interpHow;
+	if(firstQuoteName.compare("flat") != 0) {
 
 	    // Get interpolation method (not needed for "flat" case)
-	    interpWhat = getStringValueAt(params, 5);
-	    interpHow  = getStringValueAt(params, 6);
-	    if(interpWhat == NULL || interpHow == NULL ||
-	       strlen(interpWhat) == 0 || strlen(interpHow) == 0)
-		error("Curve construction interpWhat/interpHow not set");
-
+	    interpWhat = rparam.getStringValue("interpWhat");
+	    interpHow  = rparam.getStringValue("interpHow");
 	}
 
         Calendar calendar = TARGET();
@@ -94,9 +91,9 @@ RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
 	double tolerance = 1.0e-15;
 
 	boost::shared_ptr<YieldTermStructure> curve;
-	if(strcmp(firstQuoteName,"flat") == 0) {
+	if(firstQuoteName.compare("flat") == 0) {
 	    // Get flat yield curve
-	    double rateQuote = getDoubleValueAt(tsQuotes,0);
+	    double rateQuote = tslist.getValue(0);
 	    boost::shared_ptr<Quote> flatRate(new SimpleQuote(rateQuote));
 	    boost::shared_ptr<FlatForward> ts(new FlatForward(settlementDate,
 					      Handle<Quote>(flatRate),
@@ -106,11 +103,13 @@ RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
 	else {
 	    // Get yield curve based on a set of market rates and/or prices.
 	    std::vector<boost::shared_ptr<RateHelper> > curveInput;
-	    for(i = 0; i < (Size)length(tsQuotes); i++) {
-		char *name = getNameAt(tsQuotes,i);
-		double val = getDoubleValueAt(tsQuotes,i);
+	    for(i = 0; i < (Size)tslist.getLength(); i++) {
+		string name = tslist.getName(i);
+		double val = tslist.getValue(i);
 		boost::shared_ptr<RateHelper> rh = 
 		    ObservableDB::instance().getRateHelper(name, val);
+		if(rh == NULL_RateHelper)
+		    error("Unknown rate in getRateHelper");
 		curveInput.push_back(rh);
 	    }
 	    boost::shared_ptr<YieldTermStructure> ts =
@@ -123,27 +122,24 @@ RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
 	rhTermStructure.linkTo(curve);
 
 	// Get swaption vol matrix.
-	int dim1, dim2;
-	swaptionVols = allocDoubleMatrix(vols, &dim1, &dim2);
-	if(swaptionVols == NULL)
-	    error("Null swaption volatility matrix\n");
-
+	RcppMatrix<double> myVols(vols);
+	int dim1 = myVols.getDim1();
+	int dim2 = myVols.getDim2();
+	swaptionVols = myVols.cMatrix();
+	
 	// Get swaption maturities
-	int numRows;
-	swaptionMat = allocIntVector(maturities, &numRows);
-	if(swaptionMat == NULL)
-	    error("Swaption maturity vector is empty\n");
+	RcppVector<int> myMats(maturities);
+	int numRows = myMats.getLength();
+	swaptionMat = myMats.cVector();
 
 	// Get swap tenors
-	int numCols;
-	swapLengths = allocIntVector(tenors, &numCols);
-	if(swapLengths == NULL)
-	    error("Swap tenor vector is empty\n");
+	RcppVector<int> myLengths(tenors);
+	int numCols = myLengths.getLength();
+	swapLengths = myLengths.cVector();
 
 	if(numRows*numCols != dim1*dim2) {
-	    Rprintf("Swaption vol matrix size (%d x %d) incompatible\nwith size of swaption maturity vector (%d) and swap tenor vector (%d)\n", dim1, dim2,
+	    error("Swaption vol matrix size (%d x %d) incompatible\nwith size of swaption maturity vector (%d) and swap tenor vector (%d)\n", dim1, dim2,
 		  numRows, numCols);
-	    throw RQLException("hello world");
 	}
 
 	// Create dummy swap to get schedules.
@@ -197,7 +193,7 @@ RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
 
         // List of times that have to be included in the timegrid
         std::list<Time> times;
-        for (i=0; i<(Size)numRows; i++) { // 1x5, 2x4, 3x3, 4x2, 5x1
+        for (i=0; i<(Size)numRows; i++) {
             boost::shared_ptr<Quote> vol(new SimpleQuote(swaptionVols[i][numCols-i-1]));
             swaptions.push_back(boost::shared_ptr<CalibrationHelper>(new
                 SwaptionHelper(swaptionMaturities[i],
@@ -225,8 +221,10 @@ RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
         boost::shared_ptr<Exercise> bermudaExercise(new
             BermudanExercise(bermudanDates));
 
+	RcppResultSet rs;
+
 	// Price based on method selected.
-	if(strcmp(method,"G2Analytic") == 0) {
+	if(method.compare("G2Analytic") == 0) {
 	    boost::shared_ptr<G2> modelG2(new G2(rhTermStructure));
 	    Rprintf("G2/Jamshidian (analytic) calibration\n");
 	    for(i = 0; i < swaptions.size(); i++)
@@ -240,17 +238,17 @@ RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
 				      boost::shared_ptr<PricingEngine>());
 	    bermudanSwaption.setPricingEngine
 		(boost::shared_ptr<PricingEngine>(new TreeSwaptionEngine(modelG2, 50)));
-	    list<pair<string,double> > values;
-	    values.push_back(make_pair("a", modelG2->params()[0]));
-	    values.push_back(make_pair("sigma", modelG2->params()[1]));
-	    values.push_back(make_pair("b", modelG2->params()[2]));
-	    values.push_back(make_pair("eta", modelG2->params()[3]));
-	    values.push_back(make_pair("rho", modelG2->params()[4]));
-	    values.push_back(make_pair("price", bermudanSwaption.NPV()));
-	    values.push_back(make_pair("ATMStrike", fixedATMRate));
-	    rl = makeReturnList(values, params);
+	    rs.add("a", modelG2->params()[0]);
+	    rs.add("sigma", modelG2->params()[1]);
+	    rs.add("b", modelG2->params()[2]);
+	    rs.add("eta", modelG2->params()[3]);
+	    rs.add("rho", modelG2->params()[4]);
+	    rs.add("price", bermudanSwaption.NPV());
+	    rs.add("ATMStrike", fixedATMRate);
+	    rs.add("params", params, false);
+	    rl = rs.getReturnList();
 	}
-	else if(strcmp(method,"HWAnalytic") == 0) {
+	else if(method.compare("HWAnalytic") == 0) {
 	    boost::shared_ptr<HullWhite> modelHW(new HullWhite(rhTermStructure));
 	    Rprintf("Hull-White (analytic) calibration\n");
 	    for (i=0; i<swaptions.size(); i++)
@@ -264,14 +262,14 @@ RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
 				      boost::shared_ptr<PricingEngine>());
 	    bermudanSwaption.setPricingEngine
 		(boost::shared_ptr<PricingEngine>(new TreeSwaptionEngine(modelHW, 50)));
-	    list<pair<string,double> > values;
-	    values.push_back(make_pair("a", modelHW->params()[0]));
-	    values.push_back(make_pair("sigma", modelHW->params()[1]));
-	    values.push_back(make_pair("price", bermudanSwaption.NPV()));
-	    values.push_back(make_pair("ATMStrike", fixedATMRate));
-	    rl = makeReturnList(values, params);
+	    rs.add("a", modelHW->params()[0]);
+	    rs.add("sigma", modelHW->params()[1]);
+	    rs.add("price", bermudanSwaption.NPV());
+	    rs.add("ATMStrike", fixedATMRate);
+	    rs.add("params", params, false);
+            rl = rs.getReturnList();
 	}
-	else if(strcmp(method, "HWTree") == 0) {
+	else if(method.compare("HWTree") == 0) {
 	    boost::shared_ptr<HullWhite> modelHW2(new HullWhite(rhTermStructure));
 	    Rprintf("Hull-White (tree) calibration\n");
 	    for (i=0; i<swaptions.size(); i++)
@@ -286,14 +284,14 @@ RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
 				      boost::shared_ptr<PricingEngine>());
 	    bermudanSwaption.setPricingEngine
 		(boost::shared_ptr<PricingEngine>(new TreeSwaptionEngine(modelHW2, 50)));
-	    list<pair<string,double> > values;
-	    values.push_back(make_pair("a", modelHW2->params()[0]));
-	    values.push_back(make_pair("sigma", modelHW2->params()[1]));
-	    values.push_back(make_pair("price", bermudanSwaption.NPV()));
-	    values.push_back(make_pair("ATMStrike", fixedATMRate));
-	    rl = makeReturnList(values, params);
+	    rs.add("a", modelHW2->params()[0]);
+	    rs.add("sigma", modelHW2->params()[1]);
+	    rs.add("price", bermudanSwaption.NPV());
+	    rs.add("ATMStrike", fixedATMRate);
+	    rs.add("params", params, false);
+	    rl = rs.getReturnList();
 	}
-	else if(strcmp(method, "BKTree") == 0) {
+	else if(method.compare("BKTree") == 0) {
 	    boost::shared_ptr<BlackKarasinski> modelBK(new
 		    BlackKarasinski(rhTermStructure));
 	    Rprintf("Black-Karasinski (tree) calibration\n");
@@ -308,28 +306,21 @@ RQLExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
 				      boost::shared_ptr<PricingEngine>());
 	    bermudanSwaption.setPricingEngine
 		(boost::shared_ptr<PricingEngine>(new TreeSwaptionEngine(modelBK, 50)));
-	    list<pair<string,double> > values;
-	    values.push_back(make_pair("a", modelBK->params()[0]));
-	    values.push_back(make_pair("sigma", modelBK->params()[1]));
-	    values.push_back(make_pair("price", bermudanSwaption.NPV()));
-	    values.push_back(make_pair("ATMStrike", fixedATMRate));
-	    rl = makeReturnList(values, params);
+	    rs.add("a", modelBK->params()[0]);
+	    rs.add("sigma", modelBK->params()[1]);
+	    rs.add("price", bermudanSwaption.NPV());
+	    rs.add("ATMStrike", fixedATMRate);
+	    rs.add("params", params, false);
+	    rl = rs.getReturnList();
 	}
 	else {
 	    error("Unknown method in BermudanSwaption\n");
 	}
-    } catch(RQLException& e) {
-	    error("RQuantLib Exception: %s\n", e.what());
     } catch(std::exception& e) {
-	    error("QuantLib exception: %s\n", e.what());
+	error("Exception: %s\n", e.what());
     } catch(...) {
-	error("QuantLib exception: unknown reason\n");
+	error("Exception: unknown reason\n");
     }
-
-    // OK to free non-garbage collected storage...
-    freeDoubleMatrix(swaptionVols);
-    free(swapLengths);
-    free(swaptionMat);
 
     return rl;
 }

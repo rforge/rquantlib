@@ -3,7 +3,7 @@
 //
 // Copyright 2002-2005 Dirk Eddelbuettel <edd@debian.org>
 //
-// $Id: implieds.cc,v 1.8 2005/08/07 02:03:18 edd Exp $
+// $Id: implieds.cpp,v 1.9 2005/10/12 03:56:07 edd Exp $
 //
 // This file is part of the RQuantLib library for GNU R.
 // It is made available under the terms of the GNU General Public
@@ -25,13 +25,13 @@
 
 #include "rquantlib.hpp"
 
-RQLExport  SEXP QL_EuropeanOptionImpliedVolatility(SEXP optionParameters) {
+RcppExport  SEXP QL_EuropeanOptionImpliedVolatility(SEXP optionParameters) {
     const Size maxEvaluations = 100;
     const double tolerance = 1.0e-6;
     const int nret = 2;		// dimension of return list
 
     char *type = CHAR(STRING_ELT(getListElement(optionParameters, "type"),0));
-    Option::Type optionType;
+    Option::Type optionType=Option::Call;
     if (!strcmp(type, "call")) {
       optionType = Option::Call;
     } else if (!strcmp(type, "put")) {
@@ -96,13 +96,13 @@ RQLExport  SEXP QL_EuropeanOptionImpliedVolatility(SEXP optionParameters) {
     return(rl);
 }
 
-RQLExport  SEXP QL_AmericanOptionImpliedVolatility(SEXP optionParameters) {
+RcppExport  SEXP QL_AmericanOptionImpliedVolatility(SEXP optionParameters) {
     const Size maxEvaluations = 100;
     const double tolerance = 1.0e-6;
     const int nret = 2;		// dimension of return list
 
     char *type = CHAR(STRING_ELT(getListElement(optionParameters, "type"),0));
-    Option::Type optionType;
+    Option::Type optionType=Option::Call;
     if (!strcmp(type, "call")) {
 	optionType = Option::Call;
     } else if (!strcmp(type, "put")) {

@@ -1,5 +1,11 @@
+% $Id: BermudanSwaption.Rd,v 1.1 2005/10/12 03:45:03 edd Exp $
 \name{BermudanSwaption}
 \alias{BermudanSwaption}
+\alias{BermudanSwaption.default}
+\alias{summary.G2Analytic}
+\alias{summary.HWAnalytic}
+\alias{summary.HWTree}
+\alias{summary.BKTree}
 \title{Bermudan swaption valuation using several short-rate models}
 \description{
   \code{BermudanSwaption} prices a Bermudan swaption with specified
@@ -15,7 +21,7 @@ BermudanSwaption(params, tsQuotes, swaptionMaturities, swapTenors,
 volMatrix)
 }
 \arguments{
-  \item{params}{A list specifying the \code{tradeDate},
+  \item{params}{A list specifying the \code{tradeDate} (month/day/year),
     \code{settlementDate}, \code{payFixed}
     flag, \code{strike}, pricing \code{method}, and curve construction options
     (see \emph{Examples} section below). Curve construction options are
@@ -102,9 +108,9 @@ volMatrix)
 \examples{
 
 # This data is taken from sample code shipped with QuantLib 0.3.10.
-params <- list(tradeDate=c(15, 2, 2002),
-                 settleDate=c(19, 2, 2002),
-                 payFixed=T,
+params <- list(tradeDate=c(2, 15, 2002),
+                 settleDate=c(2, 19, 2002),
+                 payFixed=TRUE,
 		 strike=.06,
 	         method="G2Analytic",
                  interpWhat="discount",
@@ -140,7 +146,7 @@ volMatrix <- matrix(
                       0.1149, 0.1112, 0.1070, 0.1010, 0.0957,
                       0.1047, 0.1021, 0.0980, 0.0951, 0.1270,
                       0.1000, 0.0950, 0.0900, 0.1230, 0.1160),
-                    ncol=5, byrow=T)
+                    ncol=5, byrow=TRUE)
 
 # Price the Bermudan swaption
 pricing <- BermudanSwaption(params, tsQuotes,

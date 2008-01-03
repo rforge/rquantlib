@@ -1,20 +1,18 @@
-//  RQuantLib helper functions for term structure construction
+// RQuantLib helper functions for term structure construction
 //
-//  Copyright (C) 2005  Dominick Samperi
+// Copyright 2005 Dominick Samperi
 //
-//  This program is free software; you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation; either version 2 of the License, or
-//  (at your option) any later version.
+// $Id: curves.cpp,v 1.1 2005/10/12 03:54:14 edd Exp $
 //
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
+// This program is part of the RQuantLib library for R (GNU S).
+// It is made available under the terms of the GNU General Public
+// License, version 2, or at your option, any later version.
 //
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// This program is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied
+// warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+// PURPOSE.  See the GNU General Public License for more
+// details.
 
 #ifndef _MSC_VER
 #include <stdexcept>
@@ -54,10 +52,11 @@ ObservableDB::ObservableDB() {
 
 // Get RateHelper used to build the yield curve corresponding to a
 // database key ('ticker') and observed rate/price.
-boost::shared_ptr<RateHelper> ObservableDB::getRateHelper(string ticker, Rate r) {
+boost::shared_ptr<RateHelper> ObservableDB::getRateHelper(string& ticker, Rate r) {
     RQLMapIterator iter = db_.find(ticker);
     if(iter == db_.end()) {
-	NULL;
+       error("Unknown curve construction instrument: %s\n",ticker.c_str());
+       // return NULL_RateHelper;
     }
     RQLObservable *p = iter->second;
     RQLObservableType type = p->getType();
@@ -122,74 +121,76 @@ boost::shared_ptr<RateHelper> ObservableDB::getRateHelper(string ticker, Rate r)
 // Return the term structure built using a set of RateHelpers (curveInput)
 // employing the specified interpolation method and day counter.
 boost::shared_ptr<YieldTermStructure> getTermStructure
-(char *interpWhat, char *interpHow, const Date& settlementDate,
+(string& interpWhat, string& interpHow, const Date& settlementDate,
 const std::vector<boost::shared_ptr<RateHelper> >& curveInput,
  DayCounter& dayCounter, Real tolerance) {
     
-    if(strcmp(interpWhat,"discount") == 0 &&
-       strcmp(interpHow,"linear") == 0) {
+    if(interpWhat.compare("discount") == 0 &&
+       interpHow.compare("linear") == 0) {
 	boost::shared_ptr<YieldTermStructure> ts(new
 	       PiecewiseYieldCurve<Discount,Linear>(settlementDate, 
 	       curveInput, dayCounter, tolerance));
 	return ts;
     }
-    else if(strcmp(interpWhat,"discount") == 0 &&
-       strcmp(interpHow,"loglinear") == 0) {
+    else if(interpWhat.compare("discount") == 0 &&
+            interpHow.compare("loglinear") == 0) {
 	boost::shared_ptr<YieldTermStructure> ts(new
 	       PiecewiseYieldCurve<Discount,LogLinear>(settlementDate, 
 	       curveInput, dayCounter, tolerance));
 	return ts;
     }
-    else if(strcmp(interpWhat,"discount") == 0 &&
-       strcmp(interpHow,"spline") == 0) {
+    else if(interpWhat.compare("discount") == 0 &&
+            interpHow.compare("spline") == 0) {
 	boost::shared_ptr<YieldTermStructure> ts(new
 	       PiecewiseYieldCurve<Discount,Cubic>(settlementDate, 
 	       curveInput, dayCounter, tolerance));
 	return ts;
     }
-    else if(strcmp(interpWhat,"forward") == 0 &&
-       strcmp(interpHow,"linear") == 0) {
+    else if(interpWhat.compare("forward") == 0 &&
+            interpHow.compare("linear") == 0) {
 	boost::shared_ptr<YieldTermStructure> ts(new
 	       PiecewiseYieldCurve<ForwardRate,Linear>(settlementDate, 
 	       curveInput, dayCounter, tolerance));
 	return ts;
     }
-    else if(strcmp(interpWhat,"forward") == 0 &&
-       strcmp(interpHow,"loglinear") == 0) {
+    else if(interpWhat.compare("forward") == 0 &&
+            interpHow.compare("loglinear") == 0) {
 	boost::shared_ptr<YieldTermStructure> ts(new
 	       PiecewiseYieldCurve<ForwardRate,LogLinear>(settlementDate, 
 	       curveInput, dayCounter, tolerance));
 	return ts;
     }
-    else if(strcmp(interpWhat,"forward") == 0 &&
-       strcmp(interpHow,"spline") == 0) {
+    else if(interpWhat.compare("forward") == 0 &&
+            interpHow.compare("spline") == 0) {
 	boost::shared_ptr<YieldTermStructure> ts(new
 	       PiecewiseYieldCurve<ForwardRate,Cubic>(settlementDate, 
 	       curveInput, dayCounter, tolerance));
 	return ts;
     }
-    else if(strcmp(interpWhat,"zero") == 0 &&
-       strcmp(interpHow,"linear") == 0) {
+    else if(interpWhat.compare("zero") == 0 &&
+            interpHow.compare("linear") == 0) {
 	boost::shared_ptr<YieldTermStructure> ts(new
 	       PiecewiseYieldCurve<ZeroYield,Linear>(settlementDate, 
 	       curveInput, dayCounter, tolerance));
 	return ts;
     }
-    else if(strcmp(interpWhat,"zero") == 0 &&
-       strcmp(interpHow,"loglinear") == 0) {
+    else if(interpWhat.compare("zero") == 0 &&
+            interpHow.compare("loglinear") == 0) {
 	boost::shared_ptr<YieldTermStructure> ts(new
 	       PiecewiseYieldCurve<ZeroYield,LogLinear>(settlementDate, 
 	       curveInput, dayCounter, tolerance));
 	return ts;
     }
-    else if(strcmp(interpWhat,"zero") == 0 &&
-       strcmp(interpHow,"spline") == 0) {
+    else if(interpWhat.compare("zero") == 0 &&
+            interpHow.compare("spline") == 0) {
 	boost::shared_ptr<YieldTermStructure> ts(new
 	       PiecewiseYieldCurve<ZeroYield,Cubic>(settlementDate, 
 	       curveInput, dayCounter, tolerance));
 	return ts;
     }
     else {
+	Rprintf("interpWhat = %s\n", interpWhat.c_str());
+	Rprintf("interpHow  = %s\n", interpHow.c_str());
 	throw range_error("What/How term structure options not recognized");
     }
 }

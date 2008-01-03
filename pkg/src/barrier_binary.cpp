@@ -2,7 +2,7 @@
 //
 // Copyright 2002, 2003, 2004, 2005 Dirk Eddelbuettel <edd@debian.org>
 //
-// $Id: barrier_binary.cc,v 1.9 2005/08/07 02:00:54 edd Exp $
+// $Id: barrier_binary.cpp,v 1.10 2005/10/12 03:52:20 edd Exp $
 //
 // This file is part of the RQuantLib library for GNU R.
 // It is made available under the terms of the GNU General Public
@@ -24,7 +24,7 @@
 
 #include "rquantlib.hpp"
 
-RQLExport  SEXP QL_BinaryOption(SEXP optionParameters) {
+RcppExport  SEXP QL_BinaryOption(SEXP optionParameters) {
 
     const int nret = 8;		// dimension of return list
 
@@ -45,13 +45,13 @@ RQLExport  SEXP QL_BinaryOption(SEXP optionParameters) {
     double cashPayoff = REAL(getListElement(optionParameters, 
 					    "cashPayoff"))[0];
 
-    Option::Type optionType;
+    Option::Type optionType=Option::Call;
     if (!strcmp(type, "call")) {
-	optionType = Option::Call;
+      optionType = Option::Call;
     } else if (!strcmp(type, "put")) {
-	optionType = Option::Put;
+      optionType = Option::Put;
     } else {
-	error("Unexpected option type %s, aborting\n", type);
+      error("Unexpected option type %s, aborting\n", type);
     }
 
     // new QuantLib 0.3.5 framework: digitals, updated for 0.3.7
@@ -113,7 +113,7 @@ RQLExport  SEXP QL_BinaryOption(SEXP optionParameters) {
 
 // dumped core when we tried last
 // no longer under 0.3.10 and g++ 4.0.1 (Aug 2005)
-RQLExport  SEXP QL_BinaryOptionImpliedVolatility(SEXP optionParameters) {
+RcppExport  SEXP QL_BinaryOptionImpliedVolatility(SEXP optionParameters) {
     const int nret = 2;		// dimension of return list
     char *type = CHAR(STRING_ELT(getListElement(optionParameters, "type"),0));
     double value = REAL(getListElement(optionParameters, "value"))[0];
@@ -128,13 +128,13 @@ RQLExport  SEXP QL_BinaryOptionImpliedVolatility(SEXP optionParameters) {
     double volatility = REAL(getListElement(optionParameters,"volatility"))[0];
     double cashPayoff = REAL(getListElement(optionParameters,"cashPayoff"))[0];
 
-    Option::Type optionType;
+    Option::Type optionType=Option::Call;
     if (!strcmp(type, "call")) {
-	optionType = Option::Call;
+      optionType = Option::Call;
     } else if (!strcmp(type, "put")) {
-	optionType = Option::Put;
+      optionType = Option::Put;
     } else {
-	error("Unexpected option type %s, aborting\n", type);
+      error("Unexpected option type %s, aborting\n", type);
     }
 
     // new QuantLib 0.3.5 framework: digitals, updated for 0.3.7
@@ -179,7 +179,7 @@ RQLExport  SEXP QL_BinaryOptionImpliedVolatility(SEXP optionParameters) {
     return(rl);
 }
 
-RQLExport  SEXP QL_BarrierOption(SEXP optionParameters) {
+RcppExport  SEXP QL_BarrierOption(SEXP optionParameters) {
 
     const int nret = 8;		// dimension of return list
 
@@ -202,25 +202,25 @@ RQLExport  SEXP QL_BarrierOption(SEXP optionParameters) {
 					 "barrier"))[0];
     double rebate = REAL(getListElement(optionParameters, 
 					"rebate"))[0];
-    Barrier::Type barrierType;
+    Barrier::Type barrierType=Barrier::DownIn;
     if (!strcmp(barrType, "downin")) {
-	barrierType = Barrier::DownIn;
+      barrierType = Barrier::DownIn;
     } else if (!strcmp(barrType, "upin")) {
-	barrierType = Barrier::UpIn;
+      barrierType = Barrier::UpIn;
     } else if (!strcmp(barrType, "downout")) {
-	barrierType = Barrier::DownOut;
+      barrierType = Barrier::DownOut;
     } else if (!strcmp(barrType, "upout")) {
-	barrierType = Barrier::UpOut;
+      barrierType = Barrier::UpOut;
     } else {
-	error("Unexpected barrier type %s, aborting\n", barrType);
+      error("Unexpected barrier type %s, aborting\n", barrType);
     }
-    Option::Type optionType;
+    Option::Type optionType=Option::Call;
     if (!strcmp(type, "call")) {
-	optionType = Option::Call;
+      optionType = Option::Call;
     } else if (!strcmp(type, "put")) {
-	optionType = Option::Put;
+      optionType = Option::Put;
     } else {
-	error("Unexpected option type %s, aborting\n", type);
+      error("Unexpected option type %s, aborting\n", type);
     }
 
     // new QuantLib 0.3.5 framework, updated for 0.3.7
@@ -254,13 +254,13 @@ RQLExport  SEXP QL_BarrierOption(SEXP optionParameters) {
                 	Handle<YieldTermStructure>(rTS),
                 	Handle<BlackVolTermStructure>(volTS)));
 
-    Size timeSteps = 1;
-    bool antitheticVariate = false;
-    bool controlVariate = false;
-    Size requiredSamples = 10000;
-    double requiredTolerance = 0.02;
-    Size maxSamples = 1000000;
-    bool isBiased = false;
+    // Size timeSteps = 1;
+    // bool antitheticVariate = false;
+    // bool controlVariate = false;
+    // Size requiredSamples = 10000;
+    // double requiredTolerance = 0.02;
+    // Size maxSamples = 1000000;
+    // bool isBiased = false;
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
 
@@ -273,7 +273,7 @@ RQLExport  SEXP QL_BarrierOption(SEXP optionParameters) {
 				//mcEngine);
 				engine);
 
-    double calculated = barrierOption.NPV();
+    // double calculated = barrierOption.NPV();
     SEXP rl = PROTECT(allocVector(VECSXP, nret)); // returned list
     SEXP nm = PROTECT(allocVector(STRSXP, nret)); // names of list elements
 

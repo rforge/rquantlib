@@ -1,8 +1,9 @@
+
 // RQuantLib -- R interface to the QuantLib libraries
 //
 // Copyright 2002, 2003, 2004, 2005 Dirk Eddelbuettel <edd@debian.org>
 //
-// $Id: vanilla.cc,v 1.15 2005/08/07 02:03:57 edd Exp $
+// $Id: vanilla.cpp,v 1.17 2005/10/13 15:45:16 dsamperi Exp $
 //
 // This file is part of the RQuantLib library for GNU R.
 // It is made available under the terms of the GNU General Public
@@ -21,18 +22,10 @@
 // MA 02111-1307, USA
 
 // NB can be build standalone as   PKG_LIBS=-lQuantLib R CMD SHLIB RQuantLib.cc
-//#include "stdafx.h"
-
-// #include <ql/Instruments/vanillaoption.hpp>
-// #include <ql/TermStructures/flatforward.hpp>
-// #include <ql/Volatilities/blackconstantvol.hpp>
-// #include <ql/Calendars/target.hpp>
-
-// #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 
 #include "rquantlib.hpp"
 
-RQLExport  SEXP QL_EuropeanOption(SEXP optionParameters) {
+RcppExport  SEXP QL_EuropeanOption(SEXP optionParameters) {
 
     const int nret = 8;		// dimension of return list
 
@@ -50,7 +43,7 @@ RQLExport  SEXP QL_EuropeanOption(SEXP optionParameters) {
     double volatility = REAL(getListElement(optionParameters, 
 					    "volatility"))[0];
 
-    Option::Type optionType;
+    Option::Type optionType=Option::Call;
     if (!strcmp(type, "call")) {
       optionType = Option::Call;
     } else if (!strcmp(type, "put")) {
@@ -106,7 +99,7 @@ RQLExport  SEXP QL_EuropeanOption(SEXP optionParameters) {
     return(rl);
 }
 
-RQLExport  SEXP QL_AmericanOption(SEXP optionParameters) {
+RcppExport  SEXP QL_AmericanOption(SEXP optionParameters) {
 
     const int nret = 8;		// dimension of return list
 
@@ -120,10 +113,10 @@ RQLExport  SEXP QL_AmericanOption(SEXP optionParameters) {
     Time maturity = REAL(getListElement(optionParameters,"maturity"))[0];
     int length = int(maturity*360 + 0.5); // FIXME: this could be better
     double volatility = REAL(getListElement(optionParameters,"volatility"))[0];
-    int timeSteps = INTEGER(getListElement(optionParameters,"timeSteps"))[0];
-    int gridPoints = INTEGER(getListElement(optionParameters,"gridPoints"))[0];
+    // int timeSteps = INTEGER(getListElement(optionParameters,"timeSteps"))[0];
+    // int gridPoints = INTEGER(getListElement(optionParameters,"gridPoints"))[0];
     
-    Option::Type optionType;
+    Option::Type optionType=Option::Call;
     if (!strcmp(type, "call")) {
       optionType = Option::Call;
     } else if (!strcmp(type, "put")) {

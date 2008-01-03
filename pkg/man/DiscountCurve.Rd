@@ -1,5 +1,8 @@
+% $Id: DiscountCurve.Rd,v 1.1 2005/10/12 03:44:52 edd Exp $
 \name{DiscountCurve}
 \alias{DiscountCurve}
+\alias{DiscountCurve.default}
+\alias{plot.DiscountCurve}
 \title{Returns the discount curve (with zero rates and forwards) given times}
 \description{
   \code{DiscountCurve} constructs the spot term structure of interest
@@ -13,8 +16,8 @@
 DiscountCurve(params, tsQuotes, times)
 }
 \arguments{
-  \item{params}{A list specifying the \code{tradeDate} (or evaluation
-    date), \code{settleDate}, forward rate
+  \item{params}{A list specifying the \code{tradeDate} (month/day/year),
+    \code{settleDate}, forward rate
     time span \code{dt}, and two curve
     construction options: \code{interpWhat} (with possible values
     \code{discount}, \code{forward}, and \code{zero}) and
@@ -107,8 +110,8 @@ DiscountCurve(params, tsQuotes, times)
 savepar <- par(mfrow=c(3,3))
 
 # This data is taken from sample code shipped with QuantLib 0.3.10.
-params <- list(tradeDate=c(15, 2, 2002),
-               settleDate=c(19, 2, 2002),
+params <- list(tradeDate=c(2, 15, 2002),
+               settleDate=c(2, 19, 2002),
                dt=.25,
                interpWhat="discount",
                interpHow="loglinear")
@@ -132,17 +135,17 @@ times <- seq(0,10,.1)
 
 # Loglinear interpolation of discount factors
 curves <- DiscountCurve(params, tsQuotes, times)
-plot(curves,setpar=F)
+plot(curves,setpar=FALSE)
 
 # Linear interpolation of discount factors
 params$interpHow="linear"
 curves <- DiscountCurve(params, tsQuotes, times)
-plot(curves,setpar=F)
+plot(curves,setpar=FALSE)
 
 # Spline interpolation of discount factors
 params$interpHow="spline"
 curves <- DiscountCurve(params, tsQuotes, times)
-plot(curves,setpar=F)
+plot(curves,setpar=FALSE)
 
 par(savepar)
 

@@ -1,50 +1,48 @@
-//  RQuantLib function DiscountCurve
+// RQuantLib function DiscountCurve
 //
-//  Copyright (C) 2005  Dominick Samperi
+// Copyright (C) 2005  Dominick Samperi
 //
-//  This program is free software; you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation; either version 2 of the License, or
-//  (at your option) any later version.
+// $Id: discount.cpp,v 1.1 2005/10/12 03:53:57 edd Exp $
 //
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
+// This program is part of the RQuantLib library for R (GNU S).
+// It is made available under the terms of the GNU General Public
+// License, version 2, or at your option, any later version.
 //
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// This program is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied
+// warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+// PURPOSE.  See the GNU General Public License for more
+// details.
 
 #include "rquantlib.hpp"
 
-RQLExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
+RcppExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
 				     SEXP times) {
-    SEXP rl;
+    SEXP rl=0;
 
     try {
 
+	// Parameter wrapper classes.
+	RcppParams rparam(params);
+	RcppNamedList tslist(tsQuotes);
+
 	int i;
 
-	Date todaysDate = getDateValueAt(params, 0);
-	Date settlementDate = getDateValueAt(params, 1);
+	Date todaysDate = rparam.getDateValue("tradeDate");
+	Date settlementDate = rparam.getDateValue("settleDate");
 	RQLContext::instance().settleDate = settlementDate;
 	Settings::instance().evaluationDate() = todaysDate;
 
-	char *firstQuoteName = getNameAt(tsQuotes,0);
+	string firstQuoteName = tslist.getName(0);
 
-	double dt = getDoubleValueAt(params,2);
+	double dt = rparam.getDoubleValue("dt");
 	
-	char *interpWhat, *interpHow;
-	if(strcmp(firstQuoteName,"flat") != 0) {
+	string interpWhat, interpHow;
+	if(firstQuoteName.compare("flat") != 0) {
 
 	    // Get interpolation method (not needed for "flat" case)
-	    interpWhat = getStringValueAt(params,3);
-	    interpHow  = getStringValueAt(params,4);
-	    if(interpWhat == NULL || interpHow == NULL ||
-	       strlen(interpWhat) == 0 || strlen(interpHow) == 0)
-		error("Curve construction interpWhat/interpHow not set");
-	    
+	    interpWhat = rparam.getStringValue("interpWhat");
+	    interpHow  = rparam.getStringValue("interpHow");
 	}
 
         Calendar calendar = TARGET();
@@ -59,9 +57,9 @@ RQLExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
 	double tolerance = 1.0e-15;
 
 	boost::shared_ptr<YieldTermStructure> curve;
-	if(strcmp(firstQuoteName,"flat") == 0) {
+	if(firstQuoteName.compare("flat") == 0) {
 	    // Create a flat term structure.
-	    double rateQuote = getDoubleValueAt(tsQuotes,0);
+	    double rateQuote = tslist.getValue(0);
 	    boost::shared_ptr<Quote> flatRate(new SimpleQuote(rateQuote));
 	    boost::shared_ptr<FlatForward> ts(new FlatForward(settlementDate,
 					      Handle<Quote>(flatRate),
@@ -71,11 +69,13 @@ RQLExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
 	else {
 	    // Build curve based on a set of observed rates and/or prices.
 	    std::vector<boost::shared_ptr<RateHelper> > curveInput;
-	    for(i = 0; i < length(tsQuotes); i++) {
-		char *name = getNameAt(tsQuotes,i);
-		double val = getDoubleValueAt(tsQuotes,i);
+	    for(i = 0; i < tslist.getLength(); i++) {
+		string name = tslist.getName(i);
+		double val = tslist.getValue(i);
 		boost::shared_ptr<RateHelper> rh = 
 		    ObservableDB::instance().getRateHelper(name, val);
+		if(rh == NULL_RateHelper)
+		    error("Unknown rate in getRateHelper");
 		curveInput.push_back(rh);
 	    }
 	    boost::shared_ptr<YieldTermStructure> ts =
@@ -86,7 +86,6 @@ RQLExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
 	}
 
 	// Return discount, forward rate, and zero coupon curves
-	PROTECT(times);
 	int ntimes = length(times);
 	SEXP disc  = PROTECT(allocVector(REALSXP, ntimes));
 	SEXP fwds  = PROTECT(allocVector(REALSXP, ntimes));
@@ -99,21 +98,18 @@ RQLExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
 	    REAL(zero)[i] = curve->zeroRate(t, Continuous);
 	}
 
-	list<pair<string,SEXP> > values;
-	values.push_back(make_pair("times", times));
-	values.push_back(make_pair("discounts", disc));
-	values.push_back(make_pair("forwards", fwds));
-	values.push_back(make_pair("zerorates", zero));
+	RcppResultSet rs;
+	rs.add("times", times, false);
+	rs.add("discounts", disc, true);
+	rs.add("forwards", fwds, true);
+	rs.add("zerorates", zero, true);
+	rs.add("params", params, false);
+	rl = rs.getReturnList();
 
-	rl = makeReturnList(values, params);
-	UNPROTECT(4);
-
-    } catch(RQLException& e) {
-	error("RQuantLib Exception: %s\n", e.what());
     } catch(std::exception& e) {
-	error("QuantLib exception: %s\n", e.what());
+	error("Exception: %s\n", e.what());
     } catch(...) {
-	error("QuantLib exception: unknown reason\n");
+	error("Exception: unknown reason\n");
     }
     
     return rl;
