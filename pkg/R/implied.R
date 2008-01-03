@@ -2,7 +2,7 @@
 ##
 ## Copyright 2002 Dirk Eddelbuettel <edd@debian.org>
 ##
-## $Id: implied.R,v 1.2 2002/02/26 03:38:59 edd Exp edd $
+## $Id: implied.R,v 1.3 2002/11/15 01:51:14 edd Exp $
 ##
 ## This file is part of the RQuantLib library for GNU R.
 ## It is made available under the terms of the GNU General Public
@@ -37,7 +37,8 @@ EuropeanOptionImpliedVolatility.default <-
                     dividendYield=as.double(dividendYield),
                     riskFreeRate=as.double(riskFreeRate),
                     maturity=as.double(maturity),
-                    volatility=as.double(volatility)))
+                    volatility=as.double(volatility)),
+               PACKAGE="RQuantLib")
   class(val) <- c("EuropeanOptionImpliedVolatility","ImpliedVolatility")
   val
 }
@@ -61,7 +62,8 @@ AmericanOptionImpliedVolatility.default <-
                     maturity=as.double(maturity),
                     volatility=as.double(volatility),
                     timeSteps=as.integer(timeSteps),
-                    gridPoints=as.integer(gridPoints)))
+                    gridPoints=as.integer(gridPoints)),
+               PACKAGE="RQuantLib")
   class(val) <- c("AmericanOptionImpliedVolatility","ImpliedVolatility")
   val
 }
@@ -85,7 +87,8 @@ AmericanOptionImpliedVolatility.default <-
 #                    riskFreeRate=as.double(riskFreeRate),
 #                    maturity=as.double(maturity),
 #                    volatility=as.double(volatility),
-#                    cashPayoff=as.double(cashPayoff)))
+#                    cashPayoff=as.double(cashPayoff)),
+#               PACKAGE="RQuantLib")
 #  class(val) <- c("BinaryOptionImpliedVolatility","ImpliedVolatility")
 #  val
 #}

@@ -2,7 +2,7 @@
 ##
 ## Copyright 2002 Dirk Eddelbuettel <edd@debian.org>
 ##
-## $Id: arrays.R,v 1.1 2002/02/25 04:30:52 edd Exp $
+## $Id: arrays.R,v 1.2 2002/11/15 01:49:28 edd Exp $
 ##
 ## This file is part of the RQuantLib library for GNU R.
 ## It is made available under the terms of the GNU General Public
@@ -53,7 +53,8 @@ EuropeanOptionArrays <- function(type, underlying, strike, dividendYield,
                                 dividendYield=as.double(dividendYield[y]),
                                 riskFreeRate=as.double(riskFreeRate[r]),
                                 maturity=as.double(maturity[t]),
-                                volatility=as.double(volatility[v])))
+                                volatility=as.double(volatility[v])),
+                           PACKAGE="RQuantLib")
               value[s,k,y,r,t,v] <- val$value
               delta[s,k,y,r,t,v] <- val$delta
               gamma[s,k,y,r,t,v] <- val$gamma

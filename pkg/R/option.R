@@ -2,7 +2,7 @@
 ##
 ## Copyright 2002 Dirk Eddelbuettel <edd@debian.org>
 ##
-## $Id: option.R,v 1.2 2002/02/26 03:40:05 edd Exp edd $
+## $Id: option.R,v 1.3 2002/11/15 01:52:17 edd Exp $
 ##
 ## This file is part of the RQuantLib library for GNU R.
 ## It is made available under the terms of the GNU General Public
@@ -35,7 +35,8 @@ EuropeanOption.default <- function(type, underlying, strike, dividendYield,
                     dividendYield=as.double(dividendYield),
                     riskFreeRate=as.double(riskFreeRate),
                     maturity=as.double(maturity),
-                    volatility=as.double(volatility)))
+                    volatility=as.double(volatility)),
+               PACKAGE="RQuantLib")
   class(val) <- c("EuropeanOption", "Option")
   val
 }
@@ -58,7 +59,8 @@ AmericanOption.default <- function(type, underlying, strike, dividendYield,
                     maturity=as.double(maturity),
                     volatility=as.double(volatility),
                     timeSteps=as.integer(timeSteps),
-                    gridPoints=as.integer(gridPoints)))
+                    gridPoints=as.integer(gridPoints)),
+               PACKAGE="RQuantLib")
   class(val) <- c("AmericanOption","Option")
   val
 }
@@ -80,7 +82,8 @@ BinaryOption.default <- function(type, underlying, strike, dividendYield,
                     riskFreeRate=as.double(riskFreeRate),
                     maturity=as.double(maturity),
                     volatility=as.double(volatility),
-                    cashPayoff=as.double(cashPayoff)))
+                    cashPayoff=as.double(cashPayoff)),
+               PACKAGE="RQuantLib")
   class(val) <- c("BinaryOption", "Option")
   val
 }
@@ -104,7 +107,8 @@ BarrierOption.default <- function(barrType, type, underlying, strike,
                     maturity=as.double(maturity),
                     volatility=as.double(volatility),
                     barrier=as.double(barrier),
-                    rebate=as.double(rebate)))
+                    rebate=as.double(rebate)),
+               PACKAGE="RQuantLib")
   class(val) <- c("BarrierOption", "Option")
   val
 }

@@ -2,7 +2,7 @@
 ##
 ## Copyright 2002 Dirk Eddelbuettel <edd@debian.org>
 ##
-## $Id: zzz.R,v 1.1 2002/02/25 04:31:24 edd Exp $
+## $Id: zzz.R,v 1.2 2003/02/06 03:14:06 edd Exp $
 ##
 ## This file is part of the RQuantLib library for GNU R.
 ## It is made available under the terms of the GNU General Public
@@ -21,7 +21,7 @@
 ## MA 02111-1307, USA
 
 .First.lib <- function(lib, pkg) {
-  cat("This is a pre-release. The interface might change...\n")
+  #cat("This is a pre-release. The interface might change...\n")
   library.dynam(pkg, pkg, lib )
 }
 
