@@ -5,11 +5,15 @@ AmericanOptionImpliedVolatility
                         Option
 BarrierOption           Barrier Option evaluation using Closed-Form
                         solution
+BermudanSwaption        Price a Bermudan swaption using a selected
+                        short-rate model
 BinaryOption            Binary Option evaluation using Closed-Form
                         solution
 BinaryOptionImpliedVolatility
                         Implied Volatility calculation for Binary
-                        Option
+                        Options
+DiscountCurve           Construct the spot term structure of interest rates
+                        using deposits, futures, FRA's and swap data
 EuropeanOption          European Option evaluation using Closed-Form
                         solution
 EuropeanOptionArrays    European Option evaluation using Closed-Form

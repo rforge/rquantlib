@@ -22,15 +22,9 @@
 
 // NB can be build standalone as   PKG_LIBS=-lQuantLib R CMD SHLIB RQuantLib.cc
 
-#include <ql/quantlib.hpp>	// make QuantLib known
+#include "rquantlib.hpp"
 
-using namespace QuantLib;
-
-extern "C" {
-
-#include "rquantlib.h"
-
-  SEXP QL_BinaryOption(SEXP optionParameters) {
+RQLExport  SEXP QL_BinaryOption(SEXP optionParameters) {
 
     const int nret = 8;		// dimension of return list
 
@@ -53,11 +47,11 @@ extern "C" {
 
     Option::Type optionType;
     if (!strcmp(type, "call")) {
-      optionType = Option::Call;
+	optionType = Option::Call;
     } else if (!strcmp(type, "put")) {
-      optionType = Option::Put;
+	optionType = Option::Put;
     } else {
-      error("Unexpected option type %s, aborting\n", type);
+	error("Unexpected option type %s, aborting\n", type);
     }
 
     // new QuantLib 0.3.5 framework: digitals, updated for 0.3.7
@@ -115,11 +109,11 @@ extern "C" {
 
     UNPROTECT(2);
     return(rl);
-  }
+}
 
-  // dumped core when we tried last
-  // no longer under 0.3.10 and g++ 4.0.1 (Aug 2005)
-  SEXP QL_BinaryOptionImpliedVolatility(SEXP optionParameters) {
+// dumped core when we tried last
+// no longer under 0.3.10 and g++ 4.0.1 (Aug 2005)
+RQLExport  SEXP QL_BinaryOptionImpliedVolatility(SEXP optionParameters) {
     const int nret = 2;		// dimension of return list
     char *type = CHAR(STRING_ELT(getListElement(optionParameters, "type"),0));
     double value = REAL(getListElement(optionParameters, "value"))[0];
@@ -136,11 +130,11 @@ extern "C" {
 
     Option::Type optionType;
     if (!strcmp(type, "call")) {
-      optionType = Option::Call;
+	optionType = Option::Call;
     } else if (!strcmp(type, "put")) {
-      optionType = Option::Put;
+	optionType = Option::Put;
     } else {
-      error("Unexpected option type %s, aborting\n", type);
+	error("Unexpected option type %s, aborting\n", type);
     }
 
     // new QuantLib 0.3.5 framework: digitals, updated for 0.3.7
@@ -153,11 +147,11 @@ extern "C" {
     boost::shared_ptr<YieldTermStructure> rTS = makeFlatCurve(today,rRate,dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = 
-      makeFlatVolatility(today, vol, dc);
+	makeFlatVolatility(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     boost::shared_ptr<StrikedTypePayoff> 
-      payoff(new CashOrNothingPayoff(optionType, strike, cashPayoff));
+	payoff(new CashOrNothingPayoff(optionType, strike, cashPayoff));
     Date exDate = today + length;
 
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -169,9 +163,9 @@ extern "C" {
 
     boost::shared_ptr<BlackScholesProcess> 
       stochProcess(new BlackScholesProcess(Handle<Quote>(spot),
-					   Handle<YieldTermStructure>(qTS),
-					   Handle<YieldTermStructure>(rTS),
-					   Handle<BlackVolTermStructure>(volTS)));
+				Handle<YieldTermStructure>(qTS),
+				Handle<YieldTermStructure>(rTS),
+				Handle<BlackVolTermStructure>(volTS)));
 
     VanillaOption opt(stochProcess, payoff, exercise, engine);
 
@@ -183,9 +177,9 @@ extern "C" {
     setAttrib(rl, R_NamesSymbol, nm);
     UNPROTECT(2);
     return(rl);
-  }
+}
 
-  SEXP QL_BarrierOption(SEXP optionParameters) {
+RQLExport  SEXP QL_BarrierOption(SEXP optionParameters) {
 
     const int nret = 8;		// dimension of return list
 
@@ -210,23 +204,23 @@ extern "C" {
 					"rebate"))[0];
     Barrier::Type barrierType;
     if (!strcmp(barrType, "downin")) {
-      barrierType = Barrier::DownIn;
+	barrierType = Barrier::DownIn;
     } else if (!strcmp(barrType, "upin")) {
-      barrierType = Barrier::UpIn;
+	barrierType = Barrier::UpIn;
     } else if (!strcmp(barrType, "downout")) {
-      barrierType = Barrier::DownOut;
+	barrierType = Barrier::DownOut;
     } else if (!strcmp(barrType, "upout")) {
-      barrierType = Barrier::UpOut;
+	barrierType = Barrier::UpOut;
     } else {
-      error("Unexpected barrier type %s, aborting\n", barrType);
+	error("Unexpected barrier type %s, aborting\n", barrType);
     }
     Option::Type optionType;
     if (!strcmp(type, "call")) {
-      optionType = Option::Call;
+	optionType = Option::Call;
     } else if (!strcmp(type, "put")) {
-      optionType = Option::Put;
+	optionType = Option::Put;
     } else {
-      error("Unexpected option type %s, aborting\n", type);
+	error("Unexpected option type %s, aborting\n", type);
     }
 
     // new QuantLib 0.3.5 framework, updated for 0.3.7
@@ -297,5 +291,5 @@ extern "C" {
     setAttrib(rl, R_NamesSymbol, nm);
     UNPROTECT(2);
     return(rl);
-  }
 }
+

@@ -1,0 +1,87 @@
+\HeaderA{EuropeanOption}{European Option evaluation using Closed-Form solution}{EuropeanOption}
+\methaliasA{EuropeanOption.default}{EuropeanOption}{EuropeanOption.default}
+\keyword{misc}{EuropeanOption}
+\begin{Description}\relax
+The \code{EuropeanOption} function evaluations an European-style
+option on a common stock using the Black-Scholes-Merton solution. The
+option value, the common first derivatives (\"Greeks\") as well as the
+calling parameters are returned.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+EuropeanOption.default(type, underlying, strike, dividendYield, riskFreeRate, maturity, volatility)
+
+## S3 method for class 'Option':
+plot
+## S3 method for class 'Option':
+print
+## S3 method for class 'Option':
+summary
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{type}] A string with one of the values \code{call} or \code{put}
+\item[\code{underlying}] Current price of the underlying stock
+\item[\code{strike}] Strike price of the option
+\item[\code{dividendYield}] Continuous dividend yield (as a fraction) of the stock
+\item[\code{riskFreeRate}] Risk-free rate
+\item[\code{maturity}] Time to maturity (in fractional years)
+\item[\code{volatility}] Volatility of the underlying stock
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+The well-known closed-form solution derived by Black, Scholes and
+Merton is used for valuation. Implied volatilities are calculated
+numerically.
+
+Please see any decent Finance textbook for background reading, and the
+\code{QuantLib} documentation for details on the \code{QuantLib}
+implementation.
+\end{Details}
+\begin{Value}
+The \code{EuropeanOption} function returns an object of class
+\code{EuropeanOption} (which inherits from class 
+\code{\LinkA{Option}{Option}}). It contains a list with the following
+components:
+\begin{ldescription}
+\item[\code{value}] Value of option
+\item[\code{delta}] Sensitivity of the option value for a change in the underlying
+\item[\code{gamma}] Sensitivity of the option delta for a change in the underlying
+\item[\code{vega}] Sensitivity of the option value for a change in the
+underlying's volatility
+\item[\code{theta}] Sensitivity of the option value for a change in t, the
+remaining time to maturity
+\item[\code{rho}] Sensitivity of the option value for a change in the
+risk-free interest rate
+\item[\code{dividendRho}] Sensitivity of the option value for a change in the
+dividend yield
+\item[\code{parameters}] List with parameters with which object was created
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+The interface might change in future release as \code{QuantLib}
+stabilises its own API.
+\end{Note}
+\begin{Author}\relax
+Dirk Eddelbuettel \email{edd@debian.org} for the \R{} interface;
+the QuantLib Group for \code{QuantLib}
+\end{Author}
+\begin{References}\relax
+\url{http://quantlib.org} for details on \code{QuantLib}.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{EuropeanOptionImpliedVolatility}{EuropeanOptionImpliedVolatility}},
+\code{\LinkA{EuropeanOptionArrays}{EuropeanOptionArrays}},
+\code{\LinkA{AmericanOption}{AmericanOption}},\code{\LinkA{BinaryOption}{BinaryOption}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+# simple call with unnamed parameters
+EuropeanOption("call", 100, 100, 0.01, 0.03, 0.5, 0.4)
+# simple call with some explicit parameters, and slightly increased vol:
+EuropeanOption(type="call", underlying=100, strike=100, dividendYield=0.01, 
+riskFreeRate=0.03, maturity=0.5, volatility=0.5)
+\end{ExampleCode}
+\end{Examples}
+

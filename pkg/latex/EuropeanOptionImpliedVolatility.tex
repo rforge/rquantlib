@@ -1,0 +1,70 @@
+\HeaderA{EuropeanOptionImpliedVolatility}{Implied Volatility calculation for European Option}{EuropeanOptionImpliedVolatility}
+\methaliasA{EuropeanOptionImpliedVolatility.default}{EuropeanOptionImpliedVolatility}{EuropeanOptionImpliedVolatility.default}
+\keyword{misc}{EuropeanOptionImpliedVolatility}
+\begin{Description}\relax
+The \code{EuropeanOptionImpliedVolatility} function solves for the
+(unobservable) implied volatility, given an option price as well as
+the other required parameters to value an option.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+EuropeanOptionImpliedVolatility.default(type, value, underlying, strike, dividendYield, riskFreeRate, maturity, volatility)
+
+## S3 method for class 'ImpliedVolatility':
+print
+## S3 method for class 'ImpliedVolatility':
+summary
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{type}] A string with one of the values \code{call} or \code{put}
+\item[\code{value}] Value of the option (used only for ImpliedVolatility calculation)
+\item[\code{underlying}] Current price of the underlying stock
+\item[\code{strike}] Strike price of the option
+\item[\code{dividendYield}] Continuous dividend yield (as a fraction) of the stock
+\item[\code{riskFreeRate}] Risk-free rate
+\item[\code{maturity}] Time to maturity (in fractional years)
+\item[\code{volatility}] Initial guess for the volatility of the underlying stock
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+The well-known closed-form solution derived by Black, Scholes and
+Merton is used for valuation. Implied volatilities are then calculated
+numerically.
+
+Please see any decent Finance textbook for background reading, and the
+\code{QuantLib} documentation for details on the \code{QuantLib}
+implementation.
+\end{Details}
+\begin{Value}
+The \code{EuropeanOptionImpliedVolatility} function returns an object
+of class \code{\LinkA{ImpliedVolatility}{ImpliedVolatility}}. It contains a list with the
+following elements:
+\begin{ldescription}
+\item[\code{impliedVol}] The volatility implied by the given market prices
+\item[\code{parameters}] List with the option parameters used
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+The interface might change in future release as \code{QuantLib}
+stabilises its own API.
+\end{Note}
+\begin{Author}\relax
+Dirk Eddelbuettel \email{edd@debian.org} for the \R{} interface;
+the QuantLib Group for \code{QuantLib}
+\end{Author}
+\begin{References}\relax
+\url{http://quantlib.org} for details on \code{QuantLib}.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{EuropeanOption}{EuropeanOption}},\code{\LinkA{AmericanOption}{AmericanOption}},\code{\LinkA{BinaryOption}{BinaryOption}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+EuropeanOptionImpliedVolatility(type="call", value=11.10, underlying=100,
+        strike=100, dividendYield=0.01, riskFreeRate=0.03,
+        maturity=0.5, volatility=0.4)
+\end{ExampleCode}
+\end{Examples}
+

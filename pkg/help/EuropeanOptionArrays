@@ -1,0 +1,125 @@
+EuropeanOptionArrays        package:RQuantLib        R Documentation
+
+_E_u_r_o_p_e_a_n _O_p_t_i_o_n _e_v_a_l_u_a_t_i_o_n _u_s_i_n_g _C_l_o_s_e_d-_F_o_r_m _s_o_l_u_t_i_o_n
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     The 'EuropeanOptionArrays' function allows any of the numerical
+     input parameters to be a list, and a list of arrays is returned.
+     Each of the returned arrays has as many dimension as there were
+     lists among the input parameters, and each multi-dimensional array
+     element corresponds to an evaluation under the given set of
+     parameters.
+
+_U_s_a_g_e:
+
+     EuropeanOptionArrays(type, underlying, strike, dividendYield, riskFreeRate, maturity, volatility)
+
+_A_r_g_u_m_e_n_t_s:
+
+    type: A string with one of the values 'call' or 'put'
+
+underlying: (Scalar or list) current price(s) of the underlying stock
+
+  strike: (Scalar or list) strike price(s) of the option
+
+dividendYield: (Scalar or list) continuous dividend yield(s) (as a
+          fraction) of the stock
+
+riskFreeRate: (Scalar or list) risk-free rate(s)
+
+maturity: (Scalar or list) time(s) to maturity (in fractional years)
+
+volatility: (Scalar or list) volatilit(y|ies) of the underlying stock
+
+_D_e_t_a_i_l_s:
+
+     The well-known closed-form solution derived by Black, Scholes and
+     Merton is used for valuation. 
+
+     Please see any decent Finance textbook for background reading, and
+     the 'QuantLib' documentation for details on the 'QuantLib'
+     implementation.
+
+_V_a_l_u_e:
+
+     The 'EuropeanOptionArrays' function allows each of the numerical
+     input parameters to be a list (or vector, or sequence). A list of
+     multi-dimensional arrays is returned. Each array point corresponds
+     to an evaluation under the given set of parameters. 
+
+     For these functions, the following components are returned: 
+
+   value: (Scalar or array) value of option
+
+   delta: (Scalar or array) change in value for a change in the
+          underlying
+
+   gamma: (Scalar or array) change in value for a change in delta
+
+    vega: (Scalar or array) change in value for a change in the
+          underlying's volatility
+
+   theta: (Scalar or array) change in value for a change in delta
+
+     rho: (Scalar or array) change in value for a change in time to
+          maturity
+
+dividendRho: (Scalar or array) change in value for a change in delta
+
+parameters: List with parameters with which object was created
+
+_N_o_t_e:
+
+     The interface might change in future release as 'QuantLib'
+     stabilises its own API.
+
+_A_u_t_h_o_r(_s):
+
+     Dirk Eddelbuettel edd@debian.org for the R interface; the QuantLib
+     Group for 'QuantLib'
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     <URL: http://quantlib.org> for details on 'QuantLib'.
+
+_S_e_e _A_l_s_o:
+
+     'AmericanOption','BinaryOption'
+
+_E_x_a_m_p_l_e_s:
+
+     # define two vectos for the underlying and the volatility
+     und.seq <- seq(10,180,by=2)
+     vol.seq <- seq(0.1,0.9,by=0.1)
+     # evaluate them along with three scalar parameters
+     EOarr <- EuropeanOptionArrays("call", underlying=und.seq,
+                                   strike=100, dividendYield=0.01,
+                                   riskFreeRate=0.03,
+                                   maturity=1, volatility=vol.seq)
+     # and look at four of the result arrays: value, delta, gamma, vega
+     old.par <- par(no.readonly = TRUE)
+     par(mfrow=c(2,2),oma=c(5,0,0,0),mar=c(2,2,2,1))
+     plot(EOarr$parameter$underlying, EOarr$value[,1], type='n',
+          main="option value", xlab="", ylab="") 
+     topocol <- topo.colors(length(vol.seq))
+     for (i in 1:length(vol.seq))
+       lines(EOarr$parameter$underlying, EOarr$value[,i], col=topocol[i])
+     plot(EOarr$parameter$underlying, EOarr$delta[,1],type='n',
+          main="option delta", xlab="", ylab="")
+     for (i in 1:length(vol.seq))
+       lines(EOarr$parameter$underlying, EOarr$delta[,i], col=topocol[i])
+     plot(EOarr$parameter$underlying, EOarr$gamma[,1],type='n',
+          main="option gamma", xlab="", ylab="")
+     for (i in 1:length(vol.seq))
+       lines(EOarr$parameter$underlying, EOarr$gamma[,i], col=topocol[i])
+     plot(EOarr$parameter$underlying, EOarr$vega[,1],type='n',
+          main="option vega", xlab="", ylab="")
+     for (i in 1:length(vol.seq))
+       lines(EOarr$parameter$underlying, EOarr$vega[,i], col=topocol[i])
+     mtext(text=paste("Strike is 100, maturity 1 year, riskless rate 0.03",
+             "\nUnderlying price from", und.seq[1],"to", und.seq[length(und.seq)],
+             "\nVolatility  from",vol.seq[1], "to",vol.seq[length(vol.seq)]),
+           side=1,font=1,outer=TRUE,line=3)
+     par(old.par)
+

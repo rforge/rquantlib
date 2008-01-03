@@ -1,0 +1,176 @@
+<html><head><title>R: European Option evaluation using Closed-Form solution</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for EuropeanOptionArrays {RQuantLib}"><tr><td>EuropeanOptionArrays {RQuantLib}</td><td align="right">R Documentation</td></tr></table>
+<h2>European Option evaluation using Closed-Form solution</h2>
+
+
+<h3>Description</h3>
+
+<p>
+The <code>EuropeanOptionArrays</code> function allows any of the numerical
+input parameters to be a list, and a list of arrays is returned. Each
+of the returned arrays has as many dimension as there were lists among
+the input parameters, and each multi-dimensional array element
+corresponds to an evaluation under the given set of parameters.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+EuropeanOptionArrays(type, underlying, strike, dividendYield, riskFreeRate, maturity, volatility)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>type</code></td>
+<td>
+A string with one of the values <code>call</code> or <code>put</code></td></tr>
+<tr valign="top"><td><code>underlying</code></td>
+<td>
+(Scalar or list) current price(s) of the underlying stock</td></tr>
+<tr valign="top"><td><code>strike</code></td>
+<td>
+(Scalar or list) strike price(s) of the option</td></tr>
+<tr valign="top"><td><code>dividendYield</code></td>
+<td>
+(Scalar or list) continuous dividend yield(s) (as a fraction) of the stock</td></tr>
+<tr valign="top"><td><code>riskFreeRate</code></td>
+<td>
+(Scalar or list) risk-free rate(s)</td></tr>
+<tr valign="top"><td><code>maturity</code></td>
+<td>
+(Scalar or list) time(s) to maturity (in fractional years)</td></tr>
+<tr valign="top"><td><code>volatility</code></td>
+<td>
+(Scalar or list) volatilit(y|ies) of the underlying stock</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+The well-known closed-form solution derived by Black, Scholes and
+Merton is used for valuation. 
+</p>
+<p>
+Please see any decent Finance textbook for background reading, and the
+<code>QuantLib</code> documentation for details on the <code>QuantLib</code>
+implementation.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+The <code>EuropeanOptionArrays</code> function allows each of the numerical
+input parameters to be a list (or vector, or sequence). A list of
+multi-dimensional arrays is returned. Each array point corresponds to
+an evaluation under the given set of parameters. 
+<br>
+For these functions, the following components are returned:
+</p>
+<table summary="R argblock">
+<tr valign="top"><td><code>value</code></td>
+<td>
+(Scalar or array) value of option</td></tr>
+<tr valign="top"><td><code>delta</code></td>
+<td>
+(Scalar or array) change in value for a change in the underlying</td></tr>
+<tr valign="top"><td><code>gamma</code></td>
+<td>
+(Scalar or array) change in value for a change in delta</td></tr>
+<tr valign="top"><td><code>vega</code></td>
+<td>
+(Scalar or array) change in value for a change in the underlying's volatility</td></tr>
+<tr valign="top"><td><code>theta</code></td>
+<td>
+(Scalar or array) change in value for a change in delta</td></tr>
+<tr valign="top"><td><code>rho</code></td>
+<td>
+(Scalar or array) change in value for a change in time to maturity</td></tr>
+<tr valign="top"><td><code>dividendRho</code></td>
+<td>
+(Scalar or array) change in value for a change in delta</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+List with parameters with which object was created</td></tr>
+</table>
+
+<h3>Note</h3>
+
+<p>
+The interface might change in future release as <code>QuantLib</code>
+stabilises its own API.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Dirk Eddelbuettel <a href="mailto:edd@debian.org">edd@debian.org</a> for the <font face="Courier New,Courier" color="#666666"><b>R</b></font> interface;
+the QuantLib Group for <code>QuantLib</code>
+</p>
+
+
+<h3>References</h3>
+
+<p>
+<a href="http://quantlib.org">http://quantlib.org</a> for details on <code>QuantLib</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="AmericanOption.html">AmericanOption</a></code>,<code><a href="BinaryOption.html">BinaryOption</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# define two vectos for the underlying and the volatility
+und.seq &lt;- seq(10,180,by=2)
+vol.seq &lt;- seq(0.1,0.9,by=0.1)
+# evaluate them along with three scalar parameters
+EOarr &lt;- EuropeanOptionArrays("call", underlying=und.seq,
+                              strike=100, dividendYield=0.01,
+                              riskFreeRate=0.03,
+                              maturity=1, volatility=vol.seq)
+# and look at four of the result arrays: value, delta, gamma, vega
+old.par &lt;- par(no.readonly = TRUE)
+par(mfrow=c(2,2),oma=c(5,0,0,0),mar=c(2,2,2,1))
+plot(EOarr$parameter$underlying, EOarr$value[,1], type='n',
+     main="option value", xlab="", ylab="") 
+topocol &lt;- topo.colors(length(vol.seq))
+for (i in 1:length(vol.seq))
+  lines(EOarr$parameter$underlying, EOarr$value[,i], col=topocol[i])
+plot(EOarr$parameter$underlying, EOarr$delta[,1],type='n',
+     main="option delta", xlab="", ylab="")
+for (i in 1:length(vol.seq))
+  lines(EOarr$parameter$underlying, EOarr$delta[,i], col=topocol[i])
+plot(EOarr$parameter$underlying, EOarr$gamma[,1],type='n',
+     main="option gamma", xlab="", ylab="")
+for (i in 1:length(vol.seq))
+  lines(EOarr$parameter$underlying, EOarr$gamma[,i], col=topocol[i])
+plot(EOarr$parameter$underlying, EOarr$vega[,1],type='n',
+     main="option vega", xlab="", ylab="")
+for (i in 1:length(vol.seq))
+  lines(EOarr$parameter$underlying, EOarr$vega[,i], col=topocol[i])
+mtext(text=paste("Strike is 100, maturity 1 year, riskless rate 0.03",
+        "\nUnderlying price from", und.seq[1],"to", und.seq[length(und.seq)],
+        "\nVolatility  from",vol.seq[1], "to",vol.seq[length(vol.seq)]),
+      side=1,font=1,outer=TRUE,line=3)
+par(old.par)
+</pre>
+
+
+
+<hr><div align="center">[Package <em>RQuantLib</em> version 0.1.14 <a href="00Index.html">Index]</a></div>
+
+</body></html>

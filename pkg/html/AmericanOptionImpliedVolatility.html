@@ -1,0 +1,142 @@
+<html><head><title>R: Implied Volatility calculation for American Option</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for AmericanOptionImpliedVolatility {RQuantLib}"><tr><td>AmericanOptionImpliedVolatility {RQuantLib}</td><td align="right">R Documentation</td></tr></table>
+<h2>Implied Volatility calculation for American Option</h2>
+
+
+<h3>Description</h3>
+
+<p>
+The <code>AmericanOptionImpliedVolatility</code> function solves for the
+(unobservable) implied volatility, given an option price as well as
+the other required parameters to value an option.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+AmericanOptionImpliedVolatility.default(type, value, underlying, strike,
+                dividendYield, riskFreeRate, maturity, volatility,
+                timeSteps=150, gridPoints=151)
+
+## S3 method for class 'ImpliedVolatility':
+print
+## S3 method for class 'ImpliedVolatility':
+summary
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>type</code></td>
+<td>
+A string with one of the values <code>call</code> or <code>put</code></td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+Value of the option (used only for ImpliedVolatility calculation)</td></tr>
+<tr valign="top"><td><code>underlying</code></td>
+<td>
+Current price of the underlying stock</td></tr>
+<tr valign="top"><td><code>strike</code></td>
+<td>
+Strike price of the option</td></tr>
+<tr valign="top"><td><code>dividendYield</code></td>
+<td>
+Continuous dividend yield (as a fraction) of the stock</td></tr>
+<tr valign="top"><td><code>riskFreeRate</code></td>
+<td>
+Risk-free rate</td></tr>
+<tr valign="top"><td><code>maturity</code></td>
+<td>
+Time to maturity (in fractional years)</td></tr>
+<tr valign="top"><td><code>volatility</code></td>
+<td>
+Initial guess for the volatility of the underlying
+stock</td></tr>
+<tr valign="top"><td><code>timeSteps</code></td>
+<td>
+Time steps for the Finite Differences method, default
+value is 150</td></tr>
+<tr valign="top"><td><code>gridPoints</code></td>
+<td>
+Grid points for the Finite Differences method,
+default value is 151</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+The Finite Differences method is used to value the American Option.
+Implied volatilities are then calculated numerically.
+</p>
+<p>
+Please see any decent Finance textbook for background reading, and the
+<code>QuantLib</code> documentation for details on the <code>QuantLib</code>
+implementation.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+The <code>AmericanOptionImpliedVolatility</code> function returns an object
+of class <code><a href="ImpliedVolatility.html">ImpliedVolatility</a></code>. It contains a list with the
+following elements:
+</p>
+<table summary="R argblock">
+<tr valign="top"><td><code>impliedVol</code></td>
+<td>
+The volatility implied by the given market prices</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+List with the option parameters used</td></tr>
+</table>
+
+<h3>Note</h3>
+
+<p>
+The interface might change in future release as <code>QuantLib</code>
+stabilises its own API.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Dirk Eddelbuettel <a href="mailto:edd@debian.org">edd@debian.org</a> for the <font face="Courier New,Courier" color="#666666"><b>R</b></font> interface;
+the QuantLib Group for <code>QuantLib</code>
+</p>
+
+
+<h3>References</h3>
+
+<p>
+<a href="http://quantlib.org">http://quantlib.org</a> for details on <code>QuantLib</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="EuropeanOption.html">EuropeanOption</a></code>,<code><a href="AmericanOption.html">AmericanOption</a></code>,<code><a href="BinaryOption.html">BinaryOption</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+AmericanOptionImpliedVolatility(type="call", value=11.10, underlying=100,
+        strike=100, dividendYield=0.01, riskFreeRate=0.03,
+        maturity=0.5, volatility=0.4)
+</pre>
+
+
+
+<hr><div align="center">[Package <em>RQuantLib</em> version 0.1.14 <a href="00Index.html">Index]</a></div>
+
+</body></html>

@@ -1,3 +1,104 @@
+2005-08-06  Dirk Eddelbuettel  <edd@debian.org>
+
+	* Release 0.1.13 matching the new QuantLib 0.3.10 release
+
+	* Implied volatilies are back! 
+	  With gcc/g++ 4.0, the segmentation fault that I was seeing
+	  on implied volatility using gcc/g++ 3.3 (but which others did
+	  not see with gcc/g++ 3.2) has disappeared, so the 
+	  corresponding code has been reactivated.
+	* BinaryOptionImpliedVolatility() is also back 
+
+	* src/*.cc, R/*.R: Removed a lot of commented-out code
+	
+
+2005-04-26  Dirk Eddelbuettel  <edd@debian.org>
+
+	* Release 0.1.12 matching the upcoming QuantLib 0.3.9 release
+	
+	* configure.in: Test for QuantLib >= 0.3.8
+
+	* src/*.cc: Several changes for QuantLib 0.3.9:
+	  - use Handle<...> instead of RelinkableHandle<...>
+	  - use YieldTermStructure instead of TermStructure
+	  - use today + alength instead of today.plusDays
+
+2004-12-27  Dirk Eddelbuettel  <edd@debian.org>
+
+	* Release 0.1.11 matching the new QuantLib 0.3.8 release
+
+	* configure.in: Added tests for Boost headers, with thanks and
+	  a nod to QuantLib for the actual autoconf code
+
+	* src/{barrier_binary.cc,implieds.cc,vanilla.cc}: Option type 
+	  'Straddle' now unsupported, hence commented out
+	* man/*.Rd: Similarly removed reference to straddle from docs
+	
+	* src/{barrier_binary.cc,implieds.cc,utils.cc,vanilla.cc}: 
+	  Renamed BlackScholesStochasticProcess to BlackScholesProcess 
+
+	* src/vanilla.cc: Changed Handle to boost::shared_ptr 
+	
+2004-09-12  Dirk Eddelbuettel  <edd@debian.org>
+
+	* Release 0.1.10
+
+	* Switched to using Boost library as per QuantLin 0.3.7
+
+        * AmericanOption now uses the Barone-Adesi-Whaley approximation
+	
+	* Implied volatility for both European and American options
+	  currently segfaults when called from R, though the code itself
+	  works as a standalone. The code also works from R when the implied
+	  calculation call is skipped. Something is corrupting memory
+	  somewhere. For now, we return NA for either function.
+
+2004-08-06  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: Added SystemRequirements for QuantLib
+
+2004-05-26  Dirk Eddelbuettel  <edd@debian.org>
+
+	* Release 0.1.9
+
+	* man/EuropeanOption.Rd: Added corrections for the issues raised
+	  by Ajay Shah in the Debian bug report #249240
+
+	* man/{AmericanOption,BarrierOption,BinaryOption}.Rd: Idem
+
+2004-04-05  Dirk Eddelbuettel  <edd@debian.org>
+
+	* Release 0.1.8
+
+	* src/{barrier_binary,implieds,utils,vanilla}.cc: Updated to the 
+	  new QuantLib 0.3.5 pricer framework.  This currently implies
+	  that options priced using the binomial engines do not have
+	  Greeks; this should be addressed in a future QuantLib release.
+
+	* man/{BarrierOption,AmericanOption}.Rd: Note that Greeks are
+	  currently unavailable with binary pricers
+	 
+
+2003-11-28  Dirk Eddelbuettel  <edd@debian.org>
+
+	* Release 0.1.7
+
+	* src/barrier_binary.cc: 
+	  -- split off from RQuantLib.cc
+	  -- added three more greeks to Barrier Option
+	  -- reflected small change in QuantLib types for Barrier Options
+
+	* src/implieds.cc
+	  -- split off from RQuantLib.cc
+	  -- rewritten functions for implied volatility on European and
+	     American options using new QuantLib framework
+	
+	* src/utils.cc
+	  -- split off from RQuantLib.cc
+
+	* src/vanilla.cc
+	  -- rump of RQuantLib.cc, renamed
+	
 2003-07-31  Dirk Eddelbuettel  <edd@debian.org>
 
 	* Release 0.1.6

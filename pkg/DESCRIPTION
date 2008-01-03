@@ -1,6 +1,6 @@
 Package: RQuantLib
 Title: R interface to the QuantLib libraries
-Version: 0.1.13
+Version: 0.1.14
 Date: $Date: 2005/08/06 21:06:16 $
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Author: Dirk Eddelbuettel <edd@debian.org> for the R interface, the QuantLib
@@ -22,4 +22,4 @@ SystemRequirements: QuantLib library from http://quantlib.org, Boost library
 License: GPL Version 2 or later for RQuantLib; QuantLib itself is released
         under an Open Source license as well
 URL: http://quantlib.org http://dirk.eddelbuettel.com/code/rquantlib.html
-Packaged: Sat Aug  6 21:11:11 2005; edd
+Packaged: Fri Sep  9 22:39:01 2005; dsamperi

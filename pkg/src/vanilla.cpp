@@ -21,8 +21,7 @@
 // MA 02111-1307, USA
 
 // NB can be build standalone as   PKG_LIBS=-lQuantLib R CMD SHLIB RQuantLib.cc
-
-#include <ql/quantlib.hpp>	// make QuantLib known
+//#include "stdafx.h"
 
 // #include <ql/Instruments/vanillaoption.hpp>
 // #include <ql/TermStructures/flatforward.hpp>
@@ -31,13 +30,9 @@
 
 // #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 
-using namespace QuantLib;
+#include "rquantlib.hpp"
 
-extern "C" {
-
-#include "rquantlib.h"
-
-  SEXP QL_EuropeanOption(SEXP optionParameters) {
+RQLExport  SEXP QL_EuropeanOption(SEXP optionParameters) {
 
     const int nret = 8;		// dimension of return list
 
@@ -109,9 +104,9 @@ extern "C" {
 
     UNPROTECT(2);
     return(rl);
-  }
+}
 
-  SEXP QL_AmericanOption(SEXP optionParameters) {
+RQLExport  SEXP QL_AmericanOption(SEXP optionParameters) {
 
     const int nret = 8;		// dimension of return list
 
@@ -194,6 +189,4 @@ extern "C" {
 
     UNPROTECT(2);
     return(rl);
-  }
- 
 }

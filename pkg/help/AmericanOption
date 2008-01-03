@@ -1,0 +1,109 @@
+AmericanOption           package:RQuantLib           R Documentation
+
+_A_m_e_r_i_c_a_n _O_p_t_i_o_n _e_v_a_l_u_a_t_i_o_n _u_s_i_n_g _F_i_n_i_t_e _D_i_f_f_e_r_e_n_c_e_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     This function evaluations an American-style option on a common
+     stock using finite differences. The option value as well as the
+     common first derivatives (\"Greeks\") are returned.
+
+_U_s_a_g_e:
+
+     AmericanOption.default(type, underlying, strike, dividendYield, riskFreeRate,
+     maturity, volatility, timeSteps=150, gridPoints=151)
+
+     ## S3 method for class 'Option':
+     print
+     ## S3 method for class 'Option':
+     summary
+
+_A_r_g_u_m_e_n_t_s:
+
+    type: A string with one of the values 'call' or 'put'
+
+underlying: Current price of the underlying stock
+
+  strike: Strike price of the option
+
+dividendYield: Continuous dividend yield (as a fraction) of the stock
+
+riskFreeRate: Risk-free rate
+
+maturity: Time to maturity (in fractional years)
+
+volatility: Volatility of the underlying stock
+
+timeSteps: Time steps for the Finite Differences method, default value
+          is 150
+
+gridPoints: Grid points for the Finite Differences method, default
+          value is 151
+
+_D_e_t_a_i_l_s:
+
+     The Finite Differences method is used to value the American
+     Option.
+
+     Please see any decent Finance textbook for background reading, and
+     the 'QuantLib' documentation for details on the 'QuantLib'
+     implementation.
+
+_V_a_l_u_e:
+
+     An object of class 'AmericanOption' (which inherits from class
+     'Option') is returned. It contains a list with the following
+     components:  
+
+   value: Value of option
+
+   delta: Sensitivity of the option value for a change in the
+          underlying
+
+   gamma: Sensitivity of the option delta for a change in the
+          underlying
+
+    vega: Sensitivity of the option value for a change in the
+          underlying's volatility
+
+   theta: Sensitivity of the option value for a change in t, the
+          remaining time to maturity
+
+     rho: Sensitivity of the option value for a change in the risk-free
+          interest rate
+
+dividendRho: Sensitivity of the option value for a change in the
+          dividend yield
+
+parameters: List with parameters with which object was created
+
+
+     Note that under the new pricing framework used in QuantLib, binary
+     pricers do not provide analytics for 'Greeks'. This is expected to
+     be addressed in future releases of QuantLib.
+
+_N_o_t_e:
+
+     The interface might change in future release as 'QuantLib'
+     stabilises its own API.
+
+_A_u_t_h_o_r(_s):
+
+     Dirk Eddelbuettel edd@debian.org for the R interface; the QuantLib
+     Group for 'QuantLib'
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     <URL: http://quantlib.org> for details on 'QuantLib'.
+
+_S_e_e _A_l_s_o:
+
+     'EuropeanOption'
+
+_E_x_a_m_p_l_e_s:
+
+     # simple call with unnamed parameters
+     AmericanOption("call", 100, 100, 0.02, 0.03, 0.5, 0.4)
+     # simple call with some explicit parameters
+     AmericanOption("put", strike=100, volatility=0.4, 100, 0.02, 0.03, 0.5)
+

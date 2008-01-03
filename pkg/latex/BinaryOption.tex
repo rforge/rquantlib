@@ -1,0 +1,77 @@
+\HeaderA{BinaryOption}{Binary Option evaluation using Closed-Form solution}{BinaryOption}
+\methaliasA{BinaryOption.default}{BinaryOption}{BinaryOption.default}
+\keyword{misc}{BinaryOption}
+\begin{Description}\relax
+This function evaluations an Binary option on a common stock
+using a closed-form solution. The option value as well as the common first
+derivatives (\"Greeks\") are returned.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+BinaryOption.default(type, underlying, strike, dividendYield, riskFreeRate,
+maturity, volatility, cashPayoff)
+
+## S3 method for class 'Option':
+print
+## S3 method for class 'Option':
+summary
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{type}] A string with one of the values \code{call} or \code{put}
+\item[\code{underlying}] Current price of the underlying stock
+\item[\code{strike}] Strike price of the option
+\item[\code{dividendYield}] Continuous dividend yield (as a fraction) of the stock
+\item[\code{riskFreeRate}] Risk-free rate
+\item[\code{maturity}] Time to maturity (in fractional years)
+\item[\code{volatility}] Volatility of the underlying stock
+\item[\code{cashPayoff}] Payout amount
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+A closed-form solution is used to value the Binary Option.
+
+Please see any decent Finance textbook for background reading, and
+the \code{QuantLib} documentation for details on the \code{QuantLib}
+implementation.
+\end{Details}
+\begin{Value}
+An object of class \code{BinaryOption} (which inherits from class
+\code{\LinkA{Option}{Option}}) is returned. It contains a list with the
+following components: 
+\begin{ldescription}
+\item[\code{value}] Value of option
+\item[\code{delta}] Sensitivity of the option value for a change in the underlying
+\item[\code{gamma}] Sensitivity of the option delta for a change in the underlying
+\item[\code{vega}] Sensitivity of the option value for a change in the
+underlying's volatility
+\item[\code{theta}] Sensitivity of the option value for a change in t, the
+remaining time to maturity
+\item[\code{rho}] Sensitivity of the option value for a change in the
+risk-free interest rate
+\item[\code{dividendRho}] Sensitivity of the option value for a change in the
+dividend yield
+\item[\code{parameters}] List with parameters with which object was created
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+The interface might change in future release as \code{QuantLib}
+stabilises its own API.
+\end{Note}
+\begin{Author}\relax
+Dirk Eddelbuettel \email{edd@debian.org} for the \R{} interface;
+the QuantLib Group for \code{QuantLib}
+\end{Author}
+\begin{References}\relax
+\url{http://quantlib.org} for details on \code{QuantLib}.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{AmericanOption}{AmericanOption}},\code{\LinkA{EuropeanOption}{EuropeanOption}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+BinaryOption("call", 100, 100, 0.02, 0.03, 0.5, 0.4, 10)
+\end{ExampleCode}
+\end{Examples}
+

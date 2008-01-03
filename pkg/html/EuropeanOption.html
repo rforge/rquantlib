@@ -1,0 +1,159 @@
+<html><head><title>R: European Option evaluation using Closed-Form solution</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for EuropeanOption {RQuantLib}"><tr><td>EuropeanOption {RQuantLib}</td><td align="right">R Documentation</td></tr></table>
+<h2>European Option evaluation using Closed-Form solution</h2>
+
+
+<h3>Description</h3>
+
+<p>
+The <code>EuropeanOption</code> function evaluations an European-style
+option on a common stock using the Black-Scholes-Merton solution. The
+option value, the common first derivatives ("Greeks") as well as the
+calling parameters are returned.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+EuropeanOption.default(type, underlying, strike, dividendYield, riskFreeRate, maturity, volatility)
+
+## S3 method for class 'Option':
+plot
+## S3 method for class 'Option':
+print
+## S3 method for class 'Option':
+summary
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>type</code></td>
+<td>
+A string with one of the values <code>call</code> or <code>put</code></td></tr>
+<tr valign="top"><td><code>underlying</code></td>
+<td>
+Current price of the underlying stock</td></tr>
+<tr valign="top"><td><code>strike</code></td>
+<td>
+Strike price of the option</td></tr>
+<tr valign="top"><td><code>dividendYield</code></td>
+<td>
+Continuous dividend yield (as a fraction) of the stock</td></tr>
+<tr valign="top"><td><code>riskFreeRate</code></td>
+<td>
+Risk-free rate</td></tr>
+<tr valign="top"><td><code>maturity</code></td>
+<td>
+Time to maturity (in fractional years)</td></tr>
+<tr valign="top"><td><code>volatility</code></td>
+<td>
+Volatility of the underlying stock</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+The well-known closed-form solution derived by Black, Scholes and
+Merton is used for valuation. Implied volatilities are calculated
+numerically.
+</p>
+<p>
+Please see any decent Finance textbook for background reading, and the
+<code>QuantLib</code> documentation for details on the <code>QuantLib</code>
+implementation.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+The <code>EuropeanOption</code> function returns an object of class
+<code>EuropeanOption</code> (which inherits from class 
+<code><a href="Option.html">Option</a></code>). It contains a list with the following
+components:
+</p>
+<table summary="R argblock">
+<tr valign="top"><td><code>value</code></td>
+<td>
+Value of option</td></tr>
+<tr valign="top"><td><code>delta</code></td>
+<td>
+Sensitivity of the option value for a change in the underlying</td></tr>
+<tr valign="top"><td><code>gamma</code></td>
+<td>
+Sensitivity of the option delta for a change in the underlying</td></tr>
+<tr valign="top"><td><code>vega</code></td>
+<td>
+Sensitivity of the option value for a change in the
+underlying's volatility</td></tr>
+<tr valign="top"><td><code>theta</code></td>
+<td>
+Sensitivity of the option value for a change in t, the
+remaining time to maturity</td></tr>
+<tr valign="top"><td><code>rho</code></td>
+<td>
+Sensitivity of the option value for a change in the
+risk-free interest rate</td></tr>
+<tr valign="top"><td><code>dividendRho</code></td>
+<td>
+Sensitivity of the option value for a change in the
+dividend yield</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+List with parameters with which object was created</td></tr>
+</table>
+
+<h3>Note</h3>
+
+<p>
+The interface might change in future release as <code>QuantLib</code>
+stabilises its own API.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Dirk Eddelbuettel <a href="mailto:edd@debian.org">edd@debian.org</a> for the <font face="Courier New,Courier" color="#666666"><b>R</b></font> interface;
+the QuantLib Group for <code>QuantLib</code>
+</p>
+
+
+<h3>References</h3>
+
+<p>
+<a href="http://quantlib.org">http://quantlib.org</a> for details on <code>QuantLib</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="EuropeanOptionImpliedVolatility.html">EuropeanOptionImpliedVolatility</a></code>,
+<code><a href="EuropeanOptionArrays.html">EuropeanOptionArrays</a></code>,
+<code><a href="AmericanOption.html">AmericanOption</a></code>,<code><a href="BinaryOption.html">BinaryOption</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# simple call with unnamed parameters
+EuropeanOption("call", 100, 100, 0.01, 0.03, 0.5, 0.4)
+# simple call with some explicit parameters, and slightly increased vol:
+EuropeanOption(type="call", underlying=100, strike=100, dividendYield=0.01, 
+riskFreeRate=0.03, maturity=0.5, volatility=0.5)
+</pre>
+
+
+
+<hr><div align="center">[Package <em>RQuantLib</em> version 0.1.14 <a href="00Index.html">Index]</a></div>
+
+</body></html>
