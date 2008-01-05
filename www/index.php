@@ -43,9 +43,9 @@ echo $contents; } ?>
 
 <!-- end of project description -->
 
-<p> No content added. </p>
-
-<p> The <strong>project summary page</strong> you can find <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/"><strong>here</strong></a>. </p>
-
+<p> You can visit <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/"><strong>R-Forge project summary page for RQuantLib</strong></a>, 
+or the <a href="http://dirk.eddelbuettel.com/code/rquantlib.html"><strong>main RQuantLib page at Dirk's site</strong></a> 
+which also hosts this <a href="http://dirk.eddelbuettel.com/code/rquantlib-rgl.html"><strong>little R / OpenGL demo</strong></a>
+to visualize derivative 'greeks'.
 </body>
 </html>
