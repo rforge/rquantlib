@@ -12,9 +12,11 @@
 
 if (require("RUnit", quietly=TRUE)) {
 
-    wd <- getwd()
-    pkg <- sub("\\.Rcheck$", '', basename(dirname(wd))) 	# sub out trailing .Rcheck
-    pkg <- gsub("[0-9.-]*$", '', pkg)				# sub out -0.1.2 number
+    #wd <- getwd()
+    #pkg <- sub("\\.Rcheck$", '', basename(dirname(wd))) 	# sub out trailing .Rcheck
+    #pkg <- gsub("[0-9.-]*$", '', pkg)				# sub out -0.1.2 number
+
+    pkg <- "RQuantLib"						# cannot read from current dir in SVN tree
 
     library(package=pkg, character.only=TRUE)
 
