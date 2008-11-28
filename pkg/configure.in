@@ -12,7 +12,7 @@ AC_PREREQ(2.50)
 
 # Process this file with autoconf to produce a configure script.
 # AC_INIT(src/RQuantLib.cc)
-AC_INIT(RQuantlib, 0.2.9)
+AC_INIT(RQuantlib, 0.2.10)
 
 # We are using C++
 AC_LANG(C++)
@@ -45,27 +45,47 @@ fi
 AC_DEFUN(AC_PROG_QUANTLIB, [AC_CHECK_PROG(QUANTLIB,quantlib-config,yes)])
 # and use it
 AC_PROG_QUANTLIB
+AC_MSG_CHECKING([for QuantLib])
 if test x"${QUANTLIB}" == x"yes" ; then
-    #echo "*** Found quantlib-config, using it for header and lib flags"
+    AC_MSG_RESULT([yes])    
+    # use quantlib-config for QL settings
     pkg_cxxflags=`quantlib-config --cflags`
     pkg_libs=`quantlib-config --libs`
     pkg_version=`quantlib-config --version`
-    AC_SUBST([CXXFLAGS],["${CXXFLAGS} -DUSING_QUANTLIB"])
+    # now use all these
+    AC_SUBST([CXXFLAGS],["${CXXFLAGS} "])
     AC_SUBST([CXXFLAGS],["${CXXFLAGS} $pkg_cxxflags"])
-    AC_SUBST([CXXFLAGS],["${CXXFLAGS} -I../RcppSrc"])
-    AC_SUBST([LDFLAGS],["${LDFLAGS} -L../RcppSrc -lRcpp"])
     AC_SUBST([LDFLAGS],["${LDFLAGS} $pkg_libs"])
-    echo "Building libRcpp.a in RcppSrc..."
-    cd RcppSrc
-    make RHOME=${R_HOME} CPPFLAGS="-DUSING_QUANTLIB $pkg_cxxflags"
-    cd ..
-    cp RcppSrc/Rcpp-license.txt inst
 else
+    AC_MSG_RESULT([no])    
     echo "
   Your installation does not appear to have QuantLib installed as the
   quantlib-config utility script could not be found. 
 
   Please make sure that QuantLib is installed before building RQuantLib.
+"
+    exit 1
+fi
+
+## similarly, look for Rscript
+AC_DEFUN(AC_PROG_RSCRIPT, [AC_CHECK_PROG(RSCRIPT,Rscript,yes)])
+AC_PROG_RSCRIPT
+AC_MSG_CHECKING([for Rscript])
+if test x"${RSCRIPT}" == x"yes" ; then
+    AC_MSG_RESULT([yes])    
+    # now Rcpp compile flag providing header directory containing Rcpp.h
+    rcpp_cxxflags=`Rscript -e 'cat(Rcpp:::RcppCxxFlags())'`
+    # link flag providing libary as well as path to library, and optionally rpath
+    rcpp_ldflags=`Rscript -e 'cat(Rcpp:::RcppLdFlags())'`
+    # now use all these
+    AC_SUBST([CXXFLAGS],["${CXXFLAGS} $rcpp_cxxflags"])
+    AC_SUBST([LDFLAGS],["${LDFLAGS} $rcpp_ldflags"])
+else
+    AC_MSG_RESULT([no])    
+    echo "
+  Your installation does not appear to have Rscript installed.
+
+  Please make sure that you have a working and complete R installation.
 "
     exit 1
 fi
