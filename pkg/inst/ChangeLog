@@ -1,8 +1,9 @@
-2008-12-02  Dirk Eddelbuettel  <edd@debian.org>
+2008-12-04  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Release 0.2.10, updated for QL 0.9.7 and Rcpp 0.6.1
 	* configure.in: Updated for new scheme of external Rcpp package,
-	  added explicit check for Rscript, added some more messages
+	  added explicit check for Rscript, added some more messages, make
+	  sure Rscript is looked for inside R_HOME as well
 
 	* RcppSrc/: removed, we now use Rcpp (>= 0.6.1)
 	* configure.win: Just check for QUANTLIB_ROOT variable, no more
