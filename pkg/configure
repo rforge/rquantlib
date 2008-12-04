@@ -621,8 +621,9 @@ ac_ct_CXX
 EXEEXT
 OBJEXT
 CXXCPP
-QUANTLIB
+R
 RSCRIPT
+QUANTLIB
 LIBOBJS
 LTLIBOBJS'
 ac_subst_files=''
@@ -1659,7 +1660,6 @@ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
-# autoconf2.13: AC_LANG_CPLUSPLUS
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2497,15 +2497,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
-# Next segment by Kurt
-: ${R_HOME=`R RHOME`}
-if test -z "${R_HOME}"; then
-    echo "could not determine R_HOME"
-    exit 1
-fi
-CXX=`${R_HOME}/bin/R CMD config CXX`
-CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
-
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2884,19 +2875,16 @@ echo "$as_me: error: Please use a different compiler." >&2;}
     esac
 fi
 
-# borrowed from a check for gnome in GNU gretl
-# define a check for quantlib-config
 
-# and use it
-# Extract the first word of "quantlib-config", so it can be a program name with args.
-set dummy quantlib-config; ac_word=$2
+# Extract the first word of "R", so it can be a program name with args.
+set dummy R; ac_word=$2
 { echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
-if test "${ac_cv_prog_QUANTLIB+set}" = set; then
+if test "${ac_cv_prog_R+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  if test -n "$QUANTLIB"; then
-  ac_cv_prog_QUANTLIB="$QUANTLIB" # Let the user override the test.
+  if test -n "$R"; then
+  ac_cv_prog_R="$R" # Let the user override the test.
 else
 as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
 for as_dir in $PATH
@@ -2905,7 +2893,7 @@ do
   test -z "$as_dir" && as_dir=.
   for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_QUANTLIB="yes"
+    ac_cv_prog_R="yes"
     echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
@@ -2915,45 +2903,28 @@ IFS=$as_save_IFS
 
 fi
 fi
-QUANTLIB=$ac_cv_prog_QUANTLIB
-if test -n "$QUANTLIB"; then
-  { echo "$as_me:$LINENO: result: $QUANTLIB" >&5
-echo "${ECHO_T}$QUANTLIB" >&6; }
+R=$ac_cv_prog_R
+if test -n "$R"; then
+  { echo "$as_me:$LINENO: result: $R" >&5
+echo "${ECHO_T}$R" >&6; }
 else
   { echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6; }
 fi
 
 
-{ echo "$as_me:$LINENO: checking for QuantLib" >&5
-echo $ECHO_N "checking for QuantLib... $ECHO_C" >&6; }
-if test x"${QUANTLIB}" == x"yes" ; then
-    { echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6; }
-    # use quantlib-config for QL settings
-    pkg_cxxflags=`quantlib-config --cflags`
-    pkg_libs=`quantlib-config --libs`
-    pkg_version=`quantlib-config --version`
-    # now use all these
-    CXXFLAGS="${CXXFLAGS} "
 
-    CXXFLAGS="${CXXFLAGS} $pkg_cxxflags"
-
-    LDFLAGS="${LDFLAGS} $pkg_libs"
-
-else
-    { echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6; }
-    echo "
-  Your installation does not appear to have QuantLib installed as the
-  quantlib-config utility script could not be found.
-
-  Please make sure that QuantLib is installed before building RQuantLib.
-"
-    exit 1
+# Next segment by Kurt
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+    { { echo "$as_me:$LINENO: error: Could not determine R_HOME." >&5
+echo "$as_me: error: Could not determine R_HOME." >&2;}
+   { (exit 1); exit 1; }; }
 fi
+CXX=`${R_HOME}/bin/R CMD config CXX`
+CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 
-## similarly, look for Rscript
+## look for Rscript, but use the one found via R_HOME to allow for multiple installations
 
 # Extract the first word of "Rscript", so it can be a program name with args.
 set dummy Rscript; ac_word=$2
@@ -2992,29 +2963,95 @@ echo "${ECHO_T}no" >&6; }
 fi
 
 
-{ echo "$as_me:$LINENO: checking for Rscript" >&5
-echo $ECHO_N "checking for Rscript... $ECHO_C" >&6; }
+#AC_MSG_CHECKING([for Rscript])
 if test x"${RSCRIPT}" == x"yes" ; then
-    { echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6; }
-    # now Rcpp compile flag providing header directory containing Rcpp.h
-    rcpp_cxxflags=`Rscript -e 'cat(Rcpp:::RcppCxxFlags())'`
-    # link flag providing libary as well as path to library, and optionally rpath
-    rcpp_ldflags=`Rscript -e 'cat(Rcpp:::RcppLdFlags())'`
-    # now use all these
-    CXXFLAGS="${CXXFLAGS} $rcpp_cxxflags"
+#     AC_MSG_RESULT([yes])
+     ## Rcpp compile flag providing header directory containing Rcpp.h
+     rcpp_cxxflags=`${R_HOME}/bin/Rscript -e 'cat(Rcpp:::RcppCxxFlags())'`
+     ## link flag providing libary as well as path to library, and optionally rpath
+     rcpp_ldflags=`${R_HOME}/bin/Rscript -e 'cat(Rcpp:::RcppLdFlags())'`
+     ## now use all these
+     CXXFLAGS="${CXXFLAGS} $rcpp_cxxflags"
 
-    LDFLAGS="${LDFLAGS} $rcpp_ldflags"
+     LDFLAGS="${LDFLAGS} $rcpp_ldflags"
 
 else
-    { echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6; }
+#    AC_MSG_RESULT([no])
     echo "
   Your installation does not appear to have Rscript installed.
 
   Please make sure that you have a working and complete R installation.
 "
     exit 1
+fi
+
+# borrowed from a check for gnome in GNU gretl: define a check for quantlib-config
+
+# Extract the first word of "quantlib-config", so it can be a program name with args.
+set dummy quantlib-config; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_prog_QUANTLIB+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$QUANTLIB"; then
+  ac_cv_prog_QUANTLIB="$QUANTLIB" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_QUANTLIB="yes"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+fi
+fi
+QUANTLIB=$ac_cv_prog_QUANTLIB
+if test -n "$QUANTLIB"; then
+  { echo "$as_me:$LINENO: result: $QUANTLIB" >&5
+echo "${ECHO_T}$QUANTLIB" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+if test x"${QUANTLIB}" == x"yes" ; then
+    # use quantlib-config for QL settings
+    pkg_cxxflags=`quantlib-config --cflags`
+    pkg_libs=`quantlib-config --libs`
+    pkg_version=`quantlib-config --version`
+
+    # also test for quantlib version using result from quantlib-config --version
+    case ${pkg_version} in
+    0.1.*|0.2.*|0.3.*|0.4.*|0.8.*|0.9.0|0.9.5)
+	{ echo "$as_me:$LINENO: WARNING: RQuantLib requires QuantLib (>= 0.9.6)." >&5
+echo "$as_me: WARNING: RQuantLib requires QuantLib (>= 0.9.6)." >&2;}
+	{ { echo "$as_me:$LINENO: error: Please upgrade to a more recent version." >&5
+echo "$as_me: error: Please upgrade to a more recent version." >&2;}
+   { (exit 1); exit 1; }; }
+	;;
+    esac
+
+    # now use all these
+    CXXFLAGS="${CXXFLAGS} "
+
+    CXXFLAGS="${CXXFLAGS} $pkg_cxxflags"
+
+    LDFLAGS="${LDFLAGS} $pkg_libs"
+
+else
+    { { echo "$as_me:$LINENO: error: Please install QuantLib before trying to build RQuantLib." >&5
+echo "$as_me: error: Please install QuantLib before trying to build RQuantLib." >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 ## check for boost, this segment as well as segment below are
@@ -3115,8 +3152,8 @@ fi
 
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
-{ echo "$as_me:$LINENO: checking Boost version" >&5
-echo $ECHO_N "checking Boost version... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking for minimal Boost version" >&5
+echo $ECHO_N "checking for minimal Boost version... $ECHO_C" >&6; }
 
  cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
@@ -3172,17 +3209,6 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
 
 
-
-# also test for quantlib version using result from quantlib-config --version
-case ${pkg_version} in
-     0.1.*|0.2.*|0.3.*|0.4.*|0.8.*|0.9.0|0.9.5)
-	 { echo "$as_me:$LINENO: WARNING: RQuantLib requires QuantLib (>= 0.9.6)." >&5
-echo "$as_me: WARNING: RQuantLib requires QuantLib (>= 0.9.6)." >&2;}
-	 { { echo "$as_me:$LINENO: error: Please upgrade to a more recent version." >&5
-echo "$as_me: error: Please upgrade to a more recent version." >&2;}
-   { (exit 1); exit 1; }; }
-     ;;
-esac
 
 
 
@@ -3861,13 +3887,14 @@ ac_ct_CXX!$ac_ct_CXX$ac_delim
 EXEEXT!$EXEEXT$ac_delim
 OBJEXT!$OBJEXT$ac_delim
 CXXCPP!$CXXCPP$ac_delim
-QUANTLIB!$QUANTLIB$ac_delim
+R!$R$ac_delim
 RSCRIPT!$RSCRIPT$ac_delim
+QUANTLIB!$QUANTLIB$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 49; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 50; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
