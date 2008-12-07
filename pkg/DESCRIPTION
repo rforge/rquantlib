@@ -3,7 +3,7 @@ Title: R interface to the QuantLib library
 Version: 0.2.10
 Date: $Date$
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
-Author: Dirk Eddelbuettel <edd@debian.org> with contributions from Dominick Samperi 
+Author: Dirk Eddelbuettel <edd@debian.org> 
 Description: The RQuantLib package makes selected parts of QuantLib 
  visible to the R user. Currently some basic option pricing 
  functions are included, as well as fixed-income functions that 
