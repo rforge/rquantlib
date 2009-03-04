@@ -1,6 +1,6 @@
 // RQuantLib helper functions for term structure construction
 //
-// Copyright (C) 2005 - 2006 Dominick Samperi
+// Copyright (C) 2005 - 2007 Dominick Samperi
 // Copyright (C) 2007 - 2009 Dirk Eddelbuettel <edd@debian.org>
 //
 // $Id$
