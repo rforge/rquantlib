@@ -6,7 +6,7 @@
 \description{
   The \code{EuropeanOption} function evaluations an European-style
   option on a common stock using the Black-Scholes-Merton solution. The
-  option value, the common first derivatives (\"Greeks\") as well as the
+  option value, the common first derivatives ("Greeks") as well as the
   calling parameters are returned.
 }
 \usage{
