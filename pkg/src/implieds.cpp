@@ -62,15 +62,12 @@ RcppExport  SEXP QL_EuropeanOptionImpliedVolatility(SEXP optionParameters) {
         // updated for 0.3.7
         DayCounter dc = Actual360();
 
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        spot->setValue(underlying);
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(underlying));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(volatility));
         boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        qRate->setValue(dividendYield);
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(dividendYield));
         boost::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        rRate->setValue(riskFreeRate);
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
         boost::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
         Date exDate = today + length;
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -138,12 +135,12 @@ RcppExport  SEXP QL_AmericanOptionImpliedVolatility(SEXP optionParameters) {
 
         // new framework as per QuantLib 0.3.5
         DayCounter dc = Actual360();
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(underlying));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(volguess));
         boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol,dc);
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(dividendYield));
         boost::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
         boost::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
 
         Date exDate = today + length;
@@ -151,11 +148,6 @@ RcppExport  SEXP QL_AmericanOptionImpliedVolatility(SEXP optionParameters) {
         boost::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
         boost::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionType, strike));
         boost::shared_ptr<VanillaOption> option = makeOption(payoff, exercise, spot, qTS, rTS, volTS, JR);
-
-        spot->setValue(underlying);
-        qRate->setValue(dividendYield);
-        rRate->setValue(riskFreeRate);
-        vol->setValue(volguess);
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> process = makeProcess(spot, qTS, rTS,volTS);
 

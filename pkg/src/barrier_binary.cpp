@@ -61,12 +61,12 @@ RcppExport  SEXP QL_BinaryOption(SEXP optionParameters) {
         // cf QuantLib-0.9.0/test-suite/digitaloption.cpp
         Date today = Date::todaysDate();
         DayCounter dc = Actual360();
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(underlying));
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(dividendYield));
         boost::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
         boost::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(volatility));
         boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
         boost::shared_ptr<StrikedTypePayoff> payoff;
@@ -94,11 +94,6 @@ RcppExport  SEXP QL_BinaryOption(SEXP optionParameters) {
         } else {
             throw std::range_error("Unknown binary exercise type " + excType);
         }
-
-        spot->setValue(underlying);
-        qRate->setValue(dividendYield);
-        rRate->setValue(riskFreeRate);
-        vol  ->setValue(volatility);
 
         boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new 
               BlackScholesMertonProcess(Handle<Quote>(spot),
@@ -185,12 +180,12 @@ RcppExport  SEXP QL_BinaryOptionImpliedVolatility(SEXP optionParameters) {
         // cf QuantLib-0.9.0/test-suite/digitaloption.cpp
         Date today = Date::todaysDate();
         DayCounter dc = Actual360();
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(underlying));
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(dividendYield));
         boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
         boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(volatility));
         boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
         boost::shared_ptr<StrikedTypePayoff> 
@@ -198,11 +193,6 @@ RcppExport  SEXP QL_BinaryOptionImpliedVolatility(SEXP optionParameters) {
 
         Date exDate = today + length;
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-
-        spot->setValue(underlying);
-        qRate->setValue(dividendYield);
-        rRate->setValue(riskFreeRate);
-        vol  ->setValue(volatility);
 
         boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new 
                BlackScholesMertonProcess(Handle<Quote>(spot),
@@ -280,22 +270,17 @@ RcppExport  SEXP QL_BarrierOption(SEXP optionParameters) {
         // cf QuantLib-0.9.0/test-suite/barrieroption.cpp
         Date today = Date::todaysDate();
         DayCounter dc = Actual360();
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(underlying));
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(dividendYield));
         boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
         boost::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(volatility));
         boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
         Date exDate = today + length;
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         
-        spot ->setValue(underlying);
-        qRate->setValue(dividendYield);
-        rRate->setValue(riskFreeRate);
-        vol  ->setValue(volatility);
-
         boost::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionType, strike));
 
         boost::shared_ptr<BlackScholesMertonProcess> 
