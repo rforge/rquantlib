@@ -59,3 +59,6 @@ print(BinaryOption(binType="cash", type="put", excType="european",
                    strike=80, underl=100, div=0.06, r=0.06,
                    mat=0.75, vol=0.35, cash=10), digits=4)
 
+## asianoption.cpp:  put == 4.6922 (from testAnalyticContinuousGeometricAveragePrice())
+print( AsianOption("geometric", "put", underlying=80, strike=85, div=-0.03, riskFree=0.05, maturity=0.25, vol=0.2))
+
