@@ -1,3 +1,10 @@
+2009-03-30  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/{barrier_binary,implied,vanilla}.cpp: More direct
+	  initialization of option parameters
+
+	* man/*.Rd: Corrected use of quoted which do not need escapes
+
 2009-03-03  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Release 0.2.11, updated for Rcpp 0.6.4
