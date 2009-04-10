@@ -20,7 +20,7 @@
 ## Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ## MA 02111-1307, USA
 
-businessDay <- function(calendar, dates) {
+businessDay <- function(calendar="TARGET", dates=Sys.Date()) {
     stopifnot(is.character(calendar))
     stopifnot(class(dates)=="Date")
     val <- .Call("QL_isBusinessDay",
