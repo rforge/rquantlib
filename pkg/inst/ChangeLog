@@ -3,7 +3,7 @@
 	* src/{barrier_binary,implied,vanilla}.cpp: More direct
 	  initialization of option parameters
 
-	* man/*.Rd: Corrected use of quoted which do not need escapes
+	* man/*.Rd: Corrected use of quotes which do not need escapes
 
 2009-03-03  Dirk Eddelbuettel  <edd@debian.org>
 
