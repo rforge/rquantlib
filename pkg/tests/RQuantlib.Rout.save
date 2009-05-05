@@ -116,11 +116,15 @@ Concise summary of valuation for BinaryOption
   value   delta   gamma    vega   theta     rho  divRho 
  2.6710 -0.1061  0.0031  8.1539 -1.7423 -9.9577  7.9545 
 > 
-> 
 > ## asianoption.cpp:  put == 4.6922 (from testAnalyticContinuousGeometricAveragePrice())
 > print( AsianOption("geometric", "put", underlying=80, strike=85, div=-0.03, riskFree=0.05, maturity=0.25, vol=0.2))
-Concise summary of valuation for AsianOption
-  value   delta   gamma    vega   theta     rho  divRho
- 4.6922 -0.8031  0.0594  6.8662  0.0580 -9.2039  8.0309
+Concise summary of valuation for AsianOption 
+  value   delta   gamma    vega   theta     rho  divRho 
+ 4.6922 -0.8031  0.0594  6.8662  0.0580 -9.2039  8.0309 
 > 
-> 
+> ## bond.cpp: The parameters are taken from test-suite/bond.cpp. Clean price = 88.55173
+> print( ZeroCouponBond(1, "us", 1000000, "30-11-2008", "ModifiedFollowing", 100, "30-11-2004", "22-11-2004", 0.03))
+Concise summary of valuation for ZeroCouponBond 
+clean price 
+    88.5517 
+>

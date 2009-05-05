@@ -25,8 +25,11 @@
 #define rquantlib_hpp
 
 #include <ql/quantlib.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 using namespace QuantLib;
+
 
 #include <R.h>
 #include <Rinternals.h>

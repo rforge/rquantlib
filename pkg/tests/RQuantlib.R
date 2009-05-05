@@ -62,3 +62,5 @@ print(BinaryOption(binType="cash", type="put", excType="european",
 ## asianoption.cpp:  put == 4.6922 (from testAnalyticContinuousGeometricAveragePrice())
 print( AsianOption("geometric", "put", underlying=80, strike=85, div=-0.03, riskFree=0.05, maturity=0.25, vol=0.2))
 
+## bond.cpp: The parameters are taken from test-suite/bond.cpp. Clean price = 88.55173
+print( ZeroCouponBond(1, "us", 1000000, "30-11-2008", "ModifiedFollowing", 100, "30-11-2004", "22-11-2004", 0.03))
