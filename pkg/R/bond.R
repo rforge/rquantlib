@@ -1,20 +1,48 @@
-ZeroCouponBond <- function(settlementDays, calendar, faceAmount, maturityDate,
-                           businessDayConvention, redemption, issueDate, 				todayDate,riskFreeRate ) {
+## RQuantLib -- R interface to the QuantLib libraries
+##
+## Copyright (C) 2002 - 2009 Dirk Eddelbuettel <edd@debian.org>
+## Copyright (C) 2009        Khanh Nguyen <knguyen@cs.umb.edu>
+##
+## $Id: asian.R 58 2009-03-31 03:50:44Z edd $
+##
+## This file is part of the RQuantLib library for GNU R.
+## It is made available under the terms of the GNU General Public
+## License, version 2, or at your option, any later version,
+## incorporated herein by reference.
+##
+## This program is distributed in the hope that it will be
+## useful, but WITHOUT ANY WARRANTY; without even the implied
+## warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+## PURPOSE.  See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public
+## License along with this program; if not, write to the Free
+## Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+## MA 02111-1307, USA
+
+ZeroCouponBond <- function(settlementDays, 
+	       	  	calendar, faceAmount,maturityDate,
+                        businessDayConvention,redemption, 
+			issueDate, todayDate,riskFreeRate ) {
     UseMethod("ZeroCouponBond")
 }
 
-ZeroCouponBond.default <- function(settlementDays, calendar, faceAmount, maturityDate,
-                           businessDayConvention, redemption, issueDate, 				todayDate,riskFreeRate ) {
+ZeroCouponBond.default <- function(settlementDays, 
+		       calendar, faceAmount, maturityDate,
+		       businessDayConvention, redemption, 
+		       issueDate, todayDate,riskFreeRate ) {
     val <- .Call("QL_ZeroCouponBond",
-                 list(settlementDays=as.double(settlementDays),
-                      calendar=as.character(calendar),
-			faceAmount = as.double(faceAmount), 
-			maturityDate=as.character(maturityDate),
-                         businessDayConvention=as.character(businessDayConvention), 
-			redemption= as.double(redemption), 
-			issueDate=as.character(issueDate), 
-			todayDate=as.character(todayDate),
-			riskFreeRate= as.double(riskFreeRate)),
+                     list(
+		     settlementDays=as.double(settlementDays),
+		     calendar=as.character(calendar),
+		     faceAmount = as.double(faceAmount),
+		     businessDayConvention=as.character(businessDayConvention),
+		     redemption= as.double(redemption),
+		     riskFreeRate= as.double(riskFreeRate),
+		     maturityDate = maturityDate,
+		     issueDate = issueDate,
+		     todayDate = todayDate),
                  PACKAGE="RQuantLib")
     class(val) <- c("ZeroCouponBond", "Bond")
     val
