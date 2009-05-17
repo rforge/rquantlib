@@ -21,31 +21,57 @@
 ## Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ## MA 02111-1307, USA
 
-ZeroCouponBond <- function(settlementDays, 
-	       	  	calendar, faceAmount,maturityDate,
-                        businessDayConvention,redemption, 
-			issueDate, todayDate,riskFreeRate ) {
+ZeroCouponBond <- function(settlementDays,calendar,
+                  faceAmount,maturityDate,
+                  businessDayConvention,redemption, 
+                  issueDate, todayDate,riskFreeRate ) {
     UseMethod("ZeroCouponBond")
 }
 
-ZeroCouponBond.default <- function(settlementDays, 
-		       calendar, faceAmount, maturityDate,
-		       businessDayConvention, redemption, 
-		       issueDate, todayDate,riskFreeRate ) {
+ZeroCouponBond.default <- function(settlementDays, calendar="us", 
+                       faceAmount, maturityDate,
+		               businessDayConvention=4, redemption, 
+                       issueDate, todayDate,riskFreeRate ) {
     val <- .Call("QL_ZeroCouponBond",
                      list(
-		     settlementDays=as.double(settlementDays),
-		     calendar=as.character(calendar),
-		     faceAmount = as.double(faceAmount),
-		     businessDayConvention=as.character(businessDayConvention),
-		     redemption= as.double(redemption),
-		     riskFreeRate= as.double(riskFreeRate),
-		     maturityDate = maturityDate,
-		     issueDate = issueDate,
-		     todayDate = todayDate),
+                          settlementDays=as.double(settlementDays),
+                          calendar=as.character(calendar),
+		                  faceAmount = as.double(faceAmount),
+		                  businessDayConvention=as.double(businessDayConvention),
+		                  redemption= as.double(redemption),
+		                  riskFreeRate= as.double(riskFreeRate),
+		                  maturityDate = maturityDate,
+		                  issueDate = issueDate,
+		                  todayDate = todayDate),
                  PACKAGE="RQuantLib")
     class(val) <- c("ZeroCouponBond", "Bond")
     val
+}
+
+ZeroYield <- function(price, faceAmount, 
+                      issueDate, maturityDate, 
+                      dayCounter, frequency, 
+                      compound,	businessDayConvention){
+	  UseMethod("ZeroYield")
+}
+ZeroYield.default <- function(price, faceAmount, 
+                              issueDate, maturityDate, 
+                              dayCounter=2, frequency=2, 
+                              compound=0, businessDayConvention=4){
+
+     val <- .Call("QL_ZeroYield",
+                     list(
+   		                  price=as.double(price),		     
+		                  faceAmount = as.double(faceAmount),
+		                  dayCounter = as.double(dayCounter),
+                          compound = as.double(compound), 
+                          businessDayConvention = as.double(businessDayConvention),
+		                  frequency = as.double(frequency),	     
+		                  maturityDate = maturityDate,
+		                  issueDate = issueDate),
+                 PACKAGE="RQuantLib")
+     class(val) <- c("ZeroYield", "Bond")
+     val
 }
 
 #I am not sure how to if these are correct. I just copy from asian.R

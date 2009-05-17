@@ -140,4 +140,38 @@ makeProcess(const boost::shared_ptr<Quote>& u,
 int dateFromR(const RcppDate &d) {
     return(d.getJDN() - RcppDate::Jan1970Offset + RcppDate::QLtoJan1970Offset);
 }
-
+DayCounter getDayCounter(double n){
+    if (n==0) return Actual360();
+    else if (n==1) return Actual365Fixed();
+    else if (n==2) return ActualActual();
+    else if (n==3) return Business252();
+    else if (n==4) return OneDayCounter();
+    else if (n==5) return SimpleDayCounter();
+    else  return Thirty360();
+}
+BusinessDayConvention getBusinessDayConvention(double n){
+    if (n==0) return Following;
+    else if (n==1) return ModifiedFollowing;
+    else if (n==2) return Preceding;
+    else if (n==3) return ModifiedPreceding;
+    else  return Unadjusted;
+}
+Compounding getCompounding(double n){
+    if (n==0) return Simple;
+    else if (n==1) return Compounded;
+    else if (n==2) return Continuous;
+    else return SimpleThenCompounded;
+}
+Frequency getFrequency(double n){
+    if (n==0) return NoFrequency;
+    else if (n==1) return Once;
+    else if (n==2) return Annual;
+    else if (n==3) return Semiannual;
+    else if (n==4) return EveryFourthMonth;
+    else if (n==5) return Quarterly;
+    else if (n==6) return Bimonthly;
+    else if (n==7) return EveryFourthWeek;
+    else if (n==8) return Biweekly;
+    else if (n==9) return Weekly;
+    else return Daily;
+}

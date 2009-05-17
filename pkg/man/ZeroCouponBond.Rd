@@ -52,7 +52,7 @@
 
 \examples{
 # simple call with unnamed parameters
-ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), "ModifiedFollowing", 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03)
+ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), 4 , 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03)
 }
 \keyword{misc}
 

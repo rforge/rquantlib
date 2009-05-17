@@ -14,13 +14,13 @@
 \method{summary}{Bond}
 }
 \arguments{
-  \item{Bond}{Any Bond object derived from this base class} 
+        \item{Bond}{Any Bond object derived from this base class} 
 }
 \value{
-  None, but side effects of displaying content.
+         None, but side effects of displaying content.
 }
 \details{
-  Please see any decent Finance textbook for background reading, and the
+         Please see any decent Finance textbook for background reading, and the
   \code{QuantLib} documentation for details on the \code{QuantLib}
   implementation.  
 }
@@ -31,6 +31,6 @@
   stabilises its own API.}
 
 \examples{
-ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), "ModifiedFollowing", 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03)}
+ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), 4, 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03)}
 \keyword{misc}
 

@@ -141,4 +141,9 @@ makeProcess(const boost::shared_ptr<Quote>& u,
 
 int dateFromR(const RcppDate &d);
 
+//utility functions for parameters of fixed-income instrument function
+Frequency getFrequency(double n);
+Compounding getCompounding(double n);
+BusinessDayConvention getBusinessDayConvention(double n);
+DayCounter getDayCounter(double n);
 #endif
