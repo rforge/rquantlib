@@ -349,7 +349,75 @@ RcppExport  SEXP QL_FixedRateBondYield(SEXP optionParameters, SEXP ratesVec) {
         
         
         RcppResultSet rs;
-        rs.add("yield", bond.cleanPrice(price, dc, cp, freq));
+        rs.add("yield", bond.yield(price, dc, cp, freq));
+        rl = rs.getReturnList();
+        
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}
+ 
+RcppExport  SEXP QL_FixedRateBondPriceByYield(SEXP optionParameters, SEXP ratesVec) {
+  
+    SEXP rl=R_NilValue;
+    char* exceptionMesg=NULL;
+    try{
+        RcppParams rparam(optionParameters);
+        double settlementDays = rparam.getDoubleValue("settlementDays");
+        std::string cal = rparam.getStringValue("calendar");
+        double yield = rparam.getDoubleValue("yield");
+        double faceAmount = rparam.getDoubleValue("faceAmount");
+        double businessDayConvention = rparam.getDoubleValue("businessDayConvention");
+        double compound = rparam.getDoubleValue("compound");
+        double redemption = rparam.getDoubleValue("redemption");
+        double dayCounter = rparam.getDoubleValue("dayCounter");
+        double frequency = rparam.getDoubleValue("period");
+        
+        RcppDate mDate = rparam.getDateValue("maturityDate");
+        RcppDate eDate = rparam.getDateValue("effectiveDate");
+        RcppDate iDate = rparam.getDateValue("issueDate");
+        QuantLib::Date maturityDate(dateFromR(mDate));
+        QuantLib::Date effectiveDate(dateFromR(eDate));
+        QuantLib::Date issueDate(dateFromR(iDate));
+        
+        //extract coupon rates vector
+        RcppVector<double> RcppVec(ratesVec); 
+        std::vector<double> rates(RcppVec.stlVector());
+        
+        //set up BusinessDayConvetion
+        BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
+        DayCounter dc = getDayCounter(dayCounter);
+        Frequency freq = getFrequency(frequency);
+        Compounding cp = getCompounding(compound);
+ 
+        //set up calendar
+        Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+        if (cal == "us"){
+            calendar = UnitedStates(UnitedStates::GovernmentBond);
+        }
+        else if (cal == "uk"){
+            calendar = UnitedKingdom(UnitedKingdom::Exchange);
+        }
+        
+        //build the bond
+        Schedule sch(effectiveDate, maturityDate,
+                     Period(freq), calendar,
+                     bdc, bdc, DateGeneration::Backward, false);
+        
+        FixedRateBond bond(settlementDays, faceAmount, sch,
+                           rates,dc, bdc, redemption, issueDate);
+        
+        
+        
+        RcppResultSet rs;
+        rs.add("cleanPrice", bond.cleanPrice(yield, dc, cp, freq));
         rl = rs.getReturnList();
         
     } catch(std::exception& ex) {
