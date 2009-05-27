@@ -30,19 +30,19 @@ ZeroCouponBond <- function(settlementDays,calendar,
 
 ZeroCouponBond.default <- function(settlementDays, calendar="us", 
                        faceAmount, maturityDate,
-		               businessDayConvention=4, redemption, 
+	               businessDayConvention=4, redemption, 
                        issueDate, todayDate,riskFreeRate ) {
     val <- .Call("QL_ZeroCouponBond",
                      list(
                           settlementDays=as.double(settlementDays),
                           calendar=as.character(calendar),
-		                  faceAmount = as.double(faceAmount),
-		                  businessDayConvention=as.double(businessDayConvention),
-		                  redemption= as.double(redemption),
-		                  riskFreeRate= as.double(riskFreeRate),
-		                  maturityDate = maturityDate,
-		                  issueDate = issueDate,
-		                  todayDate = todayDate),
+	                  faceAmount = as.double(faceAmount),
+	                  businessDayConvention=as.double(businessDayConvention),
+	                  redemption= as.double(redemption),
+	                  riskFreeRate= as.double(riskFreeRate),
+	                  maturityDate = maturityDate,
+	                  issueDate = issueDate,
+	                  todayDate = todayDate),
                  PACKAGE="RQuantLib")
     class(val) <- c("ZeroCouponBond", "Bond")
     val
@@ -72,6 +72,38 @@ ZeroYield.default <- function(price, faceAmount,
                  PACKAGE="RQuantLib")
      class(val) <- c("ZeroYield", "Bond")
      val
+}
+
+
+FixedRateBond <- function( settlementDays, faceAmount,
+                           effectiveDate, maturityDate, 
+                           period, calendar, rates,
+                           dayCounter, businessDayConvention, 
+                           redemption, issueDate, riskFreeRate, todayDate) {
+     UseMethod("FixedRateBond")
+}
+FixedRateBond.default <- function(settlementDays = 1, faceAmount,
+                                effectiveDate, maturityDate, 
+                                period, calendar = "us", rates,
+                                dayCounter=2, businessDayConvention=0, 
+                                redemption = 100, issueDate, riskFreeRate, todayDate) {
+     val <- .Call("QL_FixedRateBond",
+                    list(
+                         settlementDays=as.double(settlementDays),
+                         calendar=as.character(calendar),
+		         faceAmount = as.double(faceAmount),
+                         period = as.double(period),
+		         businessDayConvention=as.double(businessDayConvention),
+		         redemption= as.double(redemption),
+                         dayCounter = as.double(dayCounter),
+		         riskFreeRate= as.double(riskFreeRate),
+		         maturityDate = maturityDate,
+                         effectiveDate = effectiveDate,
+		         issueDate = issueDate,
+		         todayDate = todayDate), rates, 
+                 PACKAGE="RQuantLib")
+    class(val) <- c("FixedRateBond", "Bond")
+    val
 }
 
 #I am not sure how to if these are correct. I just copy from asian.R
