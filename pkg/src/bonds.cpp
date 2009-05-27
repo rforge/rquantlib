@@ -26,6 +26,53 @@
 using namespace boost;
 
 
+RcppExport  SEXP QL_ZeroPriceByYield(SEXP optionParameters) {
+    SEXP rl = R_NilValue;
+    char* exceptionMesg=NULL;
+    try{
+       RcppParams rparam(optionParameters);
+       double yield = rparam.getDoubleValue("yield");
+       double faceAmount = rparam.getDoubleValue("faceAmount");
+       double dayCounter = rparam.getDoubleValue("dayCounter");
+       double frequency = rparam.getDoubleValue("frequency");
+       double businessDayConvention = rparam.getDoubleValue("businessDayConvention");
+       double compound = rparam.getDoubleValue("compound");
+       RcppDate mDate = rparam.getDateValue("maturityDate");
+       RcppDate iDate = rparam.getDateValue("issueDate");
+       QuantLib::Date maturityDate(dateFromR(mDate));
+       QuantLib::Date issueDate(dateFromR(iDate));
+       //setup bond
+       QuantLib::Integer fixingDays = 2;
+       Calendar calendar=UnitedStates(UnitedStates::GovernmentBond);
+       Date todaysDate = calendar.advance(issueDate, -fixingDays, Days);
+       Settings::instance().evaluationDate() = todaysDate;
+       Natural settlementDays = 1;
+       
+       BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
+       double redemption = 100;
+       ZeroCouponBond zbond(settlementDays, calendar,
+                            faceAmount, maturityDate,
+                            bdc, redemption, issueDate);
+       
+       //return cleanPrice
+       RcppResultSet rs;
+       DayCounter dc = getDayCounter(dayCounter);
+       Compounding cp = getCompounding(compound);
+       Frequency freq = getFrequency(frequency);
+       rs.add("cleanPrice", zbond.cleanPrice(yield, dc, cp, freq));
+       rl = rs.getReturnList();
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}
+
 RcppExport  SEXP QL_ZeroYield(SEXP optionParameters) {
     SEXP rl = R_NilValue;
     char* exceptionMesg=NULL;
@@ -138,6 +185,7 @@ RcppExport  SEXP QL_ZeroCouponBond(SEXP optionParameters) {
         
         RcppResultSet rs;
         rs.add("cleanPrice", bond.cleanPrice());
+        rs.add("dirtyPrice", bond.dirtyPrice());
         rl = rs.getReturnList();
     } catch(std::exception& ex) {
         exceptionMesg = copyMessageToR(ex.what());
@@ -230,6 +278,7 @@ RcppExport  SEXP QL_FixedRateBond(SEXP optionParameters, SEXP ratesVec) {
         
         RcppResultSet rs;
         rs.add("cleanPrice", bond.cleanPrice());
+        rs.add("dirtyPrice", bond.dirtyPrice());
         rs.add("cashFlow", frame);
         rl = rs.getReturnList();
         

@@ -48,6 +48,33 @@ ZeroCouponBond.default <- function(settlementDays, calendar="us",
     val
 }
 
+ZeroPriceByYield <- function(yield, faceAmount,
+                      issueDate, maturityDate,
+                      dayCounter, frequency,
+                      compound, businessDayConvention){
+          UseMethod("ZeroPriceByYield")
+}
+
+ZeroPriceByYield.default <- function(yield, faceAmount, 
+                              issueDate, maturityDate, 
+                              dayCounter=2, frequency=2, 
+                              compound=0, businessDayConvention=4){
+
+     val <- .Call("QL_ZeroPriceByYield",
+                     list(
+   		          yield=as.double(yield),		     
+	                  faceAmount = as.double(faceAmount),
+	                  dayCounter = as.double(dayCounter),
+                          compound = as.double(compound), 
+                          businessDayConvention = as.double(businessDayConvention),
+	                  frequency = as.double(frequency),	     
+	                  maturityDate = maturityDate,
+	                  issueDate = issueDate),
+                 PACKAGE="RQuantLib")
+     class(val) <- c("ZeroPriceByYield", "Bond")
+     val
+}
+
 ZeroYield <- function(price, faceAmount, 
                       issueDate, maturityDate, 
                       dayCounter, frequency, 
@@ -61,14 +88,14 @@ ZeroYield.default <- function(price, faceAmount,
 
      val <- .Call("QL_ZeroYield",
                      list(
-   		                  price=as.double(price),		     
-		                  faceAmount = as.double(faceAmount),
-		                  dayCounter = as.double(dayCounter),
+   		          price=as.double(price),		     
+	                  faceAmount = as.double(faceAmount),
+	                  dayCounter = as.double(dayCounter),
                           compound = as.double(compound), 
                           businessDayConvention = as.double(businessDayConvention),
-		                  frequency = as.double(frequency),	     
-		                  maturityDate = maturityDate,
-		                  issueDate = issueDate),
+	                  frequency = as.double(frequency),	     
+	                  maturityDate = maturityDate,
+	                  issueDate = issueDate),
                  PACKAGE="RQuantLib")
      class(val) <- c("ZeroYield", "Bond")
      val

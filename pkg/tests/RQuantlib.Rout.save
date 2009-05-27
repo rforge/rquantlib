@@ -125,8 +125,8 @@ Concise summary of valuation for AsianOption
 > ## bond.cpp: The parameters are taken from test-suite/bond.cpp. Clean price = 88.55173
 > print( ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), 4, 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03))
 Concise summary of valuation for ZeroCouponBond 
-cleanPrice 
-    88.537 
+cleanPrice dirtyPrice
+     88.537     88.537 
 >
 >## bond.cpp: examples from Fixed Income page of Matlab
 > print(ZeroYield(95, 100, as.Date("1993-6-24"), as.Date("1993-11-1")))
@@ -134,3 +134,9 @@ Concise summary of valuation for ZeroYield
 yield 
 0.1478
 >
+>## bond.cpp: test theoretical price of bond by its yield
+> print(ZeroPriceByYield(0.1478, 100, as.Date("1993-6-24"), as.Date("1993-11-1")))
+Concise summary of valuation for ZeroPriceByYield 
+cleanPrice 
+   94.9991 
+> 

@@ -67,3 +67,6 @@ print( ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), 4 , 100, as.Date(
 
 ## bond.cpp: examples from Fixed Income page of Matlab
 print(ZeroYield(95, 100, as.Date("1993-6-24"), as.Date("1993-11-1")))
+
+## bond.cpp: test theoretical price of bond by its yield
+print(ZeroPriceByYield(0.1478, 100, as.Date("1993-6-24"), as.Date("1993-11-1")))
