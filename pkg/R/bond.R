@@ -133,6 +133,39 @@ FixedRateBond.default <- function(settlementDays = 1, faceAmount,
     val
 }
 
+
+FixedRateBondYield <- function( settlementDays, price, faceAmount,
+                           effectiveDate, maturityDate, 
+                           period, calendar, rates,
+                           dayCounter, businessDayConvention, 
+                           compound, redemption, issueDate) {
+     UseMethod("FixedRateBondYield")
+}
+FixedRateBondYield.default <- function(settlementDays = 1,price, faceAmount,
+                                effectiveDate, maturityDate, 
+                                period, calendar = "us", rates,
+                                dayCounter=2, businessDayConvention=0, 
+                                compound = 0, redemption = 100, issueDate) {
+     val <- .Call("QL_FixedRateBondYield",
+                    list(
+                         settlementDays=as.double(settlementDays),
+                         price = as.double(price),
+                         calendar=as.character(calendar),
+		         faceAmount = as.double(faceAmount),
+                         period = as.double(period),
+		         businessDayConvention=as.double(businessDayConvention),
+                         compound = as.double(compound),
+		         redemption= as.double(redemption),
+                         dayCounter = as.double(dayCounter),	         
+		         maturityDate = maturityDate,
+                         effectiveDate = effectiveDate,
+		         issueDate = issueDate
+		         ), rates, 
+                 PACKAGE="RQuantLib")
+    class(val) <- c("FixedRateBondYield", "Bond")
+    val
+}
+
 #I am not sure how to if these are correct. I just copy from asian.R
 plot.Bond <- function(x, ...) {
     warning("No plotting available for class", class(x)[1],"\n")

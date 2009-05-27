@@ -70,3 +70,6 @@ print(ZeroYield(95, 100, as.Date("1993-6-24"), as.Date("1993-11-1")))
 
 ## bond.cpp: test theoretical price of bond by its yield
 print(ZeroPriceByYield(0.1478, 100, as.Date("1993-6-24"), as.Date("1993-11-1")))
+
+## bond.cpp: test theoretical yield of a fixed rate bond
+FixedRateBondYield(,90, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , , ,as.Date("2004-11-30"))

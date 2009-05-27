@@ -140,3 +140,9 @@ Concise summary of valuation for ZeroPriceByYield
 cleanPrice 
    94.9991 
 > 
+>## bond.cpp: test theoretical yield of a fixed rate bond
+> FixedRateBondYield(,90, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , , ,as.Date("2004-11-30"))
+Concise summary of valuation for FixedRateBondYield 
+ yield 
+0.0319 
+>
