@@ -1,4 +1,4 @@
-% $Id: Bond.Rd,v 1.1 2002/02/26 03:49:27 edd Exp $
+% $Id$
 \name{Bond}
 \alias{Bond}
 \alias{plot.Bond}

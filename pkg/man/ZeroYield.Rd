@@ -1,4 +1,4 @@
-% $Id: ZeroYield.Rd,v 1.5 2006/11/11 04:12:45 edd Exp $
+% $Id$
 \name{ZeroYield}
 \alias{ZeroYield}
 \alias{ZeroYield.default}
