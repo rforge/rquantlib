@@ -3,7 +3,7 @@
 ## Copyright (C) 2002 - 2009 Dirk Eddelbuettel <edd@debian.org>
 ## Copyright (C) 2009        Khanh Nguyen <knguyen@cs.umb.edu>
 ##
-## $Id: asian.R 58 2009-03-31 03:50:44Z edd $
+## $Id$
 ##
 ## This file is part of the RQuantLib library for GNU R.
 ## It is made available under the terms of the GNU General Public
