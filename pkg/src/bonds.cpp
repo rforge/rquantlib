@@ -3,7 +3,7 @@
 ## Copyright (C) 2002 - 2009 Dirk Eddelbuettel <edd@debian.org>
 ## Copyright (C) 2009        Khanh Nguyen <knguyen@cs.umb.edu>
 ##
-## $Id: asian.R 58 2009-03-31 03:50:44Z edd $
+## $Id$
 ##
 ## This file is part of the RQuantLib library for GNU R.
 ## It is made available under the terms of the GNU General Public
@@ -268,7 +268,7 @@ RcppExport  SEXP QL_FixedRateBond(SEXP optionParameters, SEXP ratesVec) {
         RcppFrame frame(colNames);
         
         Leg bondCashFlow = bond.cashflows();
-        for (int i = 0; i< bondCashFlow.size(); i++){
+        for (unsigned int i = 0; i< bondCashFlow.size(); i++){
             std::vector<ColDatum> row(numCol);
             Date d = bondCashFlow[i]->date();
             row[0].setDateValue(RcppDate(d.month(), d.dayOfMonth(), d.year()));
