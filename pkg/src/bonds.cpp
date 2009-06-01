@@ -184,8 +184,11 @@ RcppExport  SEXP QL_ZeroCouponBond(SEXP optionParameters) {
         bond.setPricingEngine(bondEngine);
         
         RcppResultSet rs;
+        rs.add("NPV", bond.NPV());
         rs.add("cleanPrice", bond.cleanPrice());
         rs.add("dirtyPrice", bond.dirtyPrice());
+        rs.add("accruedCoupon", bond.accruedAmount());
+        rs.add("yield", bond.yield(Actual360(), Compounded, Annual));
         rl = rs.getReturnList();
     } catch(std::exception& ex) {
         exceptionMesg = copyMessageToR(ex.what());
@@ -278,8 +281,12 @@ RcppExport  SEXP QL_FixedRateBond(SEXP optionParameters, SEXP ratesVec) {
         
         
         RcppResultSet rs;
+
+        rs.add("NPV", bond.NPV());
         rs.add("cleanPrice", bond.cleanPrice());
         rs.add("dirtyPrice", bond.dirtyPrice());
+        rs.add("accruedCoupon", bond.accruedAmount());
+        rs.add("yield", bond.yield(Actual360(), Compounded, Annual));
         rs.add("cashFlow", frame);
         rl = rs.getReturnList();
         
