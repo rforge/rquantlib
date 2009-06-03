@@ -23,14 +23,14 @@
 
 ZeroCouponBond <- function(settlementDays,calendar,
                   faceAmount,maturityDate,
-                  businessDayConvention,redemption, 
+                  businessDayConvention,redemption,
                   issueDate, todayDate,riskFreeRate ) {
     UseMethod("ZeroCouponBond")
 }
 
-ZeroCouponBond.default <- function(settlementDays, calendar="us", 
+ZeroCouponBond.default <- function(settlementDays, calendar="us",
                        faceAmount, maturityDate,
-	               businessDayConvention=4, redemption, 
+	               businessDayConvention=4, redemption,
                        issueDate, todayDate,riskFreeRate ) {
     val <- .Call("QL_ZeroCouponBond",
                      list(
@@ -55,19 +55,19 @@ ZeroPriceByYield <- function(yield, faceAmount,
           UseMethod("ZeroPriceByYield")
 }
 
-ZeroPriceByYield.default <- function(yield, faceAmount, 
-                              issueDate, maturityDate, 
-                              dayCounter=2, frequency=2, 
+ZeroPriceByYield.default <- function(yield, faceAmount,
+                              issueDate, maturityDate,
+                              dayCounter=2, frequency=2,
                               compound=0, businessDayConvention=4){
 
      val <- .Call("QL_ZeroPriceByYield",
                      list(
-   		          yield=as.double(yield),		     
+   		          yield=as.double(yield),
 	                  faceAmount = as.double(faceAmount),
 	                  dayCounter = as.double(dayCounter),
-                          compound = as.double(compound), 
+                          compound = as.double(compound),
                           businessDayConvention = as.double(businessDayConvention),
-	                  frequency = as.double(frequency),	     
+	                  frequency = as.double(frequency),
 	                  maturityDate = maturityDate,
 	                  issueDate = issueDate),
                  PACKAGE="RQuantLib")
@@ -75,25 +75,25 @@ ZeroPriceByYield.default <- function(yield, faceAmount,
      val
 }
 
-ZeroYield <- function(price, faceAmount, 
-                      issueDate, maturityDate, 
-                      dayCounter, frequency, 
+ZeroYield <- function(price, faceAmount,
+                      issueDate, maturityDate,
+                      dayCounter, frequency,
                       compound,	businessDayConvention){
 	  UseMethod("ZeroYield")
 }
-ZeroYield.default <- function(price, faceAmount, 
-                              issueDate, maturityDate, 
-                              dayCounter=2, frequency=2, 
+ZeroYield.default <- function(price, faceAmount,
+                              issueDate, maturityDate,
+                              dayCounter=2, frequency=2,
                               compound=0, businessDayConvention=4){
 
      val <- .Call("QL_ZeroYield",
                      list(
-   		          price=as.double(price),		     
+   		          price=as.double(price),
 	                  faceAmount = as.double(faceAmount),
 	                  dayCounter = as.double(dayCounter),
-                          compound = as.double(compound), 
+                          compound = as.double(compound),
                           businessDayConvention = as.double(businessDayConvention),
-	                  frequency = as.double(frequency),	     
+	                  frequency = as.double(frequency),
 	                  maturityDate = maturityDate,
 	                  issueDate = issueDate),
                  PACKAGE="RQuantLib")
@@ -103,16 +103,16 @@ ZeroYield.default <- function(price, faceAmount,
 
 
 FixedRateBond <- function( settlementDays, faceAmount,
-                           effectiveDate, maturityDate, 
+                           effectiveDate, maturityDate,
                            period, calendar, rates,
-                           dayCounter, businessDayConvention, 
+                           dayCounter, businessDayConvention,
                            redemption, issueDate, riskFreeRate, todayDate) {
      UseMethod("FixedRateBond")
 }
 FixedRateBond.default <- function(settlementDays = 1, faceAmount,
-                                effectiveDate, maturityDate, 
+                                effectiveDate, maturityDate,
                                 period, calendar = "us", rates,
-                                dayCounter=2, businessDayConvention=0, 
+                                dayCounter=2, businessDayConvention=0,
                                 redemption = 100, issueDate, riskFreeRate, todayDate) {
      val <- .Call("QL_FixedRateBond",
                     list(
@@ -127,24 +127,25 @@ FixedRateBond.default <- function(settlementDays = 1, faceAmount,
 		         maturityDate = maturityDate,
                          effectiveDate = effectiveDate,
 		         issueDate = issueDate,
-		         todayDate = todayDate), rates, 
+		         todayDate = todayDate), rates,
                  PACKAGE="RQuantLib")
+    val$cashFlow <- as.data.frame(val$cashFlow)
     class(val) <- c("FixedRateBond", "Bond")
     val
 }
 
 
 FixedRateBondYield <- function( settlementDays, price, faceAmount,
-                           effectiveDate, maturityDate, 
+                           effectiveDate, maturityDate,
                            period, calendar, rates,
-                           dayCounter, businessDayConvention, 
+                           dayCounter, businessDayConvention,
                            compound, redemption, issueDate) {
      UseMethod("FixedRateBondYield")
 }
 FixedRateBondYield.default <- function(settlementDays = 1,price, faceAmount,
-                                effectiveDate, maturityDate, 
+                                effectiveDate, maturityDate,
                                 period, calendar = "us", rates,
-                                dayCounter=2, businessDayConvention=0, 
+                                dayCounter=2, businessDayConvention=0,
                                 compound = 0, redemption = 100, issueDate) {
      val <- .Call("QL_FixedRateBondYield",
                     list(
@@ -156,11 +157,11 @@ FixedRateBondYield.default <- function(settlementDays = 1,price, faceAmount,
 		         businessDayConvention=as.double(businessDayConvention),
                          compound = as.double(compound),
 		         redemption= as.double(redemption),
-                         dayCounter = as.double(dayCounter),	         
+                         dayCounter = as.double(dayCounter),
 		         maturityDate = maturityDate,
                          effectiveDate = effectiveDate,
 		         issueDate = issueDate
-		         ), rates, 
+		         ), rates,
                  PACKAGE="RQuantLib")
     class(val) <- c("FixedRateBondYield", "Bond")
     val
@@ -168,16 +169,16 @@ FixedRateBondYield.default <- function(settlementDays = 1,price, faceAmount,
 
 
 FixedRateBondPriceByYield <- function( settlementDays, yield, faceAmount,
-                           effectiveDate, maturityDate, 
+                           effectiveDate, maturityDate,
                            period, calendar, rates,
-                           dayCounter, businessDayConvention, 
+                           dayCounter, businessDayConvention,
                            compound, redemption, issueDate) {
      UseMethod("FixedRateBondPriceByYield")
 }
 FixedRateBondPriceByYield.default <- function(settlementDays = 1, yield, faceAmount,
-                                effectiveDate, maturityDate, 
+                                effectiveDate, maturityDate,
                                 period, calendar = "us", rates,
-                                dayCounter=2, businessDayConvention=0, 
+                                dayCounter=2, businessDayConvention=0,
                                 compound = 0, redemption = 100, issueDate) {
      val <- .Call("QL_FixedRateBondPriceByYield",
                     list(
@@ -189,11 +190,11 @@ FixedRateBondPriceByYield.default <- function(settlementDays = 1, yield, faceAmo
 		         businessDayConvention=as.double(businessDayConvention),
                          compound = as.double(compound),
 		         redemption= as.double(redemption),
-                         dayCounter = as.double(dayCounter),	         
+                         dayCounter = as.double(dayCounter),
 		         maturityDate = maturityDate,
                          effectiveDate = effectiveDate,
 		         issueDate = issueDate
-		         ), rates, 
+		         ), rates,
                  PACKAGE="RQuantLib")
     class(val) <- c("FixedRateBondPriceByYield", "Bond")
     val
@@ -205,15 +206,22 @@ plot.Bond <- function(x, ...) {
     invisible(x)
 }
 
-print.Bond <- function(x, digits=4, ...) {
+print.Bond <- function(x, digits=6, ...) {
     cat("Concise summary of valuation for", class(x)[1], "\n")
-    print(round(unlist(x[1:7]), digits))
+    cat(" Net present value : ", format(x$NPV), "\n")
+    cat("       clean price : ", format(x$cleanPrice, digits=digits), "\n")
+    cat("       dirty price : ", format(x$dirtyPrice, digits=digits), "\n")
+    cat("    accrued coupon : ", format(x$accruedCoupon, digits=digits), "\n")
+    cat("             yield : ", format(x$yield, digits=digits), "\n")
+    cat("        cash flows : \n")
+    print(x$cashFlow, row.names=FALSE, digits=digits)
+    #print(round(unlist(x[1:5]), digits))
     invisible(x)
 }
 
 summary.Bond <- function(object, digits=4, ...) {
     cat("Detailed summary of valuation for", class(object)[1], "\n")
-    print(round(unlist(object[1:7]), digits))
+    print(round(unlist(object[1:5]), digits))
     cat("with parameters\n")
     print(unlist(object[["parameters"]]))
     invisible(object)
