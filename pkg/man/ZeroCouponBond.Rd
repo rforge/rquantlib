@@ -4,9 +4,9 @@
 \alias{ZeroCouponBond.default}
 \title{Zero-oupon bond evaluation using discount curve solution}
 \description{
-  The \code{ZeroCouponBond} function evaluations a zero-coupon plainly using discount curve. 
+  The \code{ZeroCouponBond} function evaluates a zero-coupon plainly using discount curve. 
   More specificly, the calculation is done by DiscountingBondEngine from QuantLib.
-  The clean price of the bond is returned. 
+  The NPV, clean price, dirty price, accrued interest, yield and cash flows of the bond is returned. 
   For more detail, see the source codes in quantlib's test-suite. test-suite/bond.cpp
 
 }
@@ -34,7 +34,12 @@
   \code{ZeroCouponBond} (which inherits from class 
   \code{Bond}). It contains a list with the following
   components:
-  \item{clean value}{clean value of the bond}
+  \item{NPV}{net present value of the bond}
+  \item{cleanPrice}{price price of the bond}
+  \item{dirtyPrice}{dirty price of the bond}
+  \item{accruedAmount}{accrued amount of the bond}
+  \item{yield}{yield of the bond}
+  \item{cashFlows}{cash flows of the bond}
 }
 \details{
   A discount curve is built to calculate the bond value. 

@@ -182,6 +182,23 @@ RcppExport  SEXP QL_ZeroCouponBond(SEXP optionParameters) {
         boost::shared_ptr<PricingEngine> bondEngine(
                                                     new DiscountingBondEngine(discountCurve));
         bond.setPricingEngine(bondEngine);
+
+        //cashflow
+        int numCol = 2;
+        std::vector<std::string> colNames(numCol);
+        colNames[0] = "Date";
+        colNames[1] = "Amount";
+        RcppFrame frame(colNames);
+        
+        Leg bondCashFlow = bond.cashflows();
+        for (unsigned int i = 0; i< bondCashFlow.size(); i++){
+            std::vector<ColDatum> row(numCol);
+            Date d = bondCashFlow[i]->date();
+            row[0].setDateValue(RcppDate(d.month(), d.dayOfMonth(), d.year()));
+            row[1].setDoubleValue(bondCashFlow[i]->amount());
+            frame.addRow(row);
+        }
+
         
         RcppResultSet rs;
         rs.add("NPV", bond.NPV());
@@ -189,6 +206,7 @@ RcppExport  SEXP QL_ZeroCouponBond(SEXP optionParameters) {
         rs.add("dirtyPrice", bond.dirtyPrice());
         rs.add("accruedCoupon", bond.accruedAmount());
         rs.add("yield", bond.yield(Actual360(), Compounded, Annual));
+        rs.add("cashFlow", frame);
         rl = rs.getReturnList();
     } catch(std::exception& ex) {
         exceptionMesg = copyMessageToR(ex.what());
@@ -201,6 +219,95 @@ RcppExport  SEXP QL_ZeroCouponBond(SEXP optionParameters) {
     
     return rl;
 }
+
+RcppExport  SEXP QL_ZeroCouponBondCustomCurve(SEXP optionParameters,
+                                              SEXP params, SEXP tsQuotes,
+                                              SEXP times) {
+
+    SEXP rl=R_NilValue;
+    char* exceptionMesg=NULL;
+    try{
+        RcppParams rparam(optionParameters);
+        double settlementDays = rparam.getDoubleValue("settlementDays");
+        std::string cal = rparam.getStringValue("calendar");
+        double faceAmount = rparam.getDoubleValue("faceAmount");
+        double businessDayConvention = rparam.getDoubleValue("businessDayConvention");
+        double redemption = rparam.getDoubleValue("redemption");
+        
+        RcppDate mDate = rparam.getDateValue("maturityDate");
+        RcppDate iDate = rparam.getDateValue("issueDate");
+        RcppDate today_Date = rparam.getDateValue("todayDate");       
+        QuantLib::Date maturityDate(dateFromR(mDate));
+        QuantLib::Date issueDate(dateFromR(iDate));
+        QuantLib::Date today(dateFromR(today_Date));
+        
+        /*
+          Build the discount curve
+        */
+        Handle<YieldTermStructure> curve(
+                                         buildTermStructure(params, tsQuotes, times));
+        
+        //set up BusinessDayConvetion
+        BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
+        
+        //set up calendar
+        Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+        if (cal == "us"){
+            calendar = UnitedStates(UnitedStates::GovernmentBond);
+        }
+        else if (cal == "uk"){
+            calendar = UnitedKingdom(UnitedKingdom::Exchange);
+        }
+        
+        
+        ZeroCouponBond bond(settlementDays,
+                            calendar,
+                            faceAmount,
+                            maturityDate,
+                            bdc,
+                            redemption, issueDate);
+        
+        boost::shared_ptr<PricingEngine> bondEngine(
+                                                    new DiscountingBondEngine(curve));
+        bond.setPricingEngine(bondEngine);
+
+        //cashflow
+        int numCol = 2;
+        std::vector<std::string> colNames(numCol);
+        colNames[0] = "Date";
+        colNames[1] = "Amount";
+        RcppFrame frame(colNames);
+        
+        Leg bondCashFlow = bond.cashflows();
+        for (unsigned int i = 0; i< bondCashFlow.size(); i++){
+            std::vector<ColDatum> row(numCol);
+            Date d = bondCashFlow[i]->date();
+            row[0].setDateValue(RcppDate(d.month(), d.dayOfMonth(), d.year()));
+            row[1].setDoubleValue(bondCashFlow[i]->amount());
+            frame.addRow(row);
+        }
+        
+        RcppResultSet rs;
+        rs.add("NPV", bond.NPV());
+        rs.add("cleanPrice", bond.cleanPrice());
+        rs.add("dirtyPrice", bond.dirtyPrice());
+        rs.add("accruedCoupon", bond.accruedAmount());
+        rs.add("yield", bond.yield(Actual360(), Compounded, Annual));
+        rs.add("cashFlow", frame);
+
+        rl = rs.getReturnList();
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}
+
 
 RcppExport  SEXP QL_FixedRateBond(SEXP optionParameters, SEXP ratesVec) {
   

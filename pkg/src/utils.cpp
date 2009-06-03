@@ -91,6 +91,91 @@ makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
 
 // QuantLib option setup utils, copied from the test-suite sources
 
+boost::shared_ptr<YieldTermStructure> buildTermStructure(SEXP params,
+                                                         SEXP tsQuotes,
+                                                         SEXP times){
+    char* exceptionMesg = NULL;
+    boost::shared_ptr<YieldTermStructure> curve;
+    try {
+        
+        // Parameter wrapper classes.
+        RcppParams rparam(params);
+        RcppNumList tslist(tsQuotes);
+        
+        int i;
+        
+        Date todaysDate( dateFromR(rparam.getDateValue("tradeDate") )); 
+        Date settlementDate( dateFromR(rparam.getDateValue("settleDate") )); 
+        // cout << "TradeDate: " << todaysDate << endl << "Settle: " << settlementDate << endl;
+        
+        RQLContext::instance().settleDate = settlementDate;
+        Settings::instance().evaluationDate() = todaysDate;
+        std::string firstQuoteName = tslist.getName(0);
+        
+        double dt = rparam.getDoubleValue("dt");
+        
+        std::string interpWhat, interpHow;
+        bool flatQuotes = true;
+        if(firstQuoteName.compare("flat") != 0) {
+            
+            // Get interpolation method (not needed for "flat" case)
+            interpWhat = rparam.getStringValue("interpWhat");
+            interpHow  = rparam.getStringValue("interpHow");
+            flatQuotes = false;
+        }
+        
+        Calendar calendar = TARGET();
+        RQLContext::instance().calendar = calendar;
+        Integer fixingDays = 2;
+        RQLContext::instance().fixingDays = fixingDays;
+        
+        // Any DayCounter would be fine.
+        // ActualActual::ISDA ensures that 30 years is 30.0
+        DayCounter termStructureDayCounter =
+            ActualActual(ActualActual::ISDA);
+        double tolerance = 1.0e-15;
+        
+
+        if(firstQuoteName.compare("flat") == 0) {
+            // Create a flat term structure.
+            double rateQuote = tslist.getValue(0);
+            boost::shared_ptr<Quote> flatRate(new SimpleQuote(rateQuote));
+            boost::shared_ptr<FlatForward> ts(new FlatForward(settlementDate,
+                                                              Handle<Quote>(flatRate),
+                                                              Actual365Fixed()));
+            curve =  ts;
+        }
+        else {
+            // Build curve based on a set of observed rates and/or prices.
+            std::vector<boost::shared_ptr<RateHelper> > curveInput;
+            for(i = 0; i < tslist.size(); i++) {
+                std::string name = tslist.getName(i);
+                double val = tslist.getValue(i);
+                boost::shared_ptr<RateHelper> rh = 
+                    ObservableDB::instance().getRateHelper(name, val);
+                if(rh == NULL_RateHelper)
+                    throw std::range_error("Unknown rate in getRateHelper");
+                curveInput.push_back(rh);
+            }
+            boost::shared_ptr<YieldTermStructure> ts =
+                getTermStructure(interpWhat, interpHow, 
+                                 settlementDate, curveInput,
+                                 termStructureDayCounter, tolerance);
+            
+            curve = ts;
+        }
+        
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    return curve;    
+}
+
+
+
+
 boost::shared_ptr<YieldTermStructure>
 makeFlatCurve(const Date& today,
 	      const boost::shared_ptr<Quote>& forward,

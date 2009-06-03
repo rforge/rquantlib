@@ -146,4 +146,8 @@ Frequency getFrequency(double n);
 Compounding getCompounding(double n);
 BusinessDayConvention getBusinessDayConvention(double n);
 DayCounter getDayCounter(double n);
+
+boost::shared_ptr<YieldTermStructure> buildTermStructure(SEXP params,
+                                                         SEXP tsQuotes,
+                                                         SEXP times);
 #endif

@@ -1,11 +1,13 @@
 
-R version 2.6.1 (2007-11-26)
-Copyright (C) 2007 The R Foundation for Statistical Computing
+R version 2.9.0 (2009-04-17)
+Copyright (C) 2009 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -17,7 +19,6 @@ Type 'q()' to quit R.
 
 > 
 > stopifnot(require(RQuantLib))
-Loading required package: RQuantLib
 > 
 > ## values from Quantlib's test-suite
 > ## Reference: Haug, Option Pricing Formulas, McGraw-Hill, 1998
@@ -123,32 +124,69 @@ Concise summary of valuation for AsianOption
  4.6922 -0.8031  0.0594  6.8662  0.0580 -9.2039  8.0309 
 > 
 > ## bond.cpp: The parameters are taken from test-suite/bond.cpp. Clean price = 88.55173
-> print( ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), 4, 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03))
+> print( ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), 4 , 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03))
 Concise summary of valuation for ZeroCouponBond 
-           NPV    cleanPrice    dirtyPrice accruedCoupon         yield 
-   884927.1091       88.5370       88.5370        0.0000        0.0305 
->
->## bond.cpp: examples from Fixed Income page of Matlab
-> print(ZeroYield(95, 100, as.Date("1993-6-24"), as.Date("1993-11-1")))
-Concise summary of valuation for ZeroYield 
-yield 
-0.1478
->
->## bond.cpp: test theoretical price of bond by its yield
-> print(ZeroPriceByYield(0.1478, 100, as.Date("1993-6-24"), as.Date("1993-11-1")))
-Concise summary of valuation for ZeroPriceByYield 
-cleanPrice 
-   94.9991 
+ Net present value :  884927.1 
+       clean price :  88.537 
+       dirty price :  88.537 
+    accrued coupon :  0 
+             yield :  0.030455 
+        cash flows : 
+$Date
+[1] "2008-11-30"
+
+$Amount
+[1] 1e+06
+
 > 
->## bond.cpp: test theoretical yield of a fixed rate bond, = 0.0307
+> ## bond.cpp: examples from Fixed Income page of Matlab
+> ZeroYield(95, 100, as.Date("1993-6-24"), as.Date("1993-11-1"))
+$yield
+[1] 0.1477733
+
+attr(,"class")
+[1] "ZeroYield"
+> 
+> ## bond.cpp: test theoretical price of bond by its yield
+> ZeroPriceByYield(0.1478, 100, as.Date("1993-6-24"), as.Date("1993-11-1"))
+$cleanPrice
+[1] 94.99914
+
+attr(,"class")
+[1] "ZeroPriceByYield"
+> 
+> ## bond.cpp: test theoretical yield of a fixed rate bond, = 0.0307
 > FixedRateBondYield(,99.282, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , , ,as.Date("2004-11-30"))
-Concise summary of valuation for FixedRateBondYield 
- yield 
-0.0307
->
->## bond.cpp: test theoretical price of a fixed rate bond  = 99.2708
+$yield
+[1] 0.03066984
+
+attr(,"class")
+[1] "FixedRateBondYield"
+> 
+> ## bond.cpp: test theoretical price of a fixed rate bond  = 99.2708
 > FixedRateBondPriceByYield(,0.0307, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , , ,as.Date("2004-11-30"))
-Concise summary of valuation for FixedRateBondPriceByYield 
-cleanPrice 
-   99.2708 
->
+$cleanPrice
+[1] 99.27077
+
+attr(,"class")
+[1] "FixedRateBondPriceByYield"
+> 
+> print(FixedRateBond(, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , ,as.Date("2004-11-30"), 0.03, as.Date("2004-11-22")))
+Concise summary of valuation for FixedRateBond 
+ Net present value :  99215.87 
+       clean price :  99.282 
+       dirty price :  99.282 
+    accrued coupon :  0 
+             yield :  0.030455 
+        cash flows : 
+       Date   Amount
+ 2005-05-31   1432.9
+ 2005-11-30   1441.4
+ 2006-05-30   1425.7
+ 2006-11-30   1449.3
+ 2007-05-30   1425.7
+ 2007-11-30   1449.3
+ 2008-05-30   1430.3
+ 2008-12-01   1453.2
+ 2008-12-01 100000.0
+> 
