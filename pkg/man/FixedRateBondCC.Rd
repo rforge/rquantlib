@@ -1,21 +1,23 @@
-% $Id: ZeroBondCC.Rd 78 2009-05-30 18:31:48Z edd $
-\name{ZeroBondCC}
-\alias{ZeroBondCC}
-\alias{ZeroBondCC.default}
-\title{Zero-oupon bond evaluation using discount curve solution}
+% $Id: FixedRateBondCC.Rd 78 2009-05-30 18:31:48Z edd $
+\name{FixedRateBondCC}
+\alias{FixedRateBondCC}
+\alias{FixedRateBondCC.default}
+\title{Fixed rate bond evaluation using discount curve solution}
 \description{
-  The \code{ZeroBondCC} function evaluations a zero-coupon plainly using the spot term structure of interest
+  The \code{FixedRateBondCC} function evaluates a fixed rate bond using the spot term structure of interest
   rates that is contructed based on input market data including the settlement date,
   deposit rates, futures prices, FRA rates, or swap rates, in various
   combinations
-  More specificly, the calculation is done by DiscountingBondEngine from QuantLib.
-  The NPV, clean price, dirty price, accrued interest, yield and cash flows of the bond is returned. 
   For more detail, see the source codes in quantlib's test-suite. test-suite/bond.cpp
 
 }
 \usage{
-\method{ZeroBondCC}{default}(settlementDays, calendar, faceAmount, maturityDate,
-                           businessDayConvention, redemption, issueDate,  params, tsQuotes, times)
+\method{FixedRateBondCC}{default}( settlementDays=1, faceAmount, 
+                                 effectiveDate, maturityDate,
+                                 period, calendar="us", 
+                                 rates, dayCounter=2,
+                                 businessDayConvention=0, redemption=100, 
+                                 issueDate, params, tsQuotes, times)
 
 \method{plot}{Bond}
 \method{print}{Bond}
@@ -23,10 +25,14 @@
 }
 \arguments{
   \item{settlementDays}{an integer, 1 for T+1, 2 for T+2, etc...}
+  \item{effectiveDate}{bond's effective date}
+  \item{maturityDate}{bond's maturity date}
+  \item{period}{frequency of events,0=NoFrequency, 1=Once, 2=Annual, 3=Semiannual, 4=EveryFourthMonth, 5=Quarterly, 6=Bimonthly ,7=Monthly ,8=EveryFourthWeely,9=Biweekly, 10=Weekly, 11=Daily. For more information, see QuantLib's Frequency class }
   \item{calendar}{Business Calendar. Either \code{us} or \code{uk}}
   \item{faceAmount}{face amount of the bond}
-  \item{maturityDate}{a string, that specifies maturity date in form \code{dd-mm-yyyy} or \code{dd/mm/yyyy}}
-  \item{businessDayConvention}{These conventions specify the algorithm used to adjust a date in case it is not a valid business day. See quantlib for more detail}
+  \item{rates}{vector of rates}
+  \item{businessDayConvention}{convention used to adjust a date in case it is not a valid business day. See quantlib for more detail. 0 = Following, 1 = ModifiedFollowing, 2 = Preceding, 3 = ModifiedPreceding, other = Unadjusted}
+  \item{dayCounter}{day count convention. 0 = Actual360(), 1 = Actual365Fixed(), 2 = ActualActual(), 3 = Business252(), 4 = OneDayCounter(), 5 = SimpleDayCounter(), all other = Thirty360(). For more information, see QuantLib's DayCounter class}
   \item{redemption}{redemption when the bond expires}
   \item{issueDate}{date the bond is issued}
   \item{params}{A list specifying the \code{tradeDate} (month/day/year),
@@ -74,7 +80,7 @@
     }
 }
 \value{
-  The \code{ZeroBondCC} function returns an object of class
+  The \code{FixedRateBondCC} function returns an object of class
   \code{ZeroBondCC} (which inherits from class 
   \code{Bond}). It contains a list with the following
   components:
@@ -100,7 +106,6 @@
 
 
 \examples{
-
 params <- list(tradeDate=as.Date('2002-2-15'),
                settleDate=as.Date('2002-2-19'),
                dt=.25,
@@ -124,9 +129,8 @@ tsQuotes <- list(d1w  =0.0382,
 
 times <- seq(0,10,.1)
 
-
 # simple call with unnamed parameters
-ZeroBondCC(1, "us", 1000000, as.Date("2008-11-30"), 4 , 100, as.Date("2004-11-30"), params, tsQuotes, times )
+FixedRateBondCC(, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , ,as.Date("2004-11-30"), params, tsQuotes, times)
 }
 \keyword{misc}
 

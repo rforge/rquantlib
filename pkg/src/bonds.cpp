@@ -236,10 +236,10 @@ RcppExport  SEXP QL_ZeroCouponBondCustomCurve(SEXP optionParameters,
         
         RcppDate mDate = rparam.getDateValue("maturityDate");
         RcppDate iDate = rparam.getDateValue("issueDate");
-        RcppDate today_Date = rparam.getDateValue("todayDate");       
+        
         QuantLib::Date maturityDate(dateFromR(mDate));
         QuantLib::Date issueDate(dateFromR(iDate));
-        QuantLib::Date today(dateFromR(today_Date));
+        
         
         /*
           Build the discount curve
@@ -355,6 +355,106 @@ RcppExport  SEXP QL_FixedRateBond(SEXP optionParameters, SEXP ratesVec) {
         boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
         Settings::instance().evaluationDate() = today;
         Handle<YieldTermStructure> discountCurve(flatRate(today,rRate,Actual360()));
+        
+        //build the bond
+        Schedule sch(effectiveDate, maturityDate,
+                     Period(freq), calendar,
+                     bdc, bdc, DateGeneration::Backward, false);
+        
+        FixedRateBond bond(settlementDays, faceAmount, sch,
+                           rates,dc, bdc, redemption, issueDate);
+        
+        
+        //bond price
+        boost::shared_ptr<PricingEngine> bondEngine(
+                                                    new DiscountingBondEngine(discountCurve));
+        bond.setPricingEngine(bondEngine);
+        
+        //cashflow
+        int numCol = 2;
+        std::vector<std::string> colNames(numCol);
+        colNames[0] = "Date";
+        colNames[1] = "Amount";
+        RcppFrame frame(colNames);
+        
+        Leg bondCashFlow = bond.cashflows();
+        for (unsigned int i = 0; i< bondCashFlow.size(); i++){
+            std::vector<ColDatum> row(numCol);
+            Date d = bondCashFlow[i]->date();
+            row[0].setDateValue(RcppDate(d.month(), d.dayOfMonth(), d.year()));
+            row[1].setDoubleValue(bondCashFlow[i]->amount());
+            frame.addRow(row);
+        }
+        
+        
+        RcppResultSet rs;
+
+        rs.add("NPV", bond.NPV());
+        rs.add("cleanPrice", bond.cleanPrice());
+        rs.add("dirtyPrice", bond.dirtyPrice());
+        rs.add("accruedCoupon", bond.accruedAmount());
+        rs.add("yield", bond.yield(Actual360(), Compounded, Annual));
+        rs.add("cashFlow", frame);
+        rl = rs.getReturnList();
+        
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}
+RcppExport  SEXP QL_FixedRateBondCustomCurve(SEXP optionParameters, SEXP ratesVec,
+                                    SEXP params, SEXP tsQuotes, SEXP times) {
+  
+    SEXP rl=R_NilValue;
+    char* exceptionMesg=NULL;
+    try{
+        RcppParams rparam(optionParameters);
+        double settlementDays = rparam.getDoubleValue("settlementDays");
+        std::string cal = rparam.getStringValue("calendar");
+        double faceAmount = rparam.getDoubleValue("faceAmount");
+        double businessDayConvention = rparam.getDoubleValue("businessDayConvention");
+        double redemption = rparam.getDoubleValue("redemption");
+        double dayCounter = rparam.getDoubleValue("dayCounter");        
+        double frequency = rparam.getDoubleValue("period");
+        
+        RcppDate mDate = rparam.getDateValue("maturityDate");
+        RcppDate eDate = rparam.getDateValue("effectiveDate");
+        RcppDate iDate = rparam.getDateValue("issueDate");             
+        QuantLib::Date maturityDate(dateFromR(mDate));
+        QuantLib::Date effectiveDate(dateFromR(eDate));
+        QuantLib::Date issueDate(dateFromR(iDate));       
+        
+        //extract coupon rates vector
+        RcppVector<double> RcppVec(ratesVec); 
+        std::vector<double> rates(RcppVec.stlVector());
+        
+        //set up BusinessDayConvetion
+        BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
+        DayCounter dc = getDayCounter(dayCounter);
+        Frequency freq = getFrequency(frequency);
+
+     
+        //set up calendar
+        Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+        if (cal == "us"){
+            calendar = UnitedStates(UnitedStates::GovernmentBond);
+        }
+        else if (cal == "uk"){
+            calendar = UnitedKingdom(UnitedKingdom::Exchange);
+        }
+
+ /*
+          Build the discount curve
+        */
+        Handle<YieldTermStructure> discountCurve(
+                                         buildTermStructure(params, tsQuotes, times));        
+
         
         //build the bond
         Schedule sch(effectiveDate, maturityDate,
