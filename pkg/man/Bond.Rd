@@ -30,7 +30,7 @@
 \note{The interface might change in future release as \code{QuantLib}
   stabilises its own API.}
 
-\examples{
-ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), 4, 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03)}
+\examples{}
+
 \keyword{misc}
 

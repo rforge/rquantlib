@@ -62,8 +62,12 @@ print(BinaryOption(binType="cash", type="put", excType="european",
 ## asianoption.cpp:  put == 4.6922 (from testAnalyticContinuousGeometricAveragePrice())
 print( AsianOption("geometric", "put", underlying=80, strike=85, div=-0.03, riskFree=0.05, maturity=0.25, vol=0.2))
 
-## bond.cpp: The parameters are taken from test-suite/bond.cpp. Clean price = 88.55173
-print( ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), 4 , 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03))
+# simple call with unnamed parameters
+bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
+             maturityDate=as.Date("2008-11-30"), redemption=100 )
+dateparams <-list(settlementDays=1, calendar="us", businessDayConvention=4)
+discountCurve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
+print(ZeroCouponBond(bond, discountCurve, dateparams))
 
 ## bond.cpp: examples from Fixed Income page of Matlab
 ZeroYield(95, 100, as.Date("1993-6-24"), as.Date("1993-11-1"))

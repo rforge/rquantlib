@@ -11,23 +11,28 @@
 
 }
 \usage{
-\method{ZeroCouponBond}{default}(settlementDays, calendar, faceAmount, maturityDate,
-                           businessDayConvention, redemption, issueDate, todayDate, riskFreeRate)
+\method{ZeroCouponBond}{default}(bond, discountCurve, dateparams)
 
 \method{plot}{Bond}
 \method{print}{Bond}
 \method{summary}{Bond}
 }
 \arguments{
-  \item{settlementDays}{an integer, 1 for T+1, 2 for T+2, etc...}
-  \item{calendar}{Business Calendar. Either \code{us} or \code{uk}}
-  \item{faceAmount}{face amount of the bond}
-  \item{maturityDate}{a string, that specifies maturity date in form \code{dd-mm-yyyy} or \code{dd/mm/yyyy}}
-  \item{businessDayConvention}{These conventions specify the algorithm used to adjust a date in case it is not a valid business day. See quantlib for more detail}
-  \item{redemption}{redemption when the bond expires}
-  \item{issueDate}{date the bond is issued}
-  \item{todayDate}{neccessary to for building the discount curve. Different todayDate will return different values of the bond}
-  \item{riskFreeRate}{Risk-free rate}
+    \item{bond}{ A list specifying the essential attributes of a zero bond, include
+                 \code{faceAmount}, \code{issueDate}, \code{maturityDate}, and \code{redemption}         
+    }
+    \item{discountCurve}{ A list specifying the discount curve 
+    that will be used in pricing of the bond. There are two way to
+    specify a discount curve. One is a flat curve, which can be specify
+    using a list of two values \code{todayDate} and \code{riskFreeRate}
+    . Another way is to construct a curve from market data
+    using a list of three values, \code{params} , \code{tsQuotes},
+    \code{times}. For more detail, see example or the discountCurve function
+    }
+
+    \item{dateparams}{ A list specifying date paramters, \code{settlemenDays},
+    \code{calendar} - a string, \code{businessDayConvention}, an integer.    
+    }
 }
 \value{
   The \code{ZeroCouponBond} function returns an object of class
@@ -57,7 +62,40 @@
 
 \examples{
 # simple call with unnamed parameters
-ZeroCouponBond(1, "us", 1000000, as.Date("2008-11-30"), 4 , 100, as.Date("2004-11-30"), as.Date("2004-11-24"), 0.03)
+bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
+             maturityDate=as.Date("2008-11-30"), redemption=100 )
+
+dateparams <-list(settlementDays=1, calendar="us", businessDayConvention=4)
+
+discountCurve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
+
+ZeroCouponBond(bond, discountCurve, dateparams)
+
+params <- list(tradeDate=as.Date('2002-2-15'),
+               settleDate=as.Date('2002-2-19'),
+               dt=.25,
+               interpWhat="discount",
+               interpHow="loglinear")
+
+tsQuotes <- list(d1w  =0.0382,
+                 d1m  =0.0372,
+                 fut1=96.2875,
+                 fut2=96.7875,
+                 fut3=96.9875,
+                 fut4=96.6875,
+                 fut5=96.4875,
+                 fut6=96.3875,
+                 fut7=96.2875,
+                 fut8=96.0875,
+                 s3y  =0.0398,
+                 s5y  =0.0443,
+                 s10y =0.05165,
+                 s15y =0.055175)
+
+times <- seq(0,10,.1)
+discountCurve <- list(params, tsQuotes, times)
+ZeroCouponBond(bond, discountCurve, dateparams)
+
 }
 \keyword{misc}
 

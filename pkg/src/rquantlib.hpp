@@ -142,12 +142,15 @@ makeProcess(const boost::shared_ptr<Quote>& u,
 int dateFromR(const RcppDate &d);
 
 //utility functions for parameters of fixed-income instrument function
-Frequency getFrequency(double n);
-Compounding getCompounding(double n);
-BusinessDayConvention getBusinessDayConvention(double n);
-DayCounter getDayCounter(double n);
+Frequency getFrequency(const double n);
+Compounding getCompounding(const double n);
+BusinessDayConvention getBusinessDayConvention(const double n);
+DayCounter getDayCounter(const double n);
 
 boost::shared_ptr<YieldTermStructure> buildTermStructure(SEXP params,
                                                          SEXP tsQuotes,
                                                          SEXP times);
+Schedule getSchedule(SEXP sch);
+boost::shared_ptr<IborIndex> getIborIndex(SEXP index, const Date today);
+std::vector<double> getDoubleVector(SEXP vector);
 #endif

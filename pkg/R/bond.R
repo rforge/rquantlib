@@ -21,59 +21,30 @@
 ## Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ## MA 02111-1307, USA
 
-ZeroCouponBond <- function(settlementDays,calendar,
-                  faceAmount,maturityDate,
-                  businessDayConvention,redemption,
-                  issueDate, todayDate,riskFreeRate ) {
+ZeroCouponBond <- function(bond, discountCurve, dateparams ) {
     UseMethod("ZeroCouponBond")
 }
 
-ZeroCouponBond.default <- function(settlementDays, calendar="us",
-                       faceAmount, maturityDate,
-	               businessDayConvention=4, redemption,
-                       issueDate, todayDate,riskFreeRate ) {
-    val <- .Call("QL_ZeroCouponBond",
-                     list(
-                          settlementDays=as.double(settlementDays),
-                          calendar=as.character(calendar),
-	                  faceAmount = as.double(faceAmount),
-	                  businessDayConvention=as.double(businessDayConvention),
-	                  redemption= as.double(redemption),
-	                  riskFreeRate= as.double(riskFreeRate),
-	                  maturityDate = maturityDate,
-	                  issueDate = issueDate,
-	                  todayDate = todayDate),
-                 PACKAGE="RQuantLib")
-    class(val) <- c("ZeroCouponBond", "Bond")
+ZeroCouponBond.default <- function(bond, discountCurve, dateparams) {
+    val <- 0
+    if (length(discountCurve)==2){
+       val <- .Call("QL_ZBond1", 
+                     bond, discountCurve, dateparams,
+                     PACKAGE="RQuantLib")
+    }
+    if (length(discountCurve)==3){
+       val <- .Call("QL_ZBond2", 
+                    bond, discountCurve[[1]], 
+                    discountCurve[[2]], discountCurve[[3]],
+                    dateparams,
+                    PACKAGE="RQuantLib")      
+    }
+    val$cashFlow <- as.data.frame(val$cashFlow)
+    class(val) <- c("ZeroCouponBond", "Bond")    
     val
 }
 
-ZeroBondCC <- function(settlementDays,calendar,
-                  faceAmount,maturityDate,
-                  businessDayConvention,redemption, 
-                  issueDate,  params, tsQuotes, times ) {
-    UseMethod("ZeroBondCC")
-}
 
-ZeroBondCC.default <- function(settlementDays, calendar="us", 
-                       faceAmount, maturityDate,
-	               businessDayConvention=4, redemption, 
-                       issueDate,  params, tsQuotes, times ) {
-    val <- .Call("QL_ZeroCouponBondCustomCurve",
-                     list(
-                          settlementDays=as.double(settlementDays),
-                          calendar=as.character(calendar),
-	                  faceAmount = as.double(faceAmount),
-	                  businessDayConvention=as.double(businessDayConvention),
-	                  redemption= as.double(redemption),
-	                  maturityDate = maturityDate,
-	                  issueDate = issueDate
-	                  ),
-                          params, tsQuotes, times,
-                 PACKAGE="RQuantLib")
-    class(val) <- c("ZeroBondCC", "Bond")
-    val
-}
 
 ZeroPriceByYield <- function(yield, faceAmount,
                       issueDate, maturityDate,
@@ -160,36 +131,7 @@ FixedRateBond.default <- function(settlementDays = 1, faceAmount,
     class(val) <- c("FixedRateBond", "Bond")
     val
 }
-FixedRateBondCC <- function( settlementDays, faceAmount,
-                           effectiveDate, maturityDate,
-                           period, calendar, rates,
-                           dayCounter, businessDayConvention,
-                           redemption, issueDate, params, tsQuotes, times) {
-     UseMethod("FixedRateBondCC")
-}
-FixedRateBondCC.default <- function(settlementDays = 1, faceAmount,
-                                effectiveDate, maturityDate,
-                                period, calendar = "us", rates,
-                                dayCounter=2, businessDayConvention=0,
-                                redemption = 100, issueDate, params, tsQuotes, times) {
-     val <- .Call("QL_FixedRateBondCustomCurve",
-                    list(
-                         settlementDays=as.double(settlementDays),
-                         calendar=as.character(calendar),
-		         faceAmount = as.double(faceAmount),
-                         period = as.double(period),
-		         businessDayConvention=as.double(businessDayConvention),
-		         redemption= as.double(redemption),
-                         dayCounter = as.double(dayCounter),		        
-		         maturityDate = maturityDate,
-                         effectiveDate = effectiveDate,
-		         issueDate = issueDate
-		         ), rates, params, tsQuotes, times,
-                 PACKAGE="RQuantLib")
-    val$cashFlow <- as.data.frame(val$cashFlow)
-    class(val) <- c("FixedRateBondCC", "Bond")
-    val
-}
+
 
 FixedRateBondYield <- function( settlementDays, price, faceAmount,
                            effectiveDate, maturityDate,
@@ -255,6 +197,18 @@ FixedRateBondPriceByYield.default <- function(settlementDays = 1, yield, faceAmo
     class(val) <- c("FixedRateBondPriceByYield")
     val
 }
+
+
+
+
+
+#FloatingRateBond <- function(settlementDays, faceAmount, sch, index, gearings,                                                    
+#                             spreads, caps, floors, dayCounter, 
+#                             businessDayConvention, fixingDays,
+#                             redemption, issueDate, riskFreeRate, todayDate){
+#    UseMethod("FloatingRateBond");
+#}
+
 
 #I am not sure how to if these are correct. I just copy from asian.R
 plot.Bond <- function(x, ...) {

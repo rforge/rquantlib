@@ -173,8 +173,58 @@ boost::shared_ptr<YieldTermStructure> buildTermStructure(SEXP params,
     return curve;    
 }
 
+Schedule getSchedule(SEXP sch){
+   
+    RcppParams rparam(sch);
+    RcppDate iDate = rparam.getDateValue("effectiveDate");
+    QuantLib::Date effectiveDate(dateFromR(iDate));
+    RcppDate mDate = rparam.getDateValue("maturityDate");
+    QuantLib::Date maturityDate(dateFromR(mDate));      
+    double frequency = rparam.getDoubleValue("period");
+    std::string cal = rparam.getStringValue("calendar");
+    double businessDayConvention = rparam.getDoubleValue("businessDayConvention");
+    double terminationDateConvention = rparam.getDoubleValue("terminationDateConvention");
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+    if (cal == "us"){
+        calendar = UnitedStates(UnitedStates::GovernmentBond);
+    }
+    else if (cal == "uk"){
+        calendar = UnitedKingdom(UnitedKingdom::Exchange);
+    }
+    BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);   
+    BusinessDayConvention t_bdc = getBusinessDayConvention(terminationDateConvention);
+    Schedule schedule(effectiveDate,
+                      maturityDate,
+                      Period(getFrequency(frequency)),
+                      calendar, bdc, t_bdc, 
+                      DateGeneration::Backward, false);
+    return schedule;
+    
+}
 
+boost::shared_ptr<IborIndex> getIborIndex(SEXP index, const Date today){
+    RcppParams rparam(index);
+    std::string type = rparam.getStringValue("type");
 
+    if (type == "USDLibor"){
+        double riskFreeRate = rparam.getDoubleValue("riskFreeRate");
+        double period = rparam.getDoubleValue("period");
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
+        Settings::instance().evaluationDate() = today;
+        Handle<YieldTermStructure> curve(flatRate(today,rRate,Actual360()));
+        boost::shared_ptr<IborIndex> iindex(new USDLibor(period * Months, curve));
+        return iindex;
+    }
+    else return boost::shared_ptr<IborIndex>();
+}
+
+std::vector<double> getDoubleVector(SEXP vector){
+    RcppVector<double> RcppVec(vector);
+    if (RcppVec.size() > 0){
+        return std::vector<double>(RcppVec.stlVector());
+    }
+    else return std::vector<double>();
+}
 
 boost::shared_ptr<YieldTermStructure>
 makeFlatCurve(const Date& today,
@@ -225,7 +275,7 @@ makeProcess(const boost::shared_ptr<Quote>& u,
 int dateFromR(const RcppDate &d) {
     return(d.getJDN() - RcppDate::Jan1970Offset + RcppDate::QLtoJan1970Offset);
 }
-DayCounter getDayCounter(double n){
+DayCounter getDayCounter(const double n){
     if (n==0) return Actual360();
     else if (n==1) return Actual365Fixed();
     else if (n==2) return ActualActual();
@@ -234,20 +284,20 @@ DayCounter getDayCounter(double n){
     else if (n==5) return SimpleDayCounter();
     else  return Thirty360();
 }
-BusinessDayConvention getBusinessDayConvention(double n){
+BusinessDayConvention getBusinessDayConvention(const double n){
     if (n==0) return Following;
     else if (n==1) return ModifiedFollowing;
     else if (n==2) return Preceding;
     else if (n==3) return ModifiedPreceding;
     else  return Unadjusted;
 }
-Compounding getCompounding(double n){
+Compounding getCompounding(const double n){
     if (n==0) return Simple;
     else if (n==1) return Compounded;
     else if (n==2) return Continuous;
     else return SimpleThenCompounded;
 }
-Frequency getFrequency(double n){
+Frequency getFrequency(const double n){
     if (n==0) return NoFrequency;
     else if (n==1) return Once;
     else if (n==2) return Annual;
