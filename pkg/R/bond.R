@@ -100,35 +100,26 @@ ZeroYield.default <- function(price, faceAmount,
 }
 
 
-FixedRateBond <- function( settlementDays, faceAmount,
-                           effectiveDate, maturityDate,
-                           period, calendar, rates,
-                           dayCounter, businessDayConvention,
-                           redemption, issueDate, riskFreeRate, todayDate) {
+
+FixedRateBond <- function(bond, rates, discountCurve, dateparams){
      UseMethod("FixedRateBond")
 }
-FixedRateBond.default <- function(settlementDays = 1, faceAmount,
-                                effectiveDate, maturityDate,
-                                period, calendar = "us", rates,
-                                dayCounter=2, businessDayConvention=0,
-                                redemption = 100, issueDate, riskFreeRate, todayDate) {
-     val <- .Call("QL_FixedRateBond",
-                    list(
-                         settlementDays=as.double(settlementDays),
-                         calendar=as.character(calendar),
-		         faceAmount = as.double(faceAmount),
-                         period = as.double(period),
-		         businessDayConvention=as.double(businessDayConvention),
-		         redemption= as.double(redemption),
-                         dayCounter = as.double(dayCounter),
-		         riskFreeRate= as.double(riskFreeRate),
-		         maturityDate = maturityDate,
-                         effectiveDate = effectiveDate,
-		         issueDate = issueDate,
-		         todayDate = todayDate), rates,
-                 PACKAGE="RQuantLib")
+FixedRateBond.default <- function(bond, rates, discountCurve, dateparams){
+    val <- 0
+    if (length(discountCurve)==2){
+       val <- .Call("QL_FixedRateBond1", 
+                     bond, rates, discountCurve, dateparams,
+                     PACKAGE="RQuantLib")
+    }
+    if (length(discountCurve)==3){
+       val <- .Call("QL_FixedRateBond2", 
+                    bond, rates, discountCurve[[1]], 
+                    discountCurve[[2]], discountCurve[[3]],
+                    dateparams,
+                    PACKAGE="RQuantLib")      
+    }
     val$cashFlow <- as.data.frame(val$cashFlow)
-    class(val) <- c("FixedRateBond", "Bond")
+    class(val) <- c("FixedRateBond", "Bond")    
     val
 }
 

@@ -171,22 +171,32 @@ $cleanPrice
 attr(,"class")
 [1] "FixedRateBondPriceByYield"
 > 
-> print(FixedRateBond(, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , ,as.Date("2004-11-30"), 0.03, as.Date("2004-11-22")))
+> ## bond.cpp 
+> bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
++              maturityDate=as.Date("2008-11-30"), redemption=100, 
++              effectiveDate=as.Date("2004-11-30"))
+> dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
++                    businessDayConvention = 4, terminationDateConvention=4,
++                    dateGeneration=1, endOfMonth=1)
+> curve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
+> rates <- c(0.02875)
+>                        
+> print(FixedRateBond(bond, rates, curve, dateparams))
 Concise summary of valuation for FixedRateBond 
- Net present value :  99215.87 
-       clean price :  99.282 
-       dirty price :  99.282 
+ Net present value :  99.07476 
+       clean price :  99.29 
+       dirty price :  99.29 
     accrued coupon :  0 
              yield :  0.030455 
         cash flows : 
        Date   Amount
- 2005-05-31   1432.9
- 2005-11-30   1441.4
- 2006-05-30   1425.7
- 2006-11-30   1449.3
- 2007-05-30   1425.7
- 2007-11-30   1449.3
- 2008-05-30   1430.3
- 2008-12-01   1453.2
- 2008-12-01 100000.0
+ 2005-05-31   1.4336
+ 2005-11-30   1.4414
+ 2006-05-31   1.4336
+ 2006-11-30   1.4414
+ 2007-05-31   1.4336
+ 2007-11-30   1.4414
+ 2008-05-30   1.4336
+ 2008-11-30   1.4493
+ 2008-11-30 100.0000
 > 

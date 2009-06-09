@@ -81,4 +81,14 @@ FixedRateBondYield(,99.282, 100000, as.Date("2004-11-30"), as.Date("2008-11-30")
 ## bond.cpp: test theoretical price of a fixed rate bond  = 99.2708
 FixedRateBondPriceByYield(,0.0307, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , , ,as.Date("2004-11-30"))
 
-print(FixedRateBond(, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , ,as.Date("2004-11-30"), 0.03, as.Date("2004-11-22")))
+## bond.cpp 
+bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
+             maturityDate=as.Date("2008-11-30"), redemption=100, 
+             effectiveDate=as.Date("2004-11-30"))
+dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
+                   businessDayConvention = 4, terminationDateConvention=4,
+                   dateGeneration=1, endOfMonth=1)
+curve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
+rates <- c(0.02875)
+                       
+print(FixedRateBond(bond, rates, curve, dateparams))

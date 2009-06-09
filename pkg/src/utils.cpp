@@ -310,3 +310,12 @@ Frequency getFrequency(const double n){
     else if (n==9) return Weekly;
     else return Daily;
 }
+DateGeneration::Rule getDateGenerationRule(const double n){
+    if (n==0) return DateGeneration::Backward;
+    else if (n==1) return DateGeneration::Forward;
+    else if (n==2) return DateGeneration::Zero;
+    else if (n==3) return DateGeneration::ThirdWednesday;
+    else if (n==4) return DateGeneration::Twentieth;
+    else return DateGeneration::TwentiethIMM;
+
+}

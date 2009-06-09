@@ -146,7 +146,7 @@ Frequency getFrequency(const double n);
 Compounding getCompounding(const double n);
 BusinessDayConvention getBusinessDayConvention(const double n);
 DayCounter getDayCounter(const double n);
-
+DateGeneration::Rule getDateGenerationRule(const double n);
 boost::shared_ptr<YieldTermStructure> buildTermStructure(SEXP params,
                                                          SEXP tsQuotes,
                                                          SEXP times);

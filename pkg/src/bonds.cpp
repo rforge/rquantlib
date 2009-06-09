@@ -121,14 +121,14 @@ RcppExport  SEXP QL_ZeroYield(SEXP optionParameters) {
 }
 
 
-SEXP ZeroBond(SEXP bond, 
+SEXP ZeroBond(SEXP bondparam, 
               Handle<YieldTermStructure> &discountCurve,
               SEXP dateparams) {
 
     SEXP rl=R_NilValue;
     char* exceptionMesg=NULL;
     try{
-        RcppParams rparam(bond);
+        RcppParams rparam(bondparam);
         double faceAmount = rparam.getDoubleValue("faceAmount");
         RcppDate mDate = rparam.getDateValue("maturityDate");
         RcppDate iDate = rparam.getDateValue("issueDate");
@@ -208,7 +208,7 @@ SEXP ZeroBond(SEXP bond,
     return rl;
 }
 
-RcppExport SEXP QL_ZBond1(SEXP bond, SEXP discountCurve, SEXP dateparams){
+RcppExport SEXP QL_ZBond1(SEXP bondparam, SEXP discountCurve, SEXP dateparams){
     SEXP rl = R_NilValue;
     char *exceptionMesg = NULL;
     try{
@@ -221,7 +221,7 @@ RcppExport SEXP QL_ZBond1(SEXP bond, SEXP discountCurve, SEXP dateparams){
         Settings::instance().evaluationDate() = today;
         Handle<YieldTermStructure> discountCurve(flatRate(today,rRate,Actual360()));
 
-        rl = ZeroBond(bond, discountCurve, dateparams);
+        rl = ZeroBond(bondparam, discountCurve, dateparams);
     } catch(std::exception& ex) {
         exceptionMesg = copyMessageToR(ex.what());
     } catch(...) {
@@ -232,17 +232,17 @@ RcppExport SEXP QL_ZBond1(SEXP bond, SEXP discountCurve, SEXP dateparams){
     
     return rl;
 }
-RcppExport SEXP QL_ZBond2(SEXP bond, SEXP params, 
+RcppExport SEXP QL_ZBond2(SEXP bondparam, SEXP params, 
                           SEXP tsQuotes, SEXP times,
                           SEXP dateparams){
     SEXP rl = R_NilValue;
     char *exceptionMesg = NULL;
     try{
-        std::cout << "in zbond2";
+        
         Handle<YieldTermStructure> discountCurve(
                                  buildTermStructure(params, tsQuotes, times));
-        std::cout << discountCurve->discount(10);
-        rl = ZeroBond(bond, discountCurve, dateparams);
+      
+        rl = ZeroBond(bondparam, discountCurve, dateparams);
     } catch(std::exception& ex) {
         exceptionMesg = copyMessageToR(ex.what());
     } catch(...) {
@@ -254,36 +254,46 @@ RcppExport SEXP QL_ZBond2(SEXP bond, SEXP params,
 }
 
 
-RcppExport  SEXP QL_ZeroCouponBondCustomCurve(SEXP optionParameters,
-                                              SEXP params, SEXP tsQuotes,
-                                              SEXP times) {
 
+SEXP FixedBond(SEXP bondparam, SEXP ratesVec,
+                   Handle<YieldTermStructure> &discountCurve,
+                   SEXP dateparams){
     SEXP rl=R_NilValue;
     char* exceptionMesg=NULL;
     try{
-        RcppParams rparam(optionParameters);
-        double settlementDays = rparam.getDoubleValue("settlementDays");
-        std::string cal = rparam.getStringValue("calendar");
+        RcppParams rparam(bondparam);
+        
         double faceAmount = rparam.getDoubleValue("faceAmount");
-        double businessDayConvention = rparam.getDoubleValue("businessDayConvention");
-        double redemption = rparam.getDoubleValue("redemption");
         
         RcppDate mDate = rparam.getDateValue("maturityDate");
+        RcppDate eDate = rparam.getDateValue("effectiveDate");
         RcppDate iDate = rparam.getDateValue("issueDate");
-        
         QuantLib::Date maturityDate(dateFromR(mDate));
+        QuantLib::Date effectiveDate(dateFromR(eDate));
         QuantLib::Date issueDate(dateFromR(iDate));
-        
-        
-        /*
-          Build the discount curve
-        */
-        Handle<YieldTermStructure> curve(
-                                         buildTermStructure(params, tsQuotes, times));
-        
+        double redemption = rparam.getDoubleValue("redemption");
+
+        RcppParams misc(dateparams);      
+        double settlementDays = misc.getDoubleValue("settlementDays");
+        std::string cal = misc.getStringValue("calendar");
+        double dayCounter = misc.getDoubleValue("dayCounter");
+        double frequency = misc.getDoubleValue("period");
+        double businessDayConvention = misc.getDoubleValue("businessDayConvention");
+        double terminationDateConvention = misc.getDoubleValue("terminationDateConvention");
+        double dateGeneration = misc.getDoubleValue("dateGeneration");
+        double endOfMonthRule = misc.getDoubleValue("endOfMonth");
+
+        //extract coupon rates vector
+        RcppVector<double> RcppVec(ratesVec); 
+        std::vector<double> rates(RcppVec.stlVector());
+
         //set up BusinessDayConvetion
         BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
-        
+        BusinessDayConvention tbdc = getBusinessDayConvention(terminationDateConvention);
+        DayCounter dc = getDayCounter(dayCounter);
+        Frequency freq = getFrequency(frequency);
+        DateGeneration::Rule rule = getDateGenerationRule(dateGeneration);
+        bool endOfMonth = (endOfMonthRule==1) ? true : false;
         //set up calendar
         Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
         if (cal == "us"){
@@ -292,18 +302,19 @@ RcppExport  SEXP QL_ZeroCouponBondCustomCurve(SEXP optionParameters,
         else if (cal == "uk"){
             calendar = UnitedKingdom(UnitedKingdom::Exchange);
         }
+
+        //build the bond
+        Schedule sch(effectiveDate, maturityDate,
+                     Period(freq), calendar,
+                     bdc, tbdc, rule, endOfMonth);
         
-        
-        ZeroCouponBond bond(settlementDays,
-                            calendar,
-                            faceAmount,
-                            maturityDate,
-                            bdc,
-                            redemption, issueDate);
-        
+        FixedRateBond bond(settlementDays, faceAmount, sch,
+                           rates,dc, bdc, redemption, issueDate);
+
+        //bond price
         boost::shared_ptr<PricingEngine> bondEngine(
-                                                    new DiscountingBondEngine(curve));
-        bond.setPricingEngine(bondEngine);
+                                                    new DiscountingBondEngine(discountCurve));
+        bond.setPricingEngine(bondEngine);   
 
         //cashflow
         int numCol = 2;
@@ -321,16 +332,19 @@ RcppExport  SEXP QL_ZeroCouponBondCustomCurve(SEXP optionParameters,
             frame.addRow(row);
         }
         
+        
         RcppResultSet rs;
+
         rs.add("NPV", bond.NPV());
         rs.add("cleanPrice", bond.cleanPrice());
         rs.add("dirtyPrice", bond.dirtyPrice());
         rs.add("accruedCoupon", bond.accruedAmount());
         rs.add("yield", bond.yield(Actual360(), Compounded, Annual));
         rs.add("cashFlow", frame);
-
         rl = rs.getReturnList();
-    } catch(std::exception& ex) {
+
+    }
+    catch(std::exception& ex) {
         exceptionMesg = copyMessageToR(ex.what());
     } catch(...) {
         exceptionMesg = copyMessageToR("unknown reason");
@@ -338,12 +352,57 @@ RcppExport  SEXP QL_ZeroCouponBondCustomCurve(SEXP optionParameters,
     
     if(exceptionMesg != NULL)
         error(exceptionMesg);
+    return rl;
+}
+
+RcppExport SEXP QL_FixedRateBond1(SEXP bondparam, SEXP ratesVec,
+                                  SEXP discountCurve, SEXP dateparams){
+    SEXP rl = R_NilValue;
+    char *exceptionMesg = NULL;
+    try{
+        RcppParams curve(discountCurve);
+        Rate riskFreeRate = curve.getDoubleValue("riskFreeRate");
+        RcppDate today_Date = curve.getDateValue("todayDate");       
+        QuantLib::Date today(dateFromR(today_Date));
+        
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
+        Settings::instance().evaluationDate() = today;
+        Handle<YieldTermStructure> discountCurve(flatRate(today,rRate,Actual360()));
+
+        rl = FixedBond(bondparam, ratesVec, discountCurve, dateparams);
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
     
     return rl;
 }
 
-
-RcppExport  SEXP QL_FixedRateBond(SEXP optionParameters, SEXP ratesVec) {
+RcppExport SEXP QL_FixedRateBond2(SEXP bondparam, SEXP ratesVec, 
+                                  SEXP params, SEXP tsQuotes, 
+                                  SEXP times, SEXP dateparams){
+    SEXP rl = R_NilValue;
+    char *exceptionMesg = NULL;
+    try{
+        
+        Handle<YieldTermStructure> discountCurve(
+                                                 buildTermStructure(params, tsQuotes, times));
+        
+        rl = FixedBond(bondparam, ratesVec, discountCurve, dateparams);
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);   
+    return rl;
+}
+    
+/*RcppExport  SEXP QL_FixedRateBond(SEXP optionParameters, SEXP ratesVec) {
   
     SEXP rl=R_NilValue;
     char* exceptionMesg=NULL;
@@ -441,7 +500,8 @@ RcppExport  SEXP QL_FixedRateBond(SEXP optionParameters, SEXP ratesVec) {
         error(exceptionMesg);
     
     return rl;
-}
+    }*/
+/*
 RcppExport  SEXP QL_FixedRateBondCustomCurve(SEXP optionParameters, SEXP ratesVec,
                                     SEXP params, SEXP tsQuotes, SEXP times) {
   
@@ -483,9 +543,9 @@ RcppExport  SEXP QL_FixedRateBondCustomCurve(SEXP optionParameters, SEXP ratesVe
             calendar = UnitedKingdom(UnitedKingdom::Exchange);
         }
 
- /*
+ 
           Build the discount curve
-        */
+        
         Handle<YieldTermStructure> discountCurve(
                                          buildTermStructure(params, tsQuotes, times));        
 
@@ -543,7 +603,7 @@ RcppExport  SEXP QL_FixedRateBondCustomCurve(SEXP optionParameters, SEXP ratesVe
     return rl;
 }
 
- 
+ */
 RcppExport  SEXP QL_FixedRateBondYield(SEXP optionParameters, SEXP ratesVec) {
   
     SEXP rl=R_NilValue;

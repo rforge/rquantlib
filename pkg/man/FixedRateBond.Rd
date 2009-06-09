@@ -11,31 +11,32 @@
 
 }
 \usage{
-\method{FixedRateBond}{default}( settlementDays=1, faceAmount, 
-                                 effectiveDate, maturityDate,
-                                 period, calendar="us", 
-                                 rates, dayCounter=2,
-                                 businessDayConvention=0, redemption=100, 
-                                 issueDate, riskFreeRate, todayDate)
-
+\method{FixedRateBond}{default}(bond, rates, discountCurve, dateparams )
 \method{plot}{Bond}
 \method{print}{Bond}
 \method{summary}{Bond}
 }
 \arguments{
-  \item{settlementDays}{an integer, 1 for T+1, 2 for T+2, etc...}
-  \item{effectiveDate}{bond's effective date}
-  \item{maturityDate}{bond's maturity date}
-  \item{period}{frequency of events,0=NoFrequency, 1=Once, 2=Annual, 3=Semiannual, 4=EveryFourthMonth, 5=Quarterly, 6=Bimonthly ,7=Monthly ,8=EveryFourthWeely,9=Biweekly, 10=Weekly, 11=Daily. For more information, see QuantLib's Frequency class }
-  \item{calendar}{Business Calendar. Either \code{us} or \code{uk}}
-  \item{faceAmount}{face amount of the bond}
-  \item{rates}{vector of rates}
-  \item{businessDayConvention}{convention used to adjust a date in case it is not a valid business day. See quantlib for more detail. 0 = Following, 1 = ModifiedFollowing, 2 = Preceding, 3 = ModifiedPreceding, other = Unadjusted}
-  \item{dayCounter}{day count convention. 0 = Actual360(), 1 = Actual365Fixed(), 2 = ActualActual(), 3 = Business252(), 4 = OneDayCounter(), 5 = SimpleDayCounter(), all other = Thirty360(). For more information, see QuantLib's DayCounter class}
-  \item{redemption}{redemption when the bond expires}
-  \item{issueDate}{date the bond is issued}
-  \item{todayDate}{neccessary to for building the discount curve. Different todayDate will return different values of the bond}
-  \item{riskFreeRate}{Risk-free rate}
+\item{bond}{a list specifying the basic arguments of the fixed rate bond,
+            \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
+            \code{redemption}, \code{effectiveDate}}
+\item{rates}{a double vector of rates}
+\item{discountCurve}{ A list specifying the discount curve 
+    that will be used in pricing of the bond. There are two way to
+    specify a discount curve. One is a flat curve, which can be specify
+    using a list of two values \code{todayDate} and \code{riskFreeRate}
+    . Another way is to construct a curve from market data
+    using a list of three values, \code{params} , \code{tsQuotes},
+    \code{times}. For more detail, see example or the discountCurve function
+}
+\item{dateparams}{ A list specifying date paramters, \code{settlemenDays},
+    \code{calendar} - a string, \code{businessDayConvention}- an integer,
+    \code{terminationDateConvention} - an integer,
+    \code{dateGeneration} - an integer,
+    \code{endOfMonth} - value 1 or 0. For more detail, see the quantlib
+    docs for FixedRateBond
+}
+
 }
 \value{
   The \code{FixedRateBond} function returns an object of class
@@ -60,8 +61,43 @@
 
 
 \examples{
-# simple call with unnamed parameters
-FixedRateBond(, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , ,as.Date("2004-11-30"), 0.03, as.Date("2004-11-22"))
+
+bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
+             maturityDate=as.Date("2008-11-30"), redemption=100, 
+             effectiveDate=as.Date("2004-11-30"))
+dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
+                   businessDayConvention = 4, terminationDateConvention=4,
+                   dateGeneration=1, endOfMonth=1)
+curve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
+rates <- c(0.02875)
+                       
+FixedRateBond(bond, rates, curve, dateparams)
+
+params <- list(tradeDate=as.Date('2002-2-15'),
+               settleDate=as.Date('2002-2-19'),
+               dt=.25,
+               interpWhat="discount",
+               interpHow="loglinear")
+
+tsQuotes <- list(d1w  =0.0382,
+                 d1m  =0.0372,
+                 fut1=96.2875,
+                 fut2=96.7875,
+                 fut3=96.9875,
+                 fut4=96.6875,
+                 fut5=96.4875,
+                 fut6=96.3875,
+                 fut7=96.2875,
+                 fut8=96.0875,
+                 s3y  =0.0398,
+                 s5y  =0.0443,
+                 s10y =0.05165,
+                 s15y =0.055175)
+
+times <- seq(0,10,.1)
+FixedRateBond(bond, rates, curve, dateparams)
+
+
 }
 \keyword{misc}
 
