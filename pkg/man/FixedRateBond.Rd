@@ -30,11 +30,12 @@
     \code{times}. For more detail, see example or the discountCurve function
 }
 \item{dateparams}{ A list specifying date paramters, \code{settlemenDays},
-    \code{calendar} - a string, \code{businessDayConvention}- an integer,
+    \code{calendar} - a string 'us' or 'uk', \code{businessDayConvention}- an integer,
+    \code{dayCounter}, \code{period}
     \code{terminationDateConvention} - an integer,
     \code{dateGeneration} - an integer,
-    \code{endOfMonth} - value 1 or 0. For more detail, see the quantlib
-    docs for FixedRateBond
+    \code{endOfMonth} - value 1 or 0.  For more detail, see \link{Enum} and 
+    the quantlib docs for FixedRateBond
 }
 
 }
@@ -54,7 +55,8 @@
   implementation.  
 }
 \references{\url{http://quantlib.org} for details on \code{QuantLib}.}
-\author{Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
+
+\author{Khanh Nguyen \email{knguyen@cs.umb.edu}; Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
   the QuantLib Group for \code{QuantLib}}
 \note{The interface might change in future release as \code{QuantLib}
   stabilises its own API.}
