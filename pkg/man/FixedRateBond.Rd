@@ -36,6 +36,7 @@
     \code{dateGeneration} - an integer,
     \code{endOfMonth} - value 1 or 0.  For more detail, see \link{Enum} and 
     the quantlib docs for FixedRateBond
+
 }
 
 }
