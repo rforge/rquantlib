@@ -190,7 +190,49 @@ FixedRateBondPriceByYield.default <- function(settlementDays = 1, yield, faceAmo
 }
 
 
+FloatingRateBond <- function(bond, gearings, spreads, caps, floors,
+                             index, curve, dateparams){
+    UseMethod("FloatingRateBond")
+}
 
+FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
+                                     index, curve, dateparams){
+    val <- 0
+    indexparams <- list(type=index[[1]], length=index[[2]], inTermOf=index[[3]])
+    if ((length(curve)==2) && (length(index[[4]])==2)){
+       val <- .Call("QL_FloatBond1", 
+                     bond, gearings, spreads, caps, floors,
+                     indexparams, index[[4]], curve, dateparams,
+                     PACKAGE="RQuantLib")
+    }
+    if ((length(curve)==2) && (length(index[[4]])==3)){
+       ibor <- index[[4]]
+       val <- .Call("QL_FloatBond2", 
+                     bond, gearings, spreads, caps, floors,
+                     indexparams, ibor[[1]], ibor[[2]],
+                     ibor[[3]], curve, dateparams,
+                     PACKAGE="RQuantLib")
+    }
+    if ((length(curve)==3) && (length(index[[4]])==2)){
+       val <- .Call("QL_FloatBond3", 
+                    bond, gearings, spreads, caps, floors, 
+                    indexparams, index[[4]], curve[[1]],curve[[2]], 
+                    curve[[3]], dateparams,
+                    PACKAGE="RQuantLib")      
+    }
+    if ((length(curve)==3) && (length(index[[4]])==3)){
+       ibor <- index[[4]]
+       val <- .Call("QL_FloatBond4", 
+                    bond, gearings, spreads, caps, floors, 
+                    indexparams, ibor[[1]], ibor[[2]], ibor[[3]], 
+                    curve[[1]],curve[[2]], curve[[3]], dateparams,
+                    PACKAGE="RQuantLib")      
+    }
+    val$cashFlow <- as.data.frame(val$cashFlow)
+    class(val) <- c("FloatingRateBond", "Bond")    
+    val
+
+}
 
 
 #FloatingRateBond <- function(settlementDays, faceAmount, sch, index, gearings,                                                    

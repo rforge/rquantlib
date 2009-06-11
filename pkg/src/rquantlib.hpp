@@ -153,4 +153,5 @@ boost::shared_ptr<YieldTermStructure> buildTermStructure(SEXP params,
 Schedule getSchedule(SEXP sch);
 boost::shared_ptr<IborIndex> getIborIndex(SEXP index, const Date today);
 std::vector<double> getDoubleVector(SEXP vector);
+boost::shared_ptr<YieldTermStructure> getFlatCurve(SEXP flatcurve);
 #endif

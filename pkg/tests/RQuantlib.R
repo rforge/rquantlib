@@ -81,7 +81,7 @@ FixedRateBondYield(,99.282, 100000, as.Date("2004-11-30"), as.Date("2008-11-30")
 ## bond.cpp: test theoretical price of a fixed rate bond  = 99.2708
 FixedRateBondPriceByYield(,0.0307, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , , ,as.Date("2004-11-30"))
 
-## bond.cpp 
+## bond.cpp
 bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
              maturityDate=as.Date("2008-11-30"), redemption=100, 
              effectiveDate=as.Date("2004-11-30"))
@@ -92,3 +92,22 @@ curve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
 rates <- c(0.02875)
                        
 print(FixedRateBond(bond, rates, curve, dateparams))
+
+## bond.cpp FloatingRateBond, following test-suite/bonds.cpp
+bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
+             maturityDate=as.Date("2008-11-30"), redemption=100, 
+             effectiveDate=as.Date("2004-11-30"))
+dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
+                   businessDayConvention = 1, terminationDateConvention=1,
+                   dateGeneration=0, endOfMonth=0, fixingDays = 1)
+gearings <- c()
+spreads <- c()
+caps <- c()
+floors <- c()
+length2 <- list(todayDate=as.Date("2004-11-22"), riskFreeRate=0.025)
+curve <- length2
+termstructure <- length2
+iborindex <- list(type="USDLibor", length=6, 
+                  inTermOf="Month", termstructure)                      
+print(FloatingRateBond(bond, gearings, spreads, caps, floors, 
+                 iborindex, curve, dateparams))

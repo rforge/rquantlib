@@ -200,3 +200,39 @@ Concise summary of valuation for FixedRateBond
  2008-11-30   1.4493
  2008-11-30 100.0000
 > 
+> ## bond.cpp FloatingRateBond, following test-suite/bonds.cpp
+> bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
++              maturityDate=as.Date("2008-11-30"), redemption=100, 
++              effectiveDate=as.Date("2004-11-30"))
+> dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
++                    businessDayConvention = 1, terminationDateConvention=1,
++                    dateGeneration=0, endOfMonth=0, fixingDays = 1)
+> gearings <- c()
+> spreads <- c()
+> caps <- c()
+> floors <- c()
+> length2 <- list(todayDate=as.Date("2004-11-22"), riskFreeRate=0.025)
+> curve <- length2
+> termstructure <- length2
+> iborindex <- list(type="USDLibor", length=6, 
++                   inTermOf="Month", termstructure)  
+> print(FloatingRateBond(bond, gearings, spreads, caps, floors, 
++                  iborindex, curve, dateparams))
+Concise summary of valuation for FloatingRateBond 
+ Net present value :  99.81262 
+       clean price :  99.868 
+       dirty price :  99.868 
+    accrued coupon :  0 
+             yield :  0.025315 
+        cash flows : 
+       Date   Amount
+ 2005-05-31   1.2545
+ 2005-11-30   1.2614
+ 2006-05-30   1.2476
+ 2006-11-30   1.2684
+ 2007-05-30   1.2476
+ 2007-11-30   1.2684
+ 2008-05-30   1.2545
+ 2008-11-28   1.2545
+ 2008-11-28 100.0000
+> 

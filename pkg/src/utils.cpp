@@ -202,6 +202,17 @@ Schedule getSchedule(SEXP sch){
     
 }
 
+boost::shared_ptr<YieldTermStructure> getFlatCurve(SEXP flatcurve){
+    RcppParams curve(flatcurve);
+    Rate riskFreeRate = curve.getDoubleValue("riskFreeRate");
+    RcppDate today_Date = curve.getDateValue("todayDate");       
+    QuantLib::Date today(dateFromR(today_Date));
+    
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
+    Settings::instance().evaluationDate() = today;
+    return flatRate(today,rRate,Actual360());
+}
+
 boost::shared_ptr<IborIndex> getIborIndex(SEXP index, const Date today){
     RcppParams rparam(index);
     std::string type = rparam.getStringValue("type");
@@ -219,11 +230,16 @@ boost::shared_ptr<IborIndex> getIborIndex(SEXP index, const Date today){
 }
 
 std::vector<double> getDoubleVector(SEXP vector){
-    RcppVector<double> RcppVec(vector);
-    if (RcppVec.size() > 0){
-        return std::vector<double>(RcppVec.stlVector());
+    try {
+        RcppVector<double> RcppVec(vector);
+        if (RcppVec.size() > 0){
+            return  std::vector<double>(RcppVec.stlVector());
+        }
+        else return std::vector<double>();
     }
-    else return std::vector<double>();
+    catch (std::exception& e){       
+        return std::vector<double>();
+    }
 }
 
 boost::shared_ptr<YieldTermStructure>

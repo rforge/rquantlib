@@ -1,17 +1,18 @@
-% $Id$
-\name{FixedRateBond}
-\alias{FixedRateBond}
-\alias{FixedRateBond.default}
+% $Id: FloatingRateBond.Rd 87 2009-06-09 16:48:13Z knguyen $
+\name{FloatingRateBond}
+\alias{FloatingRateBond}
+\alias{FloatingRateBond.default}
 \title{Fixed rate bond evaluation using discount curve solution}
 \description{
-  The \code{FixedRateBond} function evaluates a fixed rate bond using discount curve. 
+  The \code{FloatingRateBond} function evaluates a floating rate bond using discount curve. 
   More specificly, the calculation is done by DiscountingBondEngine from QuantLib.
-  The clean price of the bond is returned. 
   For more detail, see the source codes in quantlib's test-suite. test-suite/bond.cpp
 
 }
 \usage{
-\method{FixedRateBond}{default}(bond, rates, discountCurve, dateparams )
+\method{FloatingRateBond}{default}(bond, gearings, spreads,
+                                   caps, floors, index, 
+                                   curve, dateparams )
 \method{plot}{Bond}
 \method{print}{Bond}
 \method{summary}{Bond}
@@ -20,8 +21,18 @@
 \item{bond}{a list specifying the basic arguments of the fixed rate bond,
             \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
             \code{redemption}, \code{effectiveDate}}
-\item{rates}{a double vector of rates}
-\item{discountCurve}{ A list specifying the discount curve 
+\item{gearings, spreads, caps, floors}{double vectors. See quantlib's doc
+on FloatingRateBond for more detail}
+
+\item{curve}{ A list specifying the discount curve 
+    that will be used in pricing of the bond. There are two way to
+    specify a discount curve. One is a flat curve, which can be specify
+    using a list of two values \code{todayDate} and \code{riskFreeRate}
+    . Another way is to construct a curve from market data
+    using a list of three values, \code{params} , \code{tsQuotes},
+    \code{times}. For more detail, see example or the discountCurve function
+}
+\item{index}{ A list specifying the discount curve 
     that will be used in pricing of the bond. There are two way to
     specify a discount curve. One is a flat curve, which can be specify
     using a list of two values \code{todayDate} and \code{riskFreeRate}
@@ -33,15 +44,19 @@
     \code{calendar} - a string 'us' or 'uk', \code{businessDayConvention}- an integer,
     \code{dayCounter}, \code{period}
     \code{terminationDateConvention} - an integer,
+    \code{period} - an integer
     \code{dateGeneration} - an integer,
     \code{endOfMonth} - value 1 or 0.  For more detail, see \link{Enum} and 
-    the quantlib docs for FixedRateBond
+    the quantlib docs for FloatingRateBond
+    \code{fixingDays} - an integer
+
+See \link{Enum} on how each values represents
 }
 
 }
 \value{
-  The \code{FixedRateBond} function returns an object of class
-  \code{FixedRateBond} (which inherits from class 
+  The \code{FloatingRateBond} function returns an object of class
+  \code{FloatingRateBond} (which inherits from class 
   \code{Bond}). It contains a list with the following
   components:
   \item{cleanValue}{clean value of the bond}
@@ -67,13 +82,21 @@
 bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
              maturityDate=as.Date("2008-11-30"), redemption=100, 
              effectiveDate=as.Date("2004-11-30"))
+
 dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
-                   businessDayConvention = 4, terminationDateConvention=4,
-                   dateGeneration=1, endOfMonth=1)
-curve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
-rates <- c(0.02875)
-                       
-FixedRateBond(bond, rates, curve, dateparams)
+                   businessDayConvention = 1, terminationDateConvention=1,
+                   dateGeneration=0, endOfMonth=0, fixingDays = 1)
+
+gearings <- c()
+
+spreads <- c()
+
+caps <- c()
+
+floors <- c()
+
+
+length2 <- list(todayDate=as.Date("2004-11-22"), riskFreeRate=0.025)
 
 params <- list(tradeDate=as.Date('2002-2-15'),
                settleDate=as.Date('2002-2-19'),
@@ -97,9 +120,46 @@ tsQuotes <- list(d1w  =0.0382,
                  s15y =0.055175)
 
 times <- seq(0,10,.1)
-curve <- list(params, tsQuotes, times)
-FixedRateBond(bond, rates, curve, dateparams)
 
+length3 <- list(params, tsQuotes, times)
+
+
+# both curves are flat
+
+curve <- length2
+termstructure <- length2
+iborindex <- list(type="USDLibor", length=6, 
+                  inTermOf="Month", termstructure)                      
+FloatingRateBond(bond, gearings, spreads, caps, floors, 
+                 iborindex, curve, dateparams)
+
+
+# one flat, another one is constructe
+
+curve <- length2
+termstructure <- length3
+iborindex <- list(type="USDLibor", length=6, 
+                  inTermOf="Month", termstructure)                      
+FloatingRateBond(bond, gearings, spreads, caps, floors, 
+                 iborindex, curve, dateparams)
+
+
+curve <- length3
+termstructure <- length2
+iborindex <- list(type="USDLibor", length=6, 
+                  inTermOf="Month", termstructure)                      
+FloatingRateBond(bond, gearings, spreads, caps, floors, 
+                 iborindex, curve, dateparams)
+
+
+# both curves are constructed
+
+curve <- length3
+termstructure <- length3
+iborindex <- list(type="USDLibor", length=6, 
+                  inTermOf="Month", termstructure)                      
+FloatingRateBond(bond, gearings, spreads, caps, floors, 
+                 iborindex, curve, dateparams)
 
 }
 \keyword{misc}
