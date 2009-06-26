@@ -796,3 +796,82 @@ RcppExport SEXP QL_FloatBond4(SEXP bond, SEXP gearings, SEXP caps,
     
     return rl;
 }
+
+RcppExport SEXP QL_FloatingWithRebuiltCurve(SEXP bond, SEXP gearings,
+                                            SEXP spreads, SEXP caps,
+                                            SEXP floors, SEXP indexparams,
+                                            SEXP iborDateSexp, SEXP iborzeroSexp,
+                                            SEXP dateSexp, SEXP zeroSexp,
+                                            SEXP dateparams){
+   SEXP rl=R_NilValue;
+   char* exceptionMesg=NULL;
+   try {
+       
+       Handle<YieldTermStructure> ibor_curve(rebuildCurveFromZeroRates(iborDateSexp,
+                                                                   iborzeroSexp));       
+       Handle<YieldTermStructure> curve(rebuildCurveFromZeroRates(dateSexp,
+                                                                   zeroSexp));       
+
+
+       rl = FloatingBond(bond, gearings, caps, spreads,
+                         floors, ibor_curve, indexparams,
+                         curve, dateparams);
+   } catch(std::exception& ex) {
+       exceptionMesg = copyMessageToR(ex.what());
+   } catch(...) {
+       exceptionMesg = copyMessageToR("unknown reason");
+   }
+   
+   if(exceptionMesg != NULL)
+       error(exceptionMesg);
+    
+   return rl;
+}
+
+RcppExport SEXP QL_FixedRateWithRebuiltCurve(SEXP bondparam, SEXP ratesVec,
+                                             SEXP dateSexp, SEXP zeroSexp,
+                                             SEXP dateparams){
+    SEXP rl=R_NilValue;
+    char* exceptionMesg=NULL;
+    try {
+        Handle<YieldTermStructure> curve(rebuildCurveFromZeroRates(dateSexp,
+                                                                   zeroSexp));
+        rl = FixedBond(bondparam, ratesVec, curve, dateparams);
+
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}
+
+RcppExport SEXP QL_ZeroBondWithRebuiltCurve(SEXP bond,
+                                       SEXP dateSexp, SEXP zeroSexp,
+                                       SEXP dateparams){
+    SEXP rl=R_NilValue;
+    char* exceptionMesg=NULL;
+    try{
+
+        Handle<YieldTermStructure> curve(rebuildCurveFromZeroRates(dateSexp,
+                                                                   zeroSexp));
+
+
+        rl = ZeroBond(bond, curve, dateparams);
+        
+        
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}

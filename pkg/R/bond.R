@@ -27,17 +27,25 @@ ZeroCouponBond <- function(bond, discountCurve, dateparams ) {
 
 ZeroCouponBond.default <- function(bond, discountCurve, dateparams) {
     val <- 0
-    if (length(discountCurve)==2){
-       val <- .Call("QL_ZBond1", 
+    if (class(discountCurve)=="DiscountCurve"){
+        val <- .Call("QL_ZeroBondWithRebuiltCurve",
+                  bond, c(discountCurve$table$date), 
+                  discountCurve$table$zeroRates, dateparams,
+                  PACKAGE="RQuantLib")
+    }
+    else{
+        if (length(discountCurve)==2){
+            val <- .Call("QL_ZBond1", 
                      bond, discountCurve, dateparams,
                      PACKAGE="RQuantLib")
-    }
-    if (length(discountCurve)==3){
-       val <- .Call("QL_ZBond2", 
+        }
+        if (length(discountCurve)==3){
+             val <- .Call("QL_ZBond2", 
                     bond, discountCurve[[1]], 
                     discountCurve[[2]], discountCurve[[3]],
                     dateparams,
                     PACKAGE="RQuantLib")      
+        }
     }
     val$cashFlow <- as.data.frame(val$cashFlow)
     class(val) <- c("ZeroCouponBond", "Bond")    
@@ -106,17 +114,25 @@ FixedRateBond <- function(bond, rates, discountCurve, dateparams){
 }
 FixedRateBond.default <- function(bond, rates, discountCurve, dateparams){
     val <- 0
-    if (length(discountCurve)==2){
-       val <- .Call("QL_FixedRateBond1", 
+    if (class(discountCurve)=="DiscountCurve"){
+         val <- .Call("QL_FixedRateWithRebuiltCurve",
+                   bond, rates, c(discountCurve$table$date), 
+                  discountCurve$table$zeroRate, dateparams,
+                  PACKAGE="RQuantLib")         
+    }
+    else {
+         if (length(discountCurve)==2){
+             val <- .Call("QL_FixedRateBond1", 
                      bond, rates, discountCurve, dateparams,
                      PACKAGE="RQuantLib")
-    }
-    if (length(discountCurve)==3){
-       val <- .Call("QL_FixedRateBond2", 
+         }
+         if (length(discountCurve)==3){
+             val <- .Call("QL_FixedRateBond2", 
                     bond, rates, discountCurve[[1]], 
                     discountCurve[[2]], discountCurve[[3]],
                     dateparams,
                     PACKAGE="RQuantLib")      
+         }
     }
     val$cashFlow <- as.data.frame(val$cashFlow)
     class(val) <- c("FixedRateBond", "Bond")    
@@ -198,35 +214,48 @@ FloatingRateBond <- function(bond, gearings, spreads, caps, floors,
 FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
                                      index, curve, dateparams){
     val <- 0
-    indexparams <- list(type=index[[1]], length=index[[2]], inTermOf=index[[3]])
-    if ((length(curve)==2) && (length(index[[4]])==2)){
-       val <- .Call("QL_FloatBond1", 
+    if (class(curve)=="DiscountCurve"){
+        indexparams <- list(type=index[[1]], length=index[[2]], 
+                        inTermOf=index[[3]])
+        ibor <- index[[4]]
+        val <- .Call("QL_FloatingWithRebuiltCurve",
+                 bond, gearings, spreads, caps, floors, indexparams,
+                 c(ibor$table$date), ibor$table$zeroRate,
+                 c(curve$table$date), curve$table$zeroRate, 
+                 dateparams, 
+                 PACKAGE="RQuantLib")
+    }   
+    else {
+         indexparams <- list(type=index[[1]], length=index[[2]], inTermOf=index[[3]])
+         if ((length(curve)==2) && (length(index[[4]])==2)){
+             val <- .Call("QL_FloatBond1", 
                      bond, gearings, spreads, caps, floors,
                      indexparams, index[[4]], curve, dateparams,
                      PACKAGE="RQuantLib")
-    }
-    if ((length(curve)==2) && (length(index[[4]])==3)){
-       ibor <- index[[4]]
-       val <- .Call("QL_FloatBond2", 
+          }
+          if ((length(curve)==2) && (length(index[[4]])==3)){
+             ibor <- index[[4]]
+             val <- .Call("QL_FloatBond2", 
                      bond, gearings, spreads, caps, floors,
                      indexparams, ibor[[1]], ibor[[2]],
                      ibor[[3]], curve, dateparams,
                      PACKAGE="RQuantLib")
-    }
-    if ((length(curve)==3) && (length(index[[4]])==2)){
-       val <- .Call("QL_FloatBond3", 
+          }
+          if ((length(curve)==3) && (length(index[[4]])==2)){
+              val <- .Call("QL_FloatBond3", 
                     bond, gearings, spreads, caps, floors, 
                     indexparams, index[[4]], curve[[1]],curve[[2]], 
                     curve[[3]], dateparams,
                     PACKAGE="RQuantLib")      
-    }
-    if ((length(curve)==3) && (length(index[[4]])==3)){
-       ibor <- index[[4]]
-       val <- .Call("QL_FloatBond4", 
+          }
+          if ((length(curve)==3) && (length(index[[4]])==3)){
+              ibor <- index[[4]]
+              val <- .Call("QL_FloatBond4", 
                     bond, gearings, spreads, caps, floors, 
                     indexparams, ibor[[1]], ibor[[2]], ibor[[3]], 
                     curve[[1]],curve[[2]], curve[[3]], dateparams,
                     PACKAGE="RQuantLib")      
+          }
     }
     val$cashFlow <- as.data.frame(val$cashFlow)
     class(val) <- c("FloatingRateBond", "Bond")    
@@ -235,12 +264,6 @@ FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
 }
 
 
-#FloatingRateBond <- function(settlementDays, faceAmount, sch, index, gearings,                                                    
-#                             spreads, caps, floors, dayCounter, 
-#                             businessDayConvention, fixingDays,
-#                             redemption, issueDate, riskFreeRate, todayDate){
-#    UseMethod("FloatingRateBond");
-#}
 
 
 #I am not sure how to if these are correct. I just copy from asian.R

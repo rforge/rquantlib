@@ -17,6 +17,8 @@
 
 #include "rquantlib.hpp"
 
+
+
 RcppExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
 				     SEXP times) {
     SEXP rl=R_NilValue;
@@ -91,17 +93,47 @@ RcppExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
 	}
 
 	// Return discount, forward rate, and zero coupon curves
+        int numCol = 2;
+        std::vector<std::string> colNames(numCol);
+        colNames[0] = "date";
+        colNames[1] = "zeroRates";
+        
+
+
+        RcppFrame frame(colNames);
+        
 	int ntimes = length(times);
 	SEXP disc  = PROTECT(allocVector(REALSXP, ntimes));
 	SEXP fwds  = PROTECT(allocVector(REALSXP, ntimes));
 	SEXP zero  = PROTECT(allocVector(REALSXP, ntimes));
+        
+        
+        Date current = settlementDate;
 	double t;
-	for(i = 0; i < ntimes; i++) {
-	    t = REAL(times)[i];
+	for(i = 0; i < ntimes; i++) {          
+	    t = REAL(times)[i];                                                    
 	    REAL(disc)[i] = curve->discount(t);
 	    REAL(fwds)[i] = curve->forwardRate(t, t+dt, Continuous);
 	    REAL(zero)[i] = curve->zeroRate(t, Continuous);
+
+    
 	}
+
+
+        int n = curve->maxDate() - settlementDate;
+        for (int i = 0; i<n;i++){
+        std::vector<ColDatum> row(numCol);
+            Date d = current; 
+            row[0].setDateValue(RcppDate(d.month(),
+                                         d.dayOfMonth(),
+                                         d.year()));
+            
+            double zrate = curve->zeroRate(current, ActualActual(),
+                                            Continuous);
+            row[1].setDoubleValue(zrate);                        
+            frame.addRow(row);
+            current++;
+        }
 
 	RcppResultSet rs;
 	rs.add("times", times, false);
@@ -110,6 +142,7 @@ RcppExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
 	rs.add("zerorates", zero, true);
 	rs.add("flatQuotes", flatQuotes);
 	rs.add("params", params, false);
+        rs.add("table", frame);
 	rl = rs.getReturnList();
 
     } catch(std::exception& ex) {

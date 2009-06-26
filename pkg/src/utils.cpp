@@ -202,6 +202,29 @@ Schedule getSchedule(SEXP sch){
     
 }
 
+boost::shared_ptr<YieldTermStructure> rebuildCurveFromZeroRates(
+                                                                SEXP dateSexp,
+                                                                SEXP zeroSexp){
+    RcppDateVector rcppdates  = RcppDateVector(dateSexp);
+    int n = rcppdates.size();
+    std::vector<QuantLib::Date> dates(rcppdates.size());
+    for (int i = 0;i<n;i++){
+        QuantLib::Date day(dateFromR(rcppdates(i)) );
+        dates[i] = day;
+    }
+    //extract coupon rates vector
+    RcppVector<double> RcppVec(zeroSexp); 
+    std::vector<double> zeros(RcppVec.stlVector());
+    
+    boost::shared_ptr<YieldTermStructure>  
+        rebuilt_curve(new 
+                      InterpolatedZeroCurve<LogLinear>(                        
+                                                       dates,
+                                                       zeros,
+                                                       ActualActual()));
+    return rebuilt_curve;
+}
+
 boost::shared_ptr<YieldTermStructure> getFlatCurve(SEXP flatcurve){
     RcppParams curve(flatcurve);
     Rate riskFreeRate = curve.getDoubleValue("riskFreeRate");

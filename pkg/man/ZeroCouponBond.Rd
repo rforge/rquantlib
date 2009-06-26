@@ -96,8 +96,13 @@ tsQuotes <- list(d1w  =0.0382,
 
 times <- seq(0,10,.1)
 discountCurve <- list(params, tsQuotes, times)
+
+
 ZeroCouponBond(bond, discountCurve, dateparams)
 
+
+curves <- DiscountCurve(params, tsQuotes, times)
+ZeroCouponBond(bond, curves, dateparams)
 }
 \keyword{misc}
 

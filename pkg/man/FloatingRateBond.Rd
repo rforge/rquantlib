@@ -161,6 +161,15 @@ iborindex <- list(type="USDLibor", length=6,
 FloatingRateBond(bond, gearings, spreads, caps, floors, 
                  iborindex, curve, dateparams)
 
+
+curve2 <- DiscountCurve(params, tsQuotes, times)
+index2 <- DiscountCurve(params, tsQuotes, times)
+ibor <- list(type="USDLibor", length=6, 
+             inTermOf="Month", index2)
+
+FloatingRateBond(bond, gearings, spreads, caps, floors,
+                  ibor, curve2, dateparams)
+
 }
 \keyword{misc}
 

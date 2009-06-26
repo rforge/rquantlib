@@ -101,6 +101,8 @@ times <- seq(0,10,.1)
 curve <- list(params, tsQuotes, times)
 FixedRateBond(bond, rates, curve, dateparams)
 
+curve <- DiscountCurve(params, tsQuotes, times)
+FixedRateBond(bond, rates, curve, dateparams)
 
 }
 \keyword{misc}
