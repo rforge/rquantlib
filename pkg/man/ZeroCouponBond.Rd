@@ -97,12 +97,18 @@ tsQuotes <- list(d1w  =0.0382,
 times <- seq(0,10,.1)
 discountCurve <- list(params, tsQuotes, times)
 
-
+# depreciated
 ZeroCouponBond(bond, discountCurve, dateparams)
 
-
+# construct a curve
 curves <- DiscountCurve(params, tsQuotes, times)
 ZeroCouponBond(bond, curves, dateparams)
+
+#construct a flat curve
+flatquote <- list(flat=0.04)
+flatCurve <- DiscountCurve(params, flatquote, times)
+ZeroCouponBond(bond, flatCurve, dateparams)
+
 }
 \keyword{misc}
 
