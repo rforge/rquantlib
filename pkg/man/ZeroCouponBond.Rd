@@ -107,6 +107,9 @@ ZeroCouponBond(bond, curves, dateparams)
 #construct a flat curve
 flatquote <- list(flat=0.04)
 flatCurve <- DiscountCurve(params, flatquote, times)
+dateparams <-list(settlementDays=1, calendar="us", 
+                  businessDayConvention="Following")
+
 ZeroCouponBond(bond, flatCurve, dateparams)
 
 }

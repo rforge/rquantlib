@@ -166,7 +166,12 @@ curve2 <- DiscountCurve(params, tsQuotes, times)
 index2 <- DiscountCurve(params, tsQuotes, times)
 ibor <- list(type="USDLibor", length=6, 
              inTermOf="Month", index2)
-
+dateparams <- list(settlementDays=1, calendar="us", dayCounter = "Actual360", 
+                   period="Semiannual", 
+                   businessDayConvention = "Following", 
+                   terminationDateConvention= "Following",
+                   dateGeneration= "Forward", 
+                   endOfMonth=0, fixingDays = 1)
 FloatingRateBond(bond, gearings, spreads, caps, floors,
                   ibor, curve2, dateparams)
 

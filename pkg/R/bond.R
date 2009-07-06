@@ -27,6 +27,7 @@ ZeroCouponBond <- function(bond, discountCurve, dateparams ) {
 
 ZeroCouponBond.default <- function(bond, discountCurve, dateparams) {
     val <- 0
+    dateparams <- matchParams(dateparams)
     if (class(discountCurve)=="DiscountCurve"){
         val <- .Call("QL_ZeroBondWithRebuiltCurve",
                   bond, c(discountCurve$table$date), 
@@ -114,6 +115,7 @@ FixedRateBond <- function(bond, rates, discountCurve, dateparams){
 }
 FixedRateBond.default <- function(bond, rates, discountCurve, dateparams){
     val <- 0
+    dateparams <- matchParams(dateparams)
     if (class(discountCurve)=="DiscountCurve"){
          val <- .Call("QL_FixedRateWithRebuiltCurve",
                    bond, rates, c(discountCurve$table$date), 
@@ -214,6 +216,7 @@ FloatingRateBond <- function(bond, gearings, spreads, caps, floors,
 FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
                                      index, curve, dateparams){
     val <- 0
+    dateparams <- matchParams(dateparams)
     if (class(curve)=="DiscountCurve"){
         indexparams <- list(type=index[[1]], length=index[[2]], 
                         inTermOf=index[[3]])
@@ -264,9 +267,105 @@ FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
 }
 
 
+# matching functions
+
+matchDayCounter <- function(daycounter = c("Actual360", "ActualFixed", "ActualActual",
+                 "Business252", "OneDayCounter", "SimpleDayCounter", "Thirty360"))
+{
+     if (!is.numeric(daycounter)) {
+         daycounter <- match.arg(daycounter)         
+         daycounter <- switch(daycounter,
+                              Actual360 = 0,
+                              ActualFixed = 1,
+                              ActualActual = 2,
+                              Business252 = 3,
+                              OneDayCounter = 4,
+                              SimpleDayCounter = 5,
+                              Thirty360 = 6)
+     }
+     daycounter     
+}
+
+matchBDC <- function(bdc = c("Following", "ModifiedFollowing",
+                             "Preceding", "ModifiedPreceding",
+                             "Unadjusted")) {
+     if (!is.numeric(bdc)){
+         bdc <- match.arg(bdc)
+         bdc <- switch(bdc, 
+                       Following = 0,
+                       ModifiedFollowing = 1,
+                       Preceding = 2,
+                       ModifiedPreceding = 3,
+                       Unadjusted = 4)
+     }
+     bdc    
+}
+
+matchCompounding <- function(cp = c("Simple", "Compounded", 
+                                    "Continuous", "SimpleThenCompounded")) {
+     if (!is.numeric(cp)){
+        cp <- match.arg(cp)
+        cp <- switch(cp,
+                     Simple = 0, 
+                     Compounded = 1,
+                     Continuous = 2,
+                     SimpleThenCompounded = 3)
+     }    
+     cp
+}
+matchFrequency <- function(freq = c("NoFrequency","Once", "Annual",
+                                    "Semiannual", "EveryFourthMonth",
+                                    "Quarterly", "Bimonthly",
+                                    "EveryFourthWeek", "Biweekly",
+                                    "Weekly", "Daily")){
+    if (!is.numeric(freq)){
+       freq <- match.arg(freq)
+       freq <- switch(freq, 
+                      NoFrequency = 0, Once = 1, Annual = 2,
+                      Semiannual = 3, EveryFourthMonth = 4,
+                      Quarterly = 5, Bimonthly = 6,
+                      EveryFourthWeek = 7, Biweekly = 8,
+                      Weekly = 9, Daily = 10)
+    }
+    freq
+}
+matchDateGen <- function(dg = c("Backward", "Forward", "Zero",
+                                "ThirdWednesday", "Twentieth", 
+                                "TwentiethIMM")){
+   if (!is.numeric(dg)){
+      dg <- match.arg(dg)
+      dg <- switch(dg,
+                   Backward = 0, Forward = 1,
+                   Zero = 2, ThirdWednesday = 3,
+                   Twentieth = 4, TwentiethIMM = 5)
+   }
+   dg
+}
 
 
-#I am not sure how to if these are correct. I just copy from asian.R
+matchParams <- function(params) {
+  
+  if (!is.null(params$dayCounter)) {
+     params$dayCounter <- matchDayCounter(params$dayCounter)
+  }
+  if (!is.null(params$period)) {
+     params$period <- matchFrequency(params$period)
+  }
+
+  if (!is.null(params$businessDayConvention)) {
+     params$businessDayConvention <- matchBDC(params$businessDayConvention)
+  }
+  if (!is.null(params$terminationDateConvention)) {
+     params$terminationDateConvention <- matchBDC(params$terminationDateConvention)
+  }
+  if (!is.null(params$dateGeneration)) {
+     params$dateGeneration <- matchDateGen(params$dateGeneration)
+  }
+  params
+
+}
+
+# Generic methods
 plot.Bond <- function(x, ...) {
     warning("No plotting available for class", class(x)[1],"\n")
     invisible(x)

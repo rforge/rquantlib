@@ -102,6 +102,10 @@ curve <- list(params, tsQuotes, times)
 FixedRateBond(bond, rates, curve, dateparams)
 
 curve <- DiscountCurve(params, tsQuotes, times)
+dateparams <- list(settlementDays=1, calendar="us", dayCounter = "Thirty360", 
+                   period="Annual", businessDayConvention = "Preceding", 
+                   terminationDateConvention="Preceding",
+                   dateGeneration="Forward", endOfMonth=1)
 FixedRateBond(bond, rates, curve, dateparams)
 
 }
