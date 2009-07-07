@@ -119,7 +119,7 @@ FixedRateBond.default <- function(bond, rates, discountCurve, dateparams){
     if (class(discountCurve)=="DiscountCurve"){
          val <- .Call("QL_FixedRateWithRebuiltCurve",
                    bond, rates, c(discountCurve$table$date), 
-                  discountCurve$table$zeroRate, dateparams,
+                  discountCurve$table$zeroRates, dateparams,
                   PACKAGE="RQuantLib")         
     }
     else {
@@ -223,8 +223,8 @@ FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
         ibor <- index[[4]]
         val <- .Call("QL_FloatingWithRebuiltCurve",
                  bond, gearings, spreads, caps, floors, indexparams,
-                 c(ibor$table$date), ibor$table$zeroRate,
-                 c(curve$table$date), curve$table$zeroRate, 
+                 c(ibor$table$date), ibor$table$zeroRates,
+                 c(curve$table$date), curve$table$zeroRates, 
                  dateparams, 
                  PACKAGE="RQuantLib")
     }   
@@ -266,6 +266,31 @@ FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
 
 }
 
+
+ConvertibleZeroCouponBond <- function(bondparams, process, dateparams){
+    UseMethod("ConvertibleZeroCouponBond")
+}
+
+ConvertibleZeroCouponBond.default <- function(bondparams, process, dateparams){
+    val <- 0
+    dateparams <- matchParams(dateparams)
+    callabilitySchedule <- bondparams[[3]]
+    dividendSchedule <- bondparams[[4]]
+    dividendYield <- process[[2]]    
+    riskFreeRate <- process[[3]]        
+    val <- .Call("QL_ConvertibleZeroBond", 
+                    bondparams, process,
+                    c(dividendYield$table$date), 
+                    dividendYield$table$zeroRates,
+                    c(riskFreeRate$table$date), 
+                    riskFreeRate$table$zeroRates,
+                    dividendSchedule, callabilitySchedule, dateparams,
+                    PACKAGE="RQuantLib")
+
+    val$cashFlow <- as.data.frame(val$cashFlow)
+    class(val) <- c("ConvertibleZeroCouponBond", "Bond")    
+    val
+}
 
 # matching functions
 

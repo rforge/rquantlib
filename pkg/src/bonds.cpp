@@ -875,3 +875,202 @@ RcppExport SEXP QL_ZeroBondWithRebuiltCurve(SEXP bond,
     
     return rl;
 }
+
+
+RcppExport SEXP QL_ConvertibleZeroBond(SEXP bondparams, SEXP process,
+                                       SEXP dividendYieldDateSexp,
+                                       SEXP dividendYieldZeroSexp,
+                                       SEXP rffDateSexp, SEXP rffZeroSexp,
+                                       SEXP dividendScheduleFrame,
+                                       SEXP callabilityScheduleFrame,
+                                       SEXP dateparams) {
+
+    SEXP rl=R_NilValue;
+    char* exceptionMesg=NULL;
+    try{
+
+
+ 
+
+
+        DividendSchedule dividendSchedule;
+        CallabilitySchedule callabilitySchedule;
+
+        try {
+            RcppFrame rcppDividendSchedule(dividendScheduleFrame);        
+            std::vector<std::vector<ColDatum> > table = rcppDividendSchedule.getTableData();
+            int nrow = table.size();
+            int ncol = table[0].size();
+            for (int row=0;row<nrow;row++){          
+                int type = (table[row][0].getStringValue()=="Fixed") ? 1 : 0;
+                double amount = table[row][1].getDoubleValue();
+                double rate = table[row][2].getDoubleValue();
+                QuantLib::Date d(dateFromR(table[row][3].getDateValue()));            
+                if (type==1){
+                    dividendSchedule.push_back(
+                                               boost::shared_ptr<Dividend>(new FixedDividend(amount, d)));
+                }
+                else {
+                    dividendSchedule.push_back(
+                                               boost::shared_ptr<Dividend>(new FractionalDividend(rate, amount, d)));                                           
+                }
+            }
+        }
+        catch (std::exception& ex){}
+
+        try {
+            RcppFrame rcppCallabilitySchedule(callabilityScheduleFrame);
+            std::vector<std::vector<ColDatum> > table = rcppCallabilitySchedule.getTableData();
+            int nrow = table.size();
+            for (int row=0;row<nrow;row++){
+                double price = table[row][0].getDoubleValue();
+                int type = (table[row][1].getStringValue()=="P") ? 1 : 0;
+                QuantLib::Date d(dateFromR(table[row][2].getDateValue()));            
+                
+                if (type==1){
+                    callabilitySchedule.push_back(boost::shared_ptr<Callability>
+                                                  (new Callability(Callability::Price(price, 
+                                                                                      Callability::Price::Clean),
+                                                                   Callability::Put,d )));
+            }
+                else {
+                    callabilitySchedule.push_back(boost::shared_ptr<Callability>
+                                                  (new Callability(Callability::Price(price, 
+                                                                                      Callability::Price::Clean),
+                                                                   Callability::Call,d )));
+                }            
+            }
+        }
+        catch (std::exception& ex){}
+
+        RcppParams rparam(bondparams);
+        
+        double faceAmount = rparam.getDoubleValue("faceAmount");        
+        RcppDate mDate = rparam.getDateValue("maturityDate");
+        RcppDate iDate = rparam.getDateValue("issueDate");
+        QuantLib::Date maturityDate(dateFromR(mDate));
+        QuantLib::Date issueDate(dateFromR(iDate));
+        double redemption = rparam.getDoubleValue("redemption");
+        std::string exercise = rparam.getStringValue("exercise");
+        double creditSpreadQuote = rparam.getDoubleValue("creditSpread");
+        double conversionRatio = rparam.getDoubleValue("conversionRatio");
+
+
+        RcppParams misc(dateparams);      
+        double settlementDays = misc.getDoubleValue("settlementDays");
+        std::string cal = misc.getStringValue("calendar");
+        double dayCounter = misc.getDoubleValue("dayCounter");
+        double frequency = misc.getDoubleValue("period");
+        double businessDayConvention = misc.getDoubleValue("businessDayConvention");
+        RcppDate tDate = misc.getDateValue("todayDate");
+        QuantLib::Date todayDate(dateFromR(tDate));
+        
+        Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+        if (cal == "us"){
+            calendar = UnitedStates(UnitedStates::GovernmentBond);
+        }
+        else if (cal == "uk"){
+            calendar = UnitedKingdom(UnitedKingdom::Exchange);
+        }
+ 
+        BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
+        DayCounter dc = getDayCounter(dayCounter);
+        Frequency freq = getFrequency(frequency);
+        
+
+        RelinkableHandle<Quote> underlying;
+        RelinkableHandle<BlackVolTermStructure> volatility;
+        boost::shared_ptr<BlackScholesMertonProcess> blackProcess;
+
+        Handle<YieldTermStructure> dividendYield(rebuildCurveFromZeroRates(
+                                                                           dividendYieldDateSexp,
+                                                                           dividendYieldZeroSexp));
+
+        Handle<YieldTermStructure> rff(rebuildCurveFromZeroRates(rffDateSexp,
+                                                                 rffZeroSexp));
+
+        RcppParams processParam(process);
+        double underlyingQuote = processParam.getDoubleValue("underlying");
+        double volatilityQuote = processParam.getDoubleValue("volatility");
+        underlying.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(underlyingQuote)));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote( volatilityQuote ));
+        volatility.linkTo(flatVol(todayDate, vol, dc));
+
+        blackProcess = boost::shared_ptr<BlackScholesMertonProcess>(
+                    new BlackScholesMertonProcess(underlying, dividendYield,
+                                                  rff, volatility));
+
+        RelinkableHandle<Quote> creditSpread;
+        creditSpread.linkTo(
+                            boost::shared_ptr<Quote>(new SimpleQuote(creditSpreadQuote)));
+
+        boost::shared_ptr<Exercise> euExercise(
+                                               new EuropeanExercise(maturityDate));
+        boost::shared_ptr<Exercise> amExercise(
+                                               new AmericanExercise(issueDate,
+                                                                    maturityDate));
+        
+        boost::shared_ptr<Exercise> ex = (exercise == "eu") ? euExercise : amExercise;
+        
+        
+        Size timeSteps = 1001;
+        boost::shared_ptr<PricingEngine> engine(
+                                                new BinomialConvertibleEngine<CoxRossRubinstein>(blackProcess,
+                                                                                                 timeSteps));
+        
+        Handle<YieldTermStructure> discountCurve(
+                                                 boost::shared_ptr<YieldTermStructure>(
+                                                                                       new ForwardSpreadedTermStructure(rff,
+                                                                                                                        creditSpread)));
+        
+        Schedule sch(issueDate, maturityDate,
+                     Period(freq), calendar,
+                     bdc, bdc,
+                     DateGeneration::Backward, false);        
+        ConvertibleZeroCouponBond bond(ex, conversionRatio,
+                                     dividendSchedule, callabilitySchedule,
+                                     creditSpread,
+                                     issueDate, settlementDays,
+                                     dc, sch,
+                                     redemption);
+        bond.setPricingEngine(engine);
+
+
+        //cashflow
+        int numCol = 2;
+        std::vector<std::string> colNames(numCol);
+        colNames[0] = "Date";
+        colNames[1] = "Amount";
+        RcppFrame frame(colNames);
+        
+        Leg bondCashFlow = bond.cashflows();
+        for (unsigned int i = 0; i< bondCashFlow.size(); i++){
+            std::vector<ColDatum> row(numCol);
+            Date d = bondCashFlow[i]->date();
+            row[0].setDateValue(RcppDate(d.month(), d.dayOfMonth(), d.year()));
+            row[1].setDoubleValue(bondCashFlow[i]->amount());
+            frame.addRow(row);
+        }
+        
+        
+        RcppResultSet rs;
+
+        rs.add("NPV", bond.NPV());
+        rs.add("cleanPrice", bond.cleanPrice());
+        rs.add("dirtyPrice", bond.dirtyPrice());
+        rs.add("accruedCoupon", bond.accruedAmount());
+        rs.add("yield", bond.yield(Actual360(), Compounded, Annual));
+        rs.add("cashFlow", frame);
+        rl = rs.getReturnList();
+
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}
