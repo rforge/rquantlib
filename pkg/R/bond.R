@@ -292,6 +292,32 @@ ConvertibleZeroCouponBond.default <- function(bondparams, process, dateparams){
     val
 }
 
+
+ConvertibleFixedCouponBond <- function(bondparams, coupon, process, dateparams){
+    UseMethod("ConvertibleFixedCouponBond")
+}
+
+ConvertibleFixedCouponBond.default <- function(bondparams, coupon, process, dateparams){
+    val <- 0
+    dateparams <- matchParams(dateparams)
+    callabilitySchedule <- bondparams[[3]]
+    dividendSchedule <- bondparams[[4]]
+    dividendYield <- process[[2]]    
+    riskFreeRate <- process[[3]]        
+    val <- .Call("QL_ConvertibleFixedBond", 
+                    bondparams, coupon, process,
+                    c(dividendYield$table$date), 
+                    dividendYield$table$zeroRates,
+                    c(riskFreeRate$table$date), 
+                    riskFreeRate$table$zeroRates,
+                    dividendSchedule, callabilitySchedule, dateparams,
+                    PACKAGE="RQuantLib")
+
+    val$cashFlow <- as.data.frame(val$cashFlow)
+    class(val) <- c("ConvertibleFixedCouponBond", "Bond")    
+    val
+}
+
 # matching functions
 
 matchDayCounter <- function(daycounter = c("Actual360", "ActualFixed", "ActualActual",
