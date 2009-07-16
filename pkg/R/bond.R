@@ -318,6 +318,26 @@ ConvertibleFixedCouponBond.default <- function(bondparams, coupon, process, date
     val
 }
 
+CallableBond <- function(bondparams, hullWhite, coupon, dateparams){
+    UseMethod("CallableBond")
+}
+
+CallableBond.default <- function(bondparams, hullWhite, coupon, dateparams){
+    val <- 0
+    dateparams <- matchParams(dateparams)
+    callSch <- bondparams$callabilitySchedule
+#    hw.termStructure <- hullWhite$term
+    
+    val <- .Call("QL_CallableBond", bondparams, hullWhite,coupon,
+#                c(hw.termStructure$table$date),
+#                hw.termStructure$table$zeroRates,
+                callSch, dateparams,
+                PACKAGE="RQuantLib")
+    val$cashFlow <- as.data.frame(val$cashFlow)
+    class(val) <- c("CallableBond", "Bond")    
+    val   
+}
+
 # matching functions
 
 matchDayCounter <- function(daycounter = c("Actual360", "ActualFixed", "ActualActual",

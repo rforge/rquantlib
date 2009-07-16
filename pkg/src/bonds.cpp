@@ -1271,3 +1271,151 @@ RcppExport SEXP QL_ConvertibleFixedBond(SEXP bondparams, SEXP coupon, SEXP proce
     
     return rl;
 }
+
+
+RcppExport SEXP QL_CallableBond(SEXP bondparams, SEXP hw, SEXP coupon,
+                                
+                                
+                                SEXP callabilityScheduleFrame,
+                                SEXP dateparams) {
+
+    SEXP rl=R_NilValue;
+    char* exceptionMesg=NULL;
+    try{
+
+        CallabilitySchedule callabilitySchedule;
+        try {
+            RcppFrame rcppCallabilitySchedule(callabilityScheduleFrame);
+            std::vector<std::vector<ColDatum> > table = rcppCallabilitySchedule.getTableData();
+            int nrow = table.size();
+            for (int row=0;row<nrow;row++){
+                double price = table[row][0].getDoubleValue();
+                int type = (table[row][1].getStringValue()=="P") ? 1 : 0;
+                QuantLib::Date d(dateFromR(table[row][2].getDateValue()));            
+
+                if (type==1){
+                    callabilitySchedule.push_back(boost::shared_ptr<Callability>
+                                                  (new Callability(Callability::Price(price, 
+                                                                                      Callability::Price::Clean),
+                                                                   Callability::Put,d )));
+            }
+                else {
+                    callabilitySchedule.push_back(boost::shared_ptr<Callability>
+                                                  (new Callability(Callability::Price(price, 
+                                                                                      Callability::Price::Clean),
+                                                                   Callability::Call,d )));
+                }            
+            }
+        }
+        catch (std::exception& ex){
+            exceptionMesg = copyMessageToR(ex.what());
+             error(exceptionMesg);
+        }
+
+        RcppParams rparam(bondparams);
+        
+        double faceAmount = rparam.getDoubleValue("faceAmount");        
+        RcppDate mDate = rparam.getDateValue("maturityDate");
+        RcppDate iDate = rparam.getDateValue("issueDate");
+        QuantLib::Date maturityDate(dateFromR(mDate));
+        QuantLib::Date issueDate(dateFromR(iDate));
+        double redemption = rparam.getDoubleValue("redemption");
+
+
+
+        RcppParams misc(dateparams);      
+        double settlementDays = misc.getDoubleValue("settlementDays");
+        std::string cal = misc.getStringValue("calendar");
+        double dayCounter = misc.getDoubleValue("dayCounter");
+        double frequency = misc.getDoubleValue("period");
+        double businessDayConvention = misc.getDoubleValue("businessDayConvention");
+        
+        Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+        if (cal == "us"){
+            calendar = UnitedStates(UnitedStates::GovernmentBond);
+        }
+        else if (cal == "uk"){
+            calendar = UnitedKingdom(UnitedKingdom::Exchange);
+        }
+ 
+        BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
+        DayCounter dc = getDayCounter(dayCounter);
+        Frequency freq = getFrequency(frequency);
+        
+        //extract coupon rates vector
+        RcppVector<double> RcppVec(coupon); 
+        std::vector<double> rates(RcppVec.stlVector());
+
+        RcppParams hwparam(hw);
+        double alpha = hwparam.getDoubleValue("alpha");
+        double sigma = hwparam.getDoubleValue("sigma");
+        double gridIntervals = hwparam.getDoubleValue("gridIntervals");
+        double rate = hwparam.getDoubleValue("term");
+        
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(rate));
+        Handle<YieldTermStructure> termStructure(flatRate(issueDate,rRate,Actual360()));
+
+        //Handle<YieldTermStructure> termStructure(rebuildCurveFromZeroRates(
+        //                                                               hwTermDateSexp,
+        //                                                               hwTermZeroSexp));
+        
+      
+
+        boost::shared_ptr<ShortRateModel> hw0(
+                       new HullWhite(termStructure,alpha,sigma));
+
+        boost::shared_ptr<PricingEngine> engine0(
+                      new TreeCallableFixedRateBondEngine(hw0,gridIntervals));
+
+
+
+        Schedule sch(issueDate, maturityDate,
+                     Period(freq), calendar,
+                     bdc, bdc,
+                     DateGeneration::Backward, false);        
+
+        CallableFixedRateBond bond(settlementDays, faceAmount, 
+                                   sch,rates,
+                                   dc, bdc,
+                                   redemption, issueDate, 
+                                   callabilitySchedule);
+        bond.setPricingEngine(engine0);
+
+        //cashflow
+        int numCol = 2;
+        std::vector<std::string> colNames(numCol);
+        colNames[0] = "Date";
+        colNames[1] = "Amount";
+        RcppFrame frame(colNames);
+
+        Leg bondCashFlow = bond.cashflows();
+        for (unsigned int i = 0; i< bondCashFlow.size(); i++){
+            std::vector<ColDatum> row(numCol);
+            Date d = bondCashFlow[i]->date();
+            row[0].setDateValue(RcppDate(d.month(), d.dayOfMonth(), d.year()));
+            row[1].setDoubleValue(bondCashFlow[i]->amount());
+            frame.addRow(row);
+        }
+
+        
+        RcppResultSet rs;
+
+        rs.add("NPV", bond.NPV());
+        rs.add("cleanPrice", bond.cleanPrice());
+        rs.add("dirtyPrice", bond.dirtyPrice());
+        rs.add("accruedCoupon", bond.accruedAmount());
+        rs.add("yield", bond.yield(dc, Compounded, freq));
+        rs.add("cashFlow", frame);
+        rl = rs.getReturnList();
+
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}

@@ -67,11 +67,16 @@ RcppExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
 	if(firstQuoteName.compare("flat") == 0) {
 	    // Create a flat term structure.
 	    double rateQuote = tslist.getValue(0);
-	    boost::shared_ptr<Quote> flatRate(new SimpleQuote(rateQuote));
-	    boost::shared_ptr<FlatForward> ts(new FlatForward(settlementDate,
-					      Handle<Quote>(flatRate),
-					      Actual365Fixed()));
-	    curve = ts;
+	    //boost::shared_ptr<Quote> flatRate(new SimpleQuote(rateQuote));
+	    //boost::shared_ptr<FlatForward> ts(new FlatForward(settlementDate,
+            //			      Handle<Quote>(flatRate),
+            //			      ActualActual()));
+
+            boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(rateQuote));
+            curve = flatRate(settlementDate,rRate,ActualActual());
+
+
+	    
 	}
 	else {
 	    // Build curve based on a set of observed rates and/or prices.

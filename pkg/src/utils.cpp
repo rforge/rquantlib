@@ -211,6 +211,7 @@ boost::shared_ptr<YieldTermStructure> rebuildCurveFromZeroRates(
     for (int i = 0;i<n;i++){
         QuantLib::Date day(dateFromR(rcppdates(i)) );
         dates[i] = day;
+        
     }
     //extract coupon rates vector
     RcppVector<double> RcppVec(zeroSexp); 
