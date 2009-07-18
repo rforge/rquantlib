@@ -129,7 +129,7 @@ length3 <- list(params, tsQuotes, times)
 curve <- length2
 termstructure <- length2
 iborindex <- list(type="USDLibor", length=6, 
-                  inTermOf="Month", termstructure)                      
+                  inTermOf="Month", term=termstructure)                      
 FloatingRateBond(bond, gearings, spreads, caps, floors, 
                  iborindex, curve, dateparams)
 
@@ -139,7 +139,7 @@ FloatingRateBond(bond, gearings, spreads, caps, floors,
 curve <- length2
 termstructure <- length3
 iborindex <- list(type="USDLibor", length=6, 
-                  inTermOf="Month", termstructure)                      
+                  inTermOf="Month", term = termstructure)                      
 FloatingRateBond(bond, gearings, spreads, caps, floors, 
                  iborindex, curve, dateparams)
 
@@ -147,7 +147,7 @@ FloatingRateBond(bond, gearings, spreads, caps, floors,
 curve <- length3
 termstructure <- length2
 iborindex <- list(type="USDLibor", length=6, 
-                  inTermOf="Month", termstructure)                      
+                  inTermOf="Month", term = termstructure)                      
 FloatingRateBond(bond, gearings, spreads, caps, floors, 
                  iborindex, curve, dateparams)
 
@@ -157,7 +157,7 @@ FloatingRateBond(bond, gearings, spreads, caps, floors,
 curve <- length3
 termstructure <- length3
 iborindex <- list(type="USDLibor", length=6, 
-                  inTermOf="Month", termstructure)                      
+                  inTermOf="Month", term = termstructure)                      
 FloatingRateBond(bond, gearings, spreads, caps, floors, 
                  iborindex, curve, dateparams)
 
@@ -165,7 +165,7 @@ FloatingRateBond(bond, gearings, spreads, caps, floors,
 curve2 <- DiscountCurve(params, tsQuotes, times)
 index2 <- DiscountCurve(params, tsQuotes, times)
 ibor <- list(type="USDLibor", length=6, 
-             inTermOf="Month", index2)
+             inTermOf="Month", term = index2)
 dateparams <- list(settlementDays=1, calendar="us", dayCounter = "Actual360", 
                    period="Semiannual", 
                    businessDayConvention = "Following", 

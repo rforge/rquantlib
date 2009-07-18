@@ -218,9 +218,9 @@ FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
     val <- 0
     dateparams <- matchParams(dateparams)
     if (class(curve)=="DiscountCurve"){
-        indexparams <- list(type=index[[1]], length=index[[2]], 
-                        inTermOf=index[[3]])
-        ibor <- index[[4]]
+        indexparams <- list(type=index$type, length=index$length, 
+                        inTermOf=index$inTermOf)
+        ibor <- index$term
         val <- .Call("QL_FloatingWithRebuiltCurve",
                  bond, gearings, spreads, caps, floors, indexparams,
                  c(ibor$table$date), ibor$table$zeroRates,
@@ -229,30 +229,31 @@ FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
                  PACKAGE="RQuantLib")
     }   
     else {
-         indexparams <- list(type=index[[1]], length=index[[2]], inTermOf=index[[3]])
-         if ((length(curve)==2) && (length(index[[4]])==2)){
+         indexparams <- list(type=index$type, length=index$length, 
+                        inTermOf=index$inTermOf)
+         if ((length(curve)==2) && (length(index$term)==2)){
              val <- .Call("QL_FloatBond1", 
                      bond, gearings, spreads, caps, floors,
-                     indexparams, index[[4]], curve, dateparams,
+                     indexparams, index$term, curve, dateparams,
                      PACKAGE="RQuantLib")
           }
-          if ((length(curve)==2) && (length(index[[4]])==3)){
-             ibor <- index[[4]]
+          if ((length(curve)==2) && (length(index$term)==3)){
+             ibor <- index$term
              val <- .Call("QL_FloatBond2", 
                      bond, gearings, spreads, caps, floors,
                      indexparams, ibor[[1]], ibor[[2]],
                      ibor[[3]], curve, dateparams,
                      PACKAGE="RQuantLib")
           }
-          if ((length(curve)==3) && (length(index[[4]])==2)){
+          if ((length(curve)==3) && (length(index$term)==2)){
               val <- .Call("QL_FloatBond3", 
                     bond, gearings, spreads, caps, floors, 
-                    indexparams, index[[4]], curve[[1]],curve[[2]], 
+                    indexparams, index$term, curve[[1]],curve[[2]], 
                     curve[[3]], dateparams,
                     PACKAGE="RQuantLib")      
           }
-          if ((length(curve)==3) && (length(index[[4]])==3)){
-              ibor <- index[[4]]
+          if ((length(curve)==3) && (length(index$term)==3)){
+              ibor <- index$term
               val <- .Call("QL_FloatBond4", 
                     bond, gearings, spreads, caps, floors, 
                     indexparams, ibor[[1]], ibor[[2]], ibor[[3]], 
@@ -274,10 +275,10 @@ ConvertibleZeroCouponBond <- function(bondparams, process, dateparams){
 ConvertibleZeroCouponBond.default <- function(bondparams, process, dateparams){
     val <- 0
     dateparams <- matchParams(dateparams)
-    callabilitySchedule <- bondparams[[3]]
-    dividendSchedule <- bondparams[[4]]
-    dividendYield <- process[[2]]    
-    riskFreeRate <- process[[3]]        
+    callabilitySchedule <- bondparams$callSch
+    dividendSchedule <- bondparams$divSch
+    dividendYield <- process$divYield    
+    riskFreeRate <- process$rff        
     val <- .Call("QL_ConvertibleZeroBond", 
                     bondparams, process,
                     c(dividendYield$table$date), 
@@ -300,10 +301,10 @@ ConvertibleFixedCouponBond <- function(bondparams, coupon, process, dateparams){
 ConvertibleFixedCouponBond.default <- function(bondparams, coupon, process, dateparams){
     val <- 0
     dateparams <- matchParams(dateparams)
-    callabilitySchedule <- bondparams[[3]]
-    dividendSchedule <- bondparams[[4]]
-    dividendYield <- process[[2]]    
-    riskFreeRate <- process[[3]]        
+    callabilitySchedule <- bondparams$callSch
+    dividendSchedule <- bondparams$divSch
+    dividendYield <- process$divYield    
+    riskFreeRate <- process$rff        
     val <- .Call("QL_ConvertibleFixedBond", 
                     bondparams, coupon, process,
                     c(dividendYield$table$date), 

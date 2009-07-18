@@ -108,6 +108,6 @@ length2 <- list(todayDate=as.Date("2004-11-22"), riskFreeRate=0.025)
 curve <- length2
 termstructure <- length2
 iborindex <- list(type="USDLibor", length=6, 
-                  inTermOf="Month", termstructure)                      
+                  inTermOf="Month", term=termstructure)                      
 print(FloatingRateBond(bond, gearings, spreads, caps, floors, 
                  iborindex, curve, dateparams))

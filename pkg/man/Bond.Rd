@@ -90,7 +90,8 @@ caps <- c()
 floors <- c()
 
 iborCurve <- DiscountCurve(params,list(flat=0.05), times)
-ibor <- list(type="USDLibor", length=6, inTermOf="Month", iborCurve)
+ibor <- list(type="USDLibor", length=6, inTermOf="Month", 
+             term=iborCurve)
 FloatingRateBond(bondparams, gearings, spreads, caps, floors, 
                  ibor, discountCurve, dateparams)
 

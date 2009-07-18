@@ -215,7 +215,7 @@ Concise summary of valuation for FixedRateBond
 > curve <- length2
 > termstructure <- length2
 > iborindex <- list(type="USDLibor", length=6, 
-+                   inTermOf="Month", termstructure)  
++                   inTermOf="Month", term=termstructure)  
 > print(FloatingRateBond(bond, gearings, spreads, caps, floors, 
 +                  iborindex, curve, dateparams))
 Concise summary of valuation for FloatingRateBond 
