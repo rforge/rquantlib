@@ -1544,11 +1544,11 @@ RcppExport SEXP QL_FittedBondCurve(SEXP curveparams, SEXP lengthVec,
 
 
 	// Return discount, forward rate, and zero coupon curves
-        int numCol = 2;
+        int numCol = 3;
         std::vector<std::string> colNames(numCol);
         colNames[0] = "date";
         colNames[1] = "zeroRates";
-        
+        colNames[2] = "discount";
 
 
         RcppFrame frame(colNames);
@@ -1564,6 +1564,9 @@ RcppExport SEXP QL_FittedBondCurve(SEXP curveparams, SEXP lengthVec,
             double zrate = curve->zeroRate(current, ActualActual(),
                                             Continuous);
             row[1].setDoubleValue(zrate);                        
+
+            double discount = curve->discount(current);
+            row[2].setDoubleValue(discount);
             frame.addRow(row);
             current++;
         }

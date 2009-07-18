@@ -103,6 +103,7 @@ RcppExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes,
         colNames[0] = "date";
         colNames[1] = "zeroRates";
         
+        
 
 
         RcppFrame frame(colNames);

@@ -20,7 +20,7 @@ FittedBondCurve(curveparams, lengths, coupons, dateparams)
 \item{dateparams}{date parameter}
 }
 \value{
- \code{table}, a two columns date-zeroRate data frame 
+ \code{table}, a three columns date-zeroRate-discount data frame 
 }
 \examples{
 
