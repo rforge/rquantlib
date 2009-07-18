@@ -1419,3 +1419,167 @@ RcppExport SEXP QL_CallableBond(SEXP bondparams, SEXP hw, SEXP coupon,
     
     return rl;
 }
+RcppExport SEXP QL_FittedBondCurve(SEXP curveparams, SEXP lengthVec,
+                                   SEXP couponVec,
+                                   SEXP dateparams){
+    SEXP rl=R_NilValue;
+    char* exceptionMesg=NULL;
+    try {
+
+        //extract length and coupon vector
+        RcppVector<int> RcppVec(lengthVec); 
+        std::vector<int> lengths(RcppVec.stlVector());
+        RcppVector<double> RcppVec1(couponVec);
+        std::vector<double> coupons(RcppVec1.stlVector());
+
+        RcppParams misc(dateparams);      
+        double settlementDays = misc.getDoubleValue("settlementDays");
+        double dayCounter = misc.getDoubleValue("dayCounter");
+        double frequency = misc.getDoubleValue("period");
+        double businessDayConvention = misc.getDoubleValue("businessDayConvention");
+    
+        RcppParams curvepam(curveparams);
+        std::string method = curvepam.getStringValue("method");
+        RcppDate oDate = curvepam.getDateValue("origDate");
+        QuantLib::Date origDate(dateFromR(oDate));
+
+
+        const Size numberOfBonds = lengths.size();
+        Real cleanPrice[numberOfBonds];
+        
+        for (Size i=0; i<=numberOfBonds; i++) {
+            cleanPrice[i]=100.0;
+        }
+
+        std::vector< boost::shared_ptr<SimpleQuote> > quote;
+        for (Size i=0; i<numberOfBonds; i++) {
+            boost::shared_ptr<SimpleQuote> cp(new SimpleQuote(cleanPrice[i]));
+            quote.push_back(cp);
+        }
+
+        RelinkableHandle<Quote> quoteHandle[numberOfBonds];
+        for (Size i=0; i<numberOfBonds; i++) {
+            quoteHandle[i].linkTo(quote[i]);
+        }
+
+        Calendar calendar = NullCalendar();
+        BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
+        DayCounter dc = getDayCounter(dayCounter);
+        Frequency freq = getFrequency(frequency);
+        Real redemption = 100;
+
+        std::vector<boost::shared_ptr<FixedRateBondHelper> > instrumentsA;
+
+        for (Size j=0; j<lengths.size(); j++) {
+
+            Date dated = origDate;
+            Date issue = origDate;
+            Date maturity = calendar.advance(issue, lengths[j], Years);
+
+            Schedule schedule(dated, maturity, Period(freq), calendar,
+                              bdc, bdc,
+                              DateGeneration::Backward, false);
+
+            boost::shared_ptr<FixedRateBondHelper> helperA(
+                     new FixedRateBondHelper(quoteHandle[j],
+                                             settlementDays,
+                                             100.0,
+                                             schedule,
+                                             std::vector<Rate>(1,coupons[j]),
+                                             dc,
+                                             bdc,
+                                             redemption,
+                                             issue));
+            instrumentsA.push_back(helperA);
+
+        }
+
+        bool constrainAtZero = true;
+        Real tolerance = 1.0e-10;
+        Size max = 5000;
+
+	boost::shared_ptr<YieldTermStructure> curve;
+
+        if (method=="ExponentialSplinesFitting"){
+            ExponentialSplinesFitting exponentialSplines(constrainAtZero);
+
+            boost::shared_ptr<FittedBondDiscountCurve> ts1 (
+                                                            new FittedBondDiscountCurve(settlementDays,
+                                                                                        calendar,
+                                                                                        instrumentsA,
+                                                                                        dc,
+                                                                                        exponentialSplines,
+                                                                                        tolerance,
+                                                                                        max));
+            curve = ts1;
+        }
+        else if (method == "SimplePolynomialFitting"){
+            double degree = curvepam.getDoubleValue("degree");
+            SimplePolynomialFitting simplePolynomial(degree, constrainAtZero);
+
+            boost::shared_ptr<FittedBondDiscountCurve> ts2 (
+                    new FittedBondDiscountCurve(settlementDays,
+                                                calendar,
+                                                instrumentsA,
+                                                dc,
+                                                simplePolynomial,
+                                                tolerance,
+                                                max));
+            curve = ts2;
+        }
+        else if (method == "NelsonSiegelFitting"){
+            NelsonSiegelFitting nelsonSiegel;
+
+            boost::shared_ptr<FittedBondDiscountCurve> ts3 (
+                        new FittedBondDiscountCurve(settlementDays,
+                                                    calendar,
+                                                    instrumentsA,
+                                                    dc,
+                                                    nelsonSiegel,
+                                                    tolerance,
+                                                    max));
+            curve = ts3;
+        }
+        
+
+
+	// Return discount, forward rate, and zero coupon curves
+        int numCol = 2;
+        std::vector<std::string> colNames(numCol);
+        colNames[0] = "date";
+        colNames[1] = "zeroRates";
+        
+
+
+        RcppFrame frame(colNames);
+        Date current = origDate;
+        int n = curve->maxDate() - origDate;
+        for (int i = 0; i<n;i++){
+        std::vector<ColDatum> row(numCol);
+            Date d = current; 
+            row[0].setDateValue(RcppDate(d.month(),
+                                         d.dayOfMonth(),
+                                         d.year()));
+            
+            double zrate = curve->zeroRate(current, ActualActual(),
+                                            Continuous);
+            row[1].setDoubleValue(zrate);                        
+            frame.addRow(row);
+            current++;
+        }
+
+	RcppResultSet rs;
+        rs.add("table", frame);
+	rl = rs.getReturnList();
+
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}

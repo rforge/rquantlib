@@ -339,6 +339,19 @@ CallableBond.default <- function(bondparams, hullWhite, coupon, dateparams){
     val   
 }
 
+FittedBondCurve <- function(curveparams, lengths, coupons, dateparams){
+    UseMethod("FittedBondCurve")
+}
+
+FittedBondCurve.default <- function(curveparams, lengths, coupons, dateparams){
+    val <- 0
+    dateparams <- matchParams(dateparams)
+    val <- .Call("QL_FittedBondCurve", curveparams,
+                 lengths, coupons, dateparams, PACKAGE="RQuantLib")
+
+    val
+}
+
 # matching functions
 
 matchDayCounter <- function(daycounter = c("Actual360", "ActualFixed", "ActualActual",
