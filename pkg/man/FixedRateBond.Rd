@@ -36,7 +36,6 @@
     \code{dateGeneration} - an integer,
     \code{endOfMonth} - value 1 or 0.  For more detail, see \link{Enum} and 
     the quantlib docs for FixedRateBond
-
 }
 
 }
@@ -45,8 +44,12 @@
   \code{FixedRateBond} (which inherits from class 
   \code{Bond}). It contains a list with the following
   components:
-  \item{cleanValue}{clean value of the bond}
-  \item{cashflows}{display the cashflow of the bond}
+  \item{NPV}{net present value of the bond}
+  \item{cleanPrice}{price price of the bond}
+  \item{dirtyPrice}{dirty price of the bond}
+  \item{accruedAmount}{accrued amount of the bond}
+  \item{yield}{yield of the bond}
+  \item{cashFlows}{cash flows of the bond}
 }
 \details{
   A discount curve is built to calculate the bond value. 
@@ -57,7 +60,7 @@
 }
 \references{\url{http://quantlib.org} for details on \code{QuantLib}.}
 
-\author{Khanh Nguyen \email{knguyen@cs.umb.edu}; Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
+\author{Khanh Nguyen \email{knguyen@cs.umb.edu} for the inplementation; Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
   the QuantLib Group for \code{QuantLib}}
 \note{The interface might change in future release as \code{QuantLib}
   stabilises its own API.}

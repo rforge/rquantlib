@@ -35,8 +35,7 @@
 \details{
 }
 \references{\url{http://quantlib.org} for details on \code{QuantLib}. \url{http://www.mathworks.com/access/helpdesk/help/toolbox/finfixed/zeroyield.html} for more details about this function}
-\author{Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
-  the QuantLib Group for \code{QuantLib}}
+\author{Khanh Nguyen \email{knguyen@cs.umb.edu}}
 \note{The interface might change in future release as \code{QuantLib}
   stabilises its own API.}
 

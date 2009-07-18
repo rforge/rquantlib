@@ -4,36 +4,39 @@
 \alias{ConvertibleFixedCouponBond.default}
 \title{Convertible Fixed Coupon Bond evaluation}
 \description{
-Evaluate a ConvertibleFixedCouponBond. For detail, see test-suite/convertiblebond.cpp
+Setup and evaluate a ConvertibleFixedCouponBond. For detail, see test-suite/convertiblebond.cpp
 }
 \usage{
-\method{ConvertibleFixedCouponBond}{default}(bondparams, coupon, process,
-                                            dateparams)
+\method{ConvertibleFixedCouponBond}{default}(bondparams, coupon, process, dateparams)
 \method{plot}{Bond}
 \method{print}{Bond}
 \method{summary}{Bond}
 }
 \arguments{
 \item{bondparams}{a list specifying the basic arguments of the convertible 
-            zero bond , \code{exercise} either 'eu' or 'am', \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
-            \code{redemption}, \code{issueDate}, \code{maturityDate}, 
+            zero bond , \code{exercise} (either 'eu' or 'am'), \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
+            \code{redemption},
             \code{dividendScheduele}, \code{callabilitySchedule}, 
             \code{creditSpread}, \code{conversitionRatio}}
 
 \item{coupon}{vector of coupon rates}
 
-\item{process}{ a list that specifies necessary argument to construct
+\item{process}{ a list that specifies necessary arguments to construct
 a pricing engine for this bond. \code{underlying} and \code{volatility} must be
 double value, \code{dividendYield} and \code{riskFreeRate} are DiscountCurve objects}
-\item{dateparams}{ typical date parameters}
+\item{dateparams}{date parameters}
 }
 \value{
   The \code{ConvertibleFixedCouponBond} function returns an object of class
   \code{ConvertibleFixedCouponBond} (which inherits from class 
   \code{Bond}). It contains a list with the following
   components:
-  \item{cleanValue}{clean value of the bond}
-  \item{cashflows}{display the cashflow of the bond}
+  \item{NPV}{net present value of the bond}
+  \item{cleanPrice}{price price of the bond}
+  \item{dirtyPrice}{dirty price of the bond}
+  \item{accruedAmount}{accrued amount of the bond}
+  \item{yield}{yield of the bond}
+  \item{cashFlows}{cash flows of the bond}
 }
 \details{
  Please see any decent Finance textbook for background reading, and the
@@ -43,8 +46,7 @@ double value, \code{dividendYield} and \code{riskFreeRate} are DiscountCurve obj
 \references{ 
 \url{http://quantlib.org/reference/class_quant_lib_1_1_convertible_zero_coupon_bond.html}
 }
-\author{
-Khanh Nguyen \email{knguyen@cs.umb.edu}; Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
+\author{Khanh Nguyen \email{knguyen@cs.umb.edu} for the inplementation; Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
   the QuantLib Group for \code{QuantLib}
 }
 \examples{

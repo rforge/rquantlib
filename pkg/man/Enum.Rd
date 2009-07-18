@@ -67,6 +67,7 @@ Reference for parameters when constructing a bond
 
 }
 \value{
+None
 }
 \details{
 \url{http://quantlib.org/reference/class_quant_lib_1_1_day_counter.html}
@@ -75,7 +76,6 @@ Reference for parameters when constructing a bond
 }
 \references{\url{http://quantlib.org} for details on \code{QuantLib}.}
 \author{Khanh Nguyen \email{knguyen@cs.umb.edu}}
-\examples{
-}
+
 \keyword{misc}
 
