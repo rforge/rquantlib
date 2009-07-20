@@ -1,0 +1,100 @@
+% $Id: ConvertibleFloatingCouponBond 84 2009-06-19 knguyen $
+\name{ConvertibleFloatingCouponBond}
+\alias{ConvertibleFloatingCouponBond}
+\alias{ConvertibleFloatingCouponBond.default}
+\title{Convertible Floating Coupon Bond evaluation}
+\description{
+Setup and evaluate a ConvertibleFloatingCouponBond. For detail, see test-suite/convertiblebond.cpp
+}
+\usage{
+\method{ConvertibleFloatingCouponBond}{default}(bondparams, iborindex,spread,  process, dateparams)
+\method{plot}{Bond}
+\method{print}{Bond}
+\method{summary}{Bond}
+}
+\arguments{
+\item{bondparams}{a list specifying the basic arguments of the convertible 
+            zero bond , \code{exercise} (either 'eu' or 'am'), \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
+            \code{redemption},
+            \code{dividendScheduele}, \code{callabilitySchedule}, 
+            \code{creditSpread}, \code{conversitionRatio}}
+
+\item{iborindex}{iborindex}
+\item{spread}{spread}
+\item{process}{ a list that specifies necessary arguments to construct
+a pricing engine for this bond. \code{underlying} and \code{volatility} must be
+double value, \code{dividendYield} and \code{riskFreeRate} are DiscountCurve objects}
+\item{dateparams}{date parameters}
+}
+\value{
+  The \code{ConvertibleFloatingCouponBond} function returns an object of class
+  \code{ConvertibleFloatingCouponBond} (which inherits from class 
+  \code{Bond}). It contains a list with the following
+  components:
+  \item{NPV}{net present value of the bond}
+  \item{cleanPrice}{price price of the bond}
+  \item{dirtyPrice}{dirty price of the bond}
+  \item{accruedAmount}{accrued amount of the bond}
+  \item{yield}{yield of the bond}
+  \item{cashFlows}{cash flows of the bond}
+}
+\details{
+ Please see any decent Finance textbook for background reading, and the
+  \code{QuantLib} documentation for details on the \code{QuantLib}
+  implementation.
+}
+\references{ 
+\url{http://quantlib.org/reference/class_quant_lib_1_1_convertible_zero_coupon_bond.html}
+}
+\author{Khanh Nguyen \email{knguyen@cs.umb.edu} for the inplementation; Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
+  the QuantLib Group for \code{QuantLib}
+}
+\examples{
+#this follow an example in test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
+params <- list(tradeDate=Sys.Date()-2,
+               settleDate=Sys.Date(),
+               dt=.25,
+               interpWhat="discount",
+               interpHow="loglinear")
+times <- seq(0,10,.1)
+
+
+dividendYield <- DiscountCurve(params, list(flat=0.02), times)
+riskFreeRate <- DiscountCurve(params, list(flat=0.05), times)
+
+dividendSchedule <- data.frame(Type=character(0), Amount=numeric(0),
+                            Rate = numeric(0), Date = as.Date(character(0)))
+callabilitySchedule <- data.frame(Price = numeric(0), Type=character(0),
+                          Date = as.Date(character(0)))
+
+process <- list(underlying=50, divYield = dividendYield,
+                rff = riskFreeRate, volatility=0.15)
+
+today <- Sys.Date()
+bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
+                   callSch = callabilitySchedule, redemption=100, 
+                   creditSpread=0.005, conversionRatio = 0.0000000001, 
+                   issueDate=as.Date(today+2), 
+                   maturityDate=as.Date(today+3650))
+dateparams <- list(settlementDays=3, 
+                   dayCounter="Actual360", 
+                   period = "Once", calendar = "us", 
+                   businessDayConvention="Following", 
+                   todayDate=as.Date(today))
+
+lengths <- c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30)
+coupons <- c( 0.0200, 0.0225, 0.0250, 0.0275, 0.0300,
+              0.0325, 0.0350, 0.0375, 0.0400, 0.0425,
+              0.0450, 0.0475, 0.0500, 0.0525, 0.0550 )
+curvedateparams <- list(settlementDays=0, period="Annual", 
+                   dayCounter="SimpleDayCounter", 
+                  businessDayConvention ="Unadjusted")
+curveparams <- list(method="ExponentialSplinesFitting", 
+                    origDate = Sys.Date())
+curve <- FittedBondCurve(curveparams, lengths, coupons, curvedateparams)
+iborindex <- list(type="USDLibor", length=6, 
+                  inTermOf="Month", term=curve)   
+spreads <- c()
+ConvertibleFloatingCouponBond(bondparams, iborindex,spreads, process, dateparams)
+
+}

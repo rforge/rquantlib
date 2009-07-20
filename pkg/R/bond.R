@@ -319,6 +319,39 @@ ConvertibleFixedCouponBond.default <- function(bondparams, coupon, process, date
     val
 }
 
+ConvertibleFloatingCouponBond <- function(bondparams, iborindex,spread, process, dateparams){
+    UseMethod("ConvertibleFloatingCouponBond")
+}
+
+ConvertibleFloatingCouponBond.default <- function(bondparams, iborindex,spread, process, dateparams){
+    val <- 0
+    dateparams <- matchParams(dateparams)
+    callabilitySchedule <- bondparams$callSch
+    dividendSchedule <- bondparams$divSch
+    dividendYield <- process$divYield    
+    riskFreeRate <- process$rff        
+
+    indexparams <- list(type=iborindex$type, length=iborindex$length, 
+                        inTermOf=iborindex$inTermOf)
+    ibor <- iborindex$term
+
+    val <- .Call("QL_ConvertibleFloatingBond", 
+                    bondparams,  process,
+                    c(dividendYield$table$date), 
+                    dividendYield$table$zeroRates,
+                    c(riskFreeRate$table$date), 
+                    riskFreeRate$table$zeroRates,
+                    c(ibor$table$date), 
+                    ibor$table$zeroRates,
+                    indexparams,spread,
+                    dividendSchedule, callabilitySchedule, dateparams,
+                    PACKAGE="RQuantLib")
+
+    val$cashFlow <- as.data.frame(val$cashFlow)
+    class(val) <- c("ConvertibleFloatingCouponBond", "Bond")    
+    val
+}
+
 CallableBond <- function(bondparams, hullWhite, coupon, dateparams){
     UseMethod("CallableBond")
 }
