@@ -13,18 +13,14 @@ Setup and evaluate a ConvertibleFixedCouponBond. For detail, see test-suite/conv
 \method{summary}{Bond}
 }
 \arguments{
-\item{bondparams}{a list specifying the basic arguments of the convertible 
-            zero bond , \code{exercise} (either 'eu' or 'am'), \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
-            \code{redemption},
-            \code{dividendScheduele}, \code{callabilitySchedule}, 
-            \code{creditSpread}, \code{conversitionRatio}}
+\item{bondparams}{a list specifying the basic arguments of the bond according to QuantLib , \code{exercise} (either 'eu' or 'am'), \code{faceAmount}, \code{issueDate},\code{maturityDate}, \code{redemption}, \code{dividendScheduele}, \code{callabilitySchedule}, \code{creditSpread}, \code{conversitionRatio}}
 
-\item{coupon}{vector of coupon rates}
+\item{coupon}{vector of coupon rate}
 
-\item{process}{ a list that specifies necessary arguments to construct
-a pricing engine for this bond. \code{underlying} and \code{volatility} must be
+\item{process}{necessary arguments to construct a pricing engine for this bond. \code{underlying} and \code{volatility} must be
 double value, \code{dividendYield} and \code{riskFreeRate} are DiscountCurve objects}
-\item{dateparams}{date parameters}
+
+\item{dateparams}{QuantLib's date parameters of the bond. See example below.}
 }
 \value{
   The \code{ConvertibleFixedCouponBond} function returns an object of class
@@ -50,14 +46,15 @@ double value, \code{dividendYield} and \code{riskFreeRate} are DiscountCurve obj
   the QuantLib Group for \code{QuantLib}
 }
 \examples{
-#this follow an example in test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
+#this follow an example in test-suite/convertiblebond.cpp for ConvertibleFixedCouponBond
+
+#set up arguments to build a pricing engine.
 params <- list(tradeDate=Sys.Date()-2,
                settleDate=Sys.Date(),
                dt=.25,
                interpWhat="discount",
                interpHow="loglinear")
 times <- seq(0,10,.1)
-
 
 dividendYield <- DiscountCurve(params, list(flat=0.02), times)
 riskFreeRate <- DiscountCurve(params, list(flat=0.05), times)

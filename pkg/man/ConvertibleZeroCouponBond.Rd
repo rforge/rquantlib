@@ -13,15 +13,14 @@ Setup and evaluate a ConvertibleZeroCouponBond. For detail, see QuantLib/test-su
 \method{summary}{Bond}
 }
 \arguments{
-\item{bondparams}{a list specifying the basic arguments of the convertible 
+\item{bondparams}{basic arguments of the convertible 
             zero bond , \code{exercise} (either 'eu' or 'am'), \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
             \code{redemption}, \code{issueDate}, \code{maturityDate}, 
             \code{dividendScheduele}, \code{callabilitySchedule}, 
             \code{creditSpread}, \code{conversitionRatio}}
-\item{process}{ a list that specifies necessary arguments to construct
-a pricing engine for this bond. \code{underlying} and \code{volatility} must be
+\item{process}{arguments to construct a pricing engine for this bond. \code{underlying} and \code{volatility} must be
 double value, \code{dividendYield} and \code{riskFreeRate} are DiscountCurve objects}
-\item{dateparams}{date parameters}
+\item{dateparams}{QuantLib's date parameters of the bond. See example below.}
 }
 \value{
   The \code{ConvertibleZeroCouponBond} function returns an object of class

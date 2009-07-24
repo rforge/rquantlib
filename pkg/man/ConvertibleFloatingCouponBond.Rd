@@ -21,10 +21,8 @@ Setup and evaluate a ConvertibleFloatingCouponBond. For detail, see test-suite/c
 
 \item{iborindex}{iborindex}
 \item{spread}{spread}
-\item{process}{ a list that specifies necessary arguments to construct
-a pricing engine for this bond. \code{underlying} and \code{volatility} must be
-double value, \code{dividendYield} and \code{riskFreeRate} are DiscountCurve objects}
-\item{dateparams}{date parameters}
+\item{process}{arguments to construct a pricing engine for this bond according to QuantLib. \code{underlying} and \code{volatility} must be double value, \code{dividendYield} and \code{riskFreeRate} are DiscountCurve objects}
+\item{dateparams}{QuantLib's date parameters of the bond. See example below.}
 }
 \value{
   The \code{ConvertibleFloatingCouponBond} function returns an object of class

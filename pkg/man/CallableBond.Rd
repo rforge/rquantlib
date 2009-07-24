@@ -4,9 +4,8 @@
 \alias{CallableBond.default}
 \title{CallableBond evaluation}
 \description{
-  The \code{CallableBond} function evaluates a callable fixed rate bond 
-  with a Hull White pricing engine 
-  For more detail, see the source codes in quantlib's example, Examples/CallableBond/CallableBond.cpp
+  The \code{CallableBond} function evaluates a callable fixed rate bond using a Hull-White pricing engine.  
+  For more detail, see the source codes in quantlib's example folder, Examples/CallableBond/CallableBond.cpp
 
 }
 \usage{
@@ -18,9 +17,9 @@
 \arguments{
 \item{bondparams}{bond paramters, \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
             \code{redemption}, \code{callabilitySchedule} }
-\item{hullWhite}{parameter to set up HullWhite, \code{term}, \code{alpha}, \code{sigma}, \code{gridIntervals}. For more detail, see QuantLib's doc on HullWhite. Currently, the codes only support a flat rate yield term structure. }
-\item{coupon}{ vector of coupon rates}
-\item{dateparams}{ date parameter of the bond}
+\item{hullWhite}{arguments that are needed to set up a HullWhite pricing engine in QuantLib, \code{term}, \code{alpha}, \code{sigma}, \code{gridIntervals}. Currently, the codes only support a flat rate yield term structure. For more detail, see QuantLib's doc on HullWhite.}
+\item{coupon}{ vector of coupon rate}
+\item{dateparams}{QuantLib's date parameters of the bond. See example below.}
 
 }
 \value{
@@ -47,18 +46,11 @@
 \note{The interface might change in future release as \code{QuantLib}
   stabilises its own API.}
 \examples{
-params <- list(tradeDate=as.Date("2007-10-16"),
-               settleDate=as.Date("2007-10-16"),
-               dt=.25,
-               interpWhat="discount",
-               interpHow="loglinear")
-times <- seq(0,10,.1)
-#termStructure <- DiscountCurve(params, list(flat=0.055), times)
-#HullWhite <- list(term = termStructure, alpha = 0.03, sigma = 0.01
-#                  , gridIntervals = 40)
-
+#set-up a HullWhite according to example from QuantLib
 HullWhite <- list(term = 0.055, alpha = 0.03, sigma = 0.01,
                   gridIntervals = 40)
+
+#callability schedule dataframe
 Price <- rep(as.double(100),24)
 Type <- rep(as.character("C"), 24)
 Date <- seq(as.Date("2006-09-15"), by = '3 months', length = 24)
