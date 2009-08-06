@@ -1639,6 +1639,123 @@ RcppExport SEXP QL_CallableBond(SEXP bondparams, SEXP hw, SEXP coupon,
     
     return rl;
 }
+/*
+RcppExport SEXP QL_CMSBond(SEXP bondparams, SEXP iborIndex, SEXP swapIndexParam, 
+                           SEXP capsVec, SEXP floorsVec, SEXP gearingsVec, 
+                           SEXP spreadsVec, SEXP swaptionVolSEXP, SEXP atmOptionTenorsSEXP,
+                           SEXP atmSwapTenorsSEXP, SEXP volMatrixSEXP, SEXP pricer,
+                           SEXP iborIndexDate, SEXP iborIndexRates)
+{
+    SEXP rl=R_NilValue;
+    char* exceptionMesg=NULL;
+    try {
+
+        std::vector<double> gearings = getDoubleVector(gearingsVec);
+        std::vector<double> spreads = getDoubleVector(spreadsVec);
+        std::vector<double> caps = getDoubleVector(capsVec);
+        std::vector<double> floors = getDoubleVector(floorsVec);
+
+        RcppStringVector strVec(atmOptionTenorsSEXP);
+        std::vector<string> atmOptionTenors(strVec.stlVector());
+        RcppStringVector strVec2(atmSwapTenorsSEXP);
+        std::vector<string> atmSwapTenors(strVec2.stlVector());
+
+        RcppMatrix<double> m(volMatrixSEXP);
+        
+        Handle<YieldTermStructure> termStructure(rebuildCurveFromZeroRates(
+                                                                           iborIndexDate,iborIndexRates));
+        Rcppparams iborparams(iborIndex);
+        std::string ibortype = iborparams.getStringValue("type");
+        std::string iborlength = iborparams.getStringValue("length");
+        boost::shared_ptr<IborIndex> ibor = getIborIndex(termStructure, ibortype, 
+                                                         iborlength);
+        //fix tenor to make sure it is converted by matchparam
+        Rcppparams swapparams(swapIndexParam);
+        std::string familyName = swapparams.getStringValue("familyName");
+        std::double tenor = swapparams.getDoubleValue("tenor");
+        std::double settlementDays = swapparams.getDoubleValue("settlementDays");
+        std::string currency = swapparams.getStringValue("currency");
+        std::string fixedLegTenor = swapparams.getDoubleValue("fixedLegTenor");
+        std::string fixedLegConvention = swapparams.getDoubleValue("fixedLegConvention");
+        std::string fixedLegDayCounter = swapparams.getDoubleValue("fixedLegDayCounter");
+        std::string cal = swapparams.getStringValue("calendar");
+        Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+        if (cal == "us"){
+            calendar = UnitedStates(UnitedStates::GovernmentBond);
+        }
+        else if (cal == "uk"){
+            calendar = UnitedKingdom(UnitedKingdom::Exchange);
+        }
+        BusinessDayConvention fixedLegBDC = getBusinessDayConvention(fixedLegConvention);
+        DayCounter fixedLedDC = getDayCounter(fixedLegDayCounter);
+
+        boost::shared_ptr<SwapIndex> swapIndex(new SwapIndex(familiName, 
+                                                             getPeriodFromString(fixedLegTenor),
+                                                             settlemenDays, 
+                                                             currency, 
+                                                             calendar,
+                                                             getPeriodFromString(fixedLegTenor), 
+                                                             fixedLegBDC, 
+                                                             fixedLegDC, 
+                                                             ibor));
+
+        Rcppparams pricerparams(pricer);
+        std::string pricerType = pricerparams.getStringValue("type");
+        std::double zeroMeanRev = pricerparams.getDoubleValue("zeroMeanRev");
+        
+        Rcppparams swaptionVolParams(swaptionVolSEXP);
+        std::string swaptionCal = swaptionVolParams.getStringValue("calendar");
+        std::double swaptionBDC = swaptionVolParams.getDoubleValue("businessDayConvention");
+        std::double swaptionDC = swaptionVolParams.getDoubleValue("dayCounter");
+        Handle<SwaptionVolatilityStructure> atmVol;
+        atmVol = Handle<SwaptionVolatilityStructure>(
+                                                     boost::shared_ptr<SwaptionVolatilityStructure>
+                                                     new SwaptionVolatilityMatrix(swapCal,
+                                                                                  swaptionBDC,
+                                                                                  atmOptionTenors,
+                                                                                  atmSwapTenors,
+                                                                                  m,
+                                                                                  swaptionDC));
+
+
+        boost::shared_ptr<CmsCouponPricer> pricer(new NumericHaganPricer(atmVol, yieldCurveModel,
+                                                                         zeroMeanRev));
+        
+
+        Rcppparams rparams(bondparams);        
+        RcppDate mDate = rparam.getDateValue("maturityDate");
+        RcppDate iDate = rparam.getDateValue("issueDate");
+        RcppDate pDate = rparam.getDateValue("paymentDate");
+        QuantLib::Date maturityDate(dateFromR(mDate));
+        QuantLib::Date issueDate(dateFromR(iDate));
+        QuantLib::Date paymentDate(dateFromR(pDate));
+        std::double nomial = rparams.getDoubleValue("nomial");
+        
+        CappedFlooredCmsCoupon coupon(paymentDate, nomial,
+                                      issueDate, maturityDate, 
+                                      settlementDays, swapIndex,
+                                      gearings, spreads, 
+                                      caps, floors,
+                                      issueDate, maturityDate,
+                                      dayCounter);
+
+        pricer->setSwaptionVolatility(atmVol);
+        coupon.setPricer(pricer);
+        
+
+        
+    } catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    
+    if(exceptionMesg != NULL)
+        error(exceptionMesg);
+    
+    return rl;
+}
+*/
 RcppExport SEXP QL_FittedBondCurve(SEXP curveparams, SEXP lengthVec,
                                    SEXP couponVec,
                                    SEXP dateparams){

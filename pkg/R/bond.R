@@ -382,8 +382,30 @@ FittedBondCurve.default <- function(curveparams, lengths, coupons, dateparams){
     val <- .Call("QL_FittedBondCurve", curveparams,
                  lengths, coupons, dateparams, PACKAGE="RQuantLib")
 
+    class(val) <- c("DiscountCurve")
+    val$table <- as.data.frame(val$table)
     val
 }
+
+
+#CMSBond <- function(bondparams, swapIndex, cap, floor, gearings, spreads
+#                    pricer, iborIndex){
+#   UseMethod("CMSBond")
+#}
+
+#CMSBond.default <- function(bondparams, iborIndex, swapIndex, cap, floor, gearings,
+#                spreads, pricer){
+#   val <- 0
+#   swaptionVol <- pricer$swaptionVol
+#   atmOptionTenors <- swaptionVol$atmOptionTenors
+#   atmSwapTenors <- swaptionVol$atmSwapTenors
+#   volMatrix <- swaptionVol$volatilityMatrix
+#   swapIndex <- matchParams(swapIndex)
+#   ibor <- iborIndex$term  
+#   val <- .Call("QL_CMSBond", bondparams, iborIndex, swapIndex, cap, floor, gearings, spreads,
+#                swaptionVol, atmOptionTenors, atmSwapTenors, volMatrix, pricer
+#                ibor$table$dates, ibor$table$zeroRates)
+#}
 
 # matching functions
 
@@ -478,6 +500,12 @@ matchParams <- function(params) {
   }
   if (!is.null(params$dateGeneration)) {
      params$dateGeneration <- matchDateGen(params$dateGeneration)
+  }
+  if (!is.null(params$fixedLegConvention)) {
+     params$fixedLegConvention <- matchBDC(params$fixedLegConvention)
+  }
+  if (!is.null(params$fixedLegDayCounter)) {
+     params$fixedLegDayCounter <- matchDayCounter(params$fixedLegDayCounter)
   }
   params
 
