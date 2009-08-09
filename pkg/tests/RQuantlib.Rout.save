@@ -336,15 +336,15 @@ Concise summary of valuation for CallableBond
 > coupon <- c(0.05)
 > ConvertibleFixedCouponBond(bondparams, coupon, process, dateparams)
 Concise summary of valuation for ConvertibleFixedCouponBond 
- Net present value :  86.9846 
-       clean price :  86.985 
-       dirty price :  86.985 
+ Net present value :  86.99262 
+       clean price :  86.993 
+       dirty price :  86.993 
     accrued coupon :  0 
-             yield :  0.055682 
+             yield :  0.055698 
         cash flows : 
        Date  Amount
- 2019-08-05  50.653
- 2019-08-05 100.000
+ 2019-08-08  50.667
+ 2019-08-08 100.000
 > 
 > ## ConvertibleFloatingCouponBond, test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
 > params <- list(tradeDate=Sys.Date()-2,
@@ -393,15 +393,15 @@ Concise summary of valuation for ConvertibleFixedCouponBond
 > spreads <- c()
 > ConvertibleFloatingCouponBond(bondparams, iborindex,spreads, process, dateparams)
 Concise summary of valuation for ConvertibleFloatingCouponBond 
- Net present value :  78.091 
-       clean price :  78.091 
-       dirty price :  78.091 
+ Net present value :  78.08893 
+       clean price :  78.089 
+       dirty price :  78.089 
     accrued coupon :  0 
-             yield :  0.055682 
+             yield :  0.055698 
         cash flows : 
        Date  Amount
- 2019-08-05  35.250
- 2019-08-05 100.000
+ 2019-08-08  35.246
+ 2019-08-08 100.000
 > 
 > ## ConvertibleZeroCouponBond, test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
 > params <- list(tradeDate=Sys.Date()-2,
@@ -441,10 +441,10 @@ Concise summary of valuation for ConvertibleZeroCouponBond
        clean price :  57.738 
        dirty price :  57.738 
     accrued coupon :  0 
-             yield :  0.055682 
+             yield :  0.055698 
         cash flows : 
        Date Amount
- 2019-08-05    100
+ 2019-08-08    100
 > 
 > 
 > 
