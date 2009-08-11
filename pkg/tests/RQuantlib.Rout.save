@@ -343,8 +343,8 @@ Concise summary of valuation for ConvertibleFixedCouponBond
              yield :  0.055698 
         cash flows : 
        Date  Amount
- 2019-08-08  50.667
- 2019-08-08 100.000
+ 2019-08-09  50.667
+ 2019-08-09 100.000
 > 
 > ## ConvertibleFloatingCouponBond, test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
 > params <- list(tradeDate=Sys.Date()-2,
@@ -400,8 +400,8 @@ Concise summary of valuation for ConvertibleFloatingCouponBond
              yield :  0.055698 
         cash flows : 
        Date  Amount
- 2019-08-08  35.246
- 2019-08-08 100.000
+ 2019-08-09  35.246
+ 2019-08-09 100.000
 > 
 > ## ConvertibleZeroCouponBond, test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
 > params <- list(tradeDate=Sys.Date()-2,
@@ -444,7 +444,7 @@ Concise summary of valuation for ConvertibleZeroCouponBond
              yield :  0.055698 
         cash flows : 
        Date Amount
- 2019-08-08    100
+ 2019-08-09    100
 > 
 > 
 > 
