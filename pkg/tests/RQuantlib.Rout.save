@@ -304,8 +304,10 @@ Concise summary of valuation for CallableBond
 > ## ConvertibleFixedCouponBond, test-suite/convertiblebond.cpp for ConvertibleFixedCouponBond
 > 
 > #set up arguments to build a pricing engine.
-> params <- list(tradeDate=Sys.Date()-2,
-+                settleDate=Sys.Date(),
+> today <- as.Date("2009-08-01")
+> 
+> params <- list(tradeDate=today-2,
++                settleDate=today,
 +                dt=.25,
 +                interpWhat="discount",
 +                interpHow="loglinear")
@@ -322,7 +324,7 @@ Concise summary of valuation for CallableBond
 > process <- list(underlying=50, divYield = dividendYield,
 +                 rff = riskFreeRate, volatility=0.15)
 > 
-> today <- as.Date("2009-08-01")
+> 
 > bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
 +                    callSch = callabilitySchedule, redemption=100, 
 +                    creditSpread=0.005, conversionRatio = 0.0000000001, 
@@ -336,10 +338,10 @@ Concise summary of valuation for CallableBond
 > coupon <- c(0.05)
 > ConvertibleFixedCouponBond(bondparams, coupon, process, dateparams)
 Concise summary of valuation for ConvertibleFixedCouponBond 
- Net present value :  87.21563 
-       clean price :  86.98 
-       dirty price :  87.216 
-    accrued coupon :  0.23611 
+ Net present value :  87.00573 
+       clean price :  86.992 
+       dirty price :  87.006 
+    accrued coupon :  0.013889 
              yield :  0.055698 
         cash flows : 
        Date  Amount
@@ -407,8 +409,9 @@ Concise summary of valuation for ConvertibleFloatingCouponBond
  2019-07-30 100.000
 > 
 > ## ConvertibleZeroCouponBond, test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
-> params <- list(tradeDate=Sys.Date()-2,
-+                settleDate=Sys.Date(),
+> today <- as.Date("2009-08-01")
+> params <- list(tradeDate=today-2,
++                settleDate=today,
 +                dt=.25,
 +                interpWhat="discount",
 +                interpHow="loglinear")
@@ -426,7 +429,7 @@ Concise summary of valuation for ConvertibleFloatingCouponBond
 > process <- list(underlying=50, divYield = dividendYield,
 +                 rff = riskFreeRate, volatility=0.15)
 > 
-> today <- as.Date("2009-08-01")
+> 
 > bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
 +                    callSch = callabilitySchedule, redemption=100, 
 +                    creditSpread=0.005, conversionRatio = 0.0000000001, 
@@ -440,9 +443,9 @@ Concise summary of valuation for ConvertibleFloatingCouponBond
 > 
 > ConvertibleZeroCouponBond(bondparams, process, dateparams)
 Concise summary of valuation for ConvertibleZeroCouponBond 
- Net present value :  57.88648 
-       clean price :  57.886 
-       dirty price :  57.886 
+ Net present value :  57.74716 
+       clean price :  57.747 
+       dirty price :  57.747 
     accrued coupon :  0 
              yield :  0.055698 
         cash flows : 

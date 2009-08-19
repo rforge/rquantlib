@@ -139,8 +139,10 @@ CallableBond(bondparams, HullWhite, coupon, dateparams)
 ## ConvertibleFixedCouponBond, test-suite/convertiblebond.cpp for ConvertibleFixedCouponBond
 
 #set up arguments to build a pricing engine.
-params <- list(tradeDate=Sys.Date()-2,
-               settleDate=Sys.Date(),
+today <- as.Date("2009-08-01")
+
+params <- list(tradeDate=today-2,
+               settleDate=today,
                dt=.25,
                interpWhat="discount",
                interpHow="loglinear")
@@ -157,7 +159,7 @@ callabilitySchedule <- data.frame(Price = numeric(0), Type=character(0),
 process <- list(underlying=50, divYield = dividendYield,
                 rff = riskFreeRate, volatility=0.15)
 
-today <- as.Date("2009-08-01")
+
 bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
                    callSch = callabilitySchedule, redemption=100, 
                    creditSpread=0.005, conversionRatio = 0.0000000001, 
@@ -222,8 +224,9 @@ spreads <- c()
 ConvertibleFloatingCouponBond(bondparams, iborindex,spreads, process, dateparams)
 
 ## ConvertibleZeroCouponBond, test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
-params <- list(tradeDate=Sys.Date()-2,
-               settleDate=Sys.Date(),
+today <- as.Date("2009-08-01")
+params <- list(tradeDate=today-2,
+               settleDate=today,
                dt=.25,
                interpWhat="discount",
                interpHow="loglinear")
@@ -241,7 +244,7 @@ callabilitySchedule <- data.frame(Price = numeric(0), Type=character(0),
 process <- list(underlying=50, divYield = dividendYield,
                 rff = riskFreeRate, volatility=0.15)
 
-today <- as.Date("2009-08-01")
+
 bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
                    callSch = callabilitySchedule, redemption=100, 
                    creditSpread=0.005, conversionRatio = 0.0000000001, 
