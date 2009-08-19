@@ -157,7 +157,7 @@ callabilitySchedule <- data.frame(Price = numeric(0), Type=character(0),
 process <- list(underlying=50, divYield = dividendYield,
                 rff = riskFreeRate, volatility=0.15)
 
-today <- Sys.Date()
+today <- as.Date("2009-08-01")
 bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
                    callSch = callabilitySchedule, redemption=100, 
                    creditSpread=0.005, conversionRatio = 0.0000000001, 
@@ -172,8 +172,11 @@ coupon <- c(0.05)
 ConvertibleFixedCouponBond(bondparams, coupon, process, dateparams)
 
 ## ConvertibleFloatingCouponBond, test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
-params <- list(tradeDate=Sys.Date()-2,
-               settleDate=Sys.Date(),
+
+today <- as.Date("2009-08-01")
+
+params <- list(tradeDate=today-2,
+               settleDate=today,
                dt=.25,
                interpWhat="discount",
                interpHow="loglinear")
@@ -191,7 +194,7 @@ callabilitySchedule <- data.frame(Price = numeric(0), Type=character(0),
 process <- list(underlying=50, divYield = dividendYield,
                 rff = riskFreeRate, volatility=0.15)
 
-today <- Sys.Date()
+
 bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
                    callSch = callabilitySchedule, redemption=100, 
                    creditSpread=0.005, conversionRatio = 0.0000000001, 
@@ -211,7 +214,7 @@ curvedateparams <- list(settlementDays=0, period="Annual",
                    dayCounter="SimpleDayCounter", 
                   businessDayConvention ="Unadjusted")
 curveparams <- list(method="ExponentialSplinesFitting", 
-                    origDate = Sys.Date())
+                    origDate = today)
 curve <- FittedBondCurve(curveparams, lengths, coupons, curvedateparams)
 iborindex <- list(type="USDLibor", length=6, 
                   inTermOf="Month", term=curve)   
@@ -238,7 +241,7 @@ callabilitySchedule <- data.frame(Price = numeric(0), Type=character(0),
 process <- list(underlying=50, divYield = dividendYield,
                 rff = riskFreeRate, volatility=0.15)
 
-today <- Sys.Date()
+today <- as.Date("2009-08-01")
 bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
                    callSch = callabilitySchedule, redemption=100, 
                    creditSpread=0.005, conversionRatio = 0.0000000001, 

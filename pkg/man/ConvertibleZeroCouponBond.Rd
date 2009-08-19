@@ -4,7 +4,8 @@
 \alias{ConvertibleZeroCouponBond.default}
 \title{Convertible Zero Coupon Bond evaluation}
 \description{
-Setup and evaluate a ConvertibleZeroCouponBond. For detail, see QuantLib/test-suite/convertiblebond.cpp
+The \code{ConvertibleZeroCouponBond} function setups and evaluates a ConvertibleFixedCouponBond using QuantLib's BinomialConvertibleEngine \url{http://quantlib.org/reference/class_quant_lib_1_1_binomial_convertible_engine.html} and BlackScholesMertonProcess \url{http://quantlib.org/reference/class_quant_lib_1_1_black_scholes_merton_process.html}. The NPV, clean price, dirty price, accrued interest, yield and cash flows of the bond is returned. For detail, see test-suite/convertiblebond.cpp.
+
 }
 \usage{
 \method{ConvertibleZeroCouponBond}{default}(bondparams, process, dateparams)
@@ -13,14 +14,43 @@ Setup and evaluate a ConvertibleZeroCouponBond. For detail, see QuantLib/test-su
 \method{summary}{Bond}
 }
 \arguments{
-\item{bondparams}{basic arguments of the convertible 
-            zero bond , \code{exercise} (either 'eu' or 'am'), \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
-            \code{redemption}, \code{issueDate}, \code{maturityDate}, 
-            \code{dividendScheduele}, \code{callabilitySchedule}, 
-            \code{creditSpread}, \code{conversitionRatio}}
-\item{process}{arguments to construct a pricing engine for this bond. \code{underlying} and \code{volatility} must be
-double value, \code{dividendYield} and \code{riskFreeRate} are DiscountCurve objects}
-\item{dateparams}{QuantLib's date parameters of the bond. See example below.}
+\item{bondparams}{bond parameters:
+	\tabular{ll}{
+	   \code{exercuse} 	\tab a string, either "eu" for European option, or "am" for American option. \cr
+           \code{faceAmount}    \tab a double, face amount of the bond\cr
+           \code{issueDate}     \tab a Date, the bond's issue date\cr
+           \code{maturityDate}  \tab a Date, the bond's maturity date\cr
+           \code{redemption}    \tab a double, percentage of the initial face amount that will be returned at maturity date. Normally set at 100\cr
+	   \code{dividendSchedule} \tab a data frame whose columns are "Type", "Amount", "Rate", and "Date" corresponding to QuantLib's DividendSchedule \cr
+	   \code{callabilitySchedule} \tab a data frame whose columns are "Price", "Type" and "Date" corresponding to QuantLib's CallabilitySchedule \cr
+	   \code{creditSpread}  \tab a double, credit spread parameter in the constructor of the bond. \cr
+	   \code{conversitionRatio}  \tab a double, conversition ratio parameter in the constructor of the bond. \cr
+	}
+}
+
+\item{process}{arguments to construct a BlackScholes process and set up the binomial pricing engine for this bond. 
+	\tabular{ll}{
+	   \code{underlying} \tab a double, flat underlying term structure \cr
+	   \code{volatility} \tab a double, flat volatility term structure \cr
+	   \code{dividendYield} \tab a DiscountCurve object \cr
+	   \code{riskFreeRate} \tab a DiscountCurve object \cr
+	}
+}
+
+\item{dateparams}{QuantLib's date parameters of the bond. 
+	\tabular{ll}{
+	   \code{settlementDays} \tab a double, settlement days. \cr
+	   \code{calendar} \tab a string, either 'us' or 'uk' corresponding to US Goverment Bond calendar and UK Exchange calendar. \cr
+	   \code{dayCounter} \tab a number or string, day counter convention. See \link{Enum} \cr
+	   \code{period}  \tab a number or string, interest compounding interval. See \link{Enum} \cr
+	   \code{businessDayConvention} \tab a number or string, business day convention. See \link{Enum} \cr
+	   \code{todayDate} \tab a date, date of today. \cr
+	}
+	See example below.
+}
+
+
+
 }
 \value{
   The \code{ConvertibleZeroCouponBond} function returns an object of class

@@ -6,7 +6,7 @@
 \description{
   The \code{FixedRateBond} function evaluates a fixed rate bond using discount curve. 
   More specificly, the calculation is done by DiscountingBondEngine from QuantLib.
-  The clean price of the bond is returned. 
+  The NPV, clean price, dirty price, accrued interest, yield and cash flows of the bond is returned. 
   For more detail, see the source codes in quantlib's test-suite. test-suite/bond.cpp
 
 }
@@ -17,26 +17,45 @@
 \method{summary}{Bond}
 }
 \arguments{
-\item{bond}{a list specifying the basic arguments of the fixed rate bond,
-            \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
-            \code{redemption}, \code{effectiveDate}}
+
+\item{bond}{bond parameters:
+	\tabular{ll}{
+           \code{faceAmount}    \tab a double, face amount of the bond \cr
+           \code{issueDate}     \tab a Date, the bond's issue date \cr
+           \code{maturityDate}  \tab a Date, the bond's maturity date \cr
+           \code{redemption}    \tab a double, percentage of the initial face amount that will be returned at maturity date. Normally set at 100 \cr
+	   \code{effectiveDate} \tab a Date, the bond's effective date \cr
+	}
+}
+
+
 \item{rates}{a double vector of rates}
-\item{discountCurve}{ A list specifying the discount curve 
-    that will be used in pricing of the bond. There are two way to
-    specify a discount curve. One is a flat curve, which can be specify
-    using a list of two values \code{todayDate} and \code{riskFreeRate}
-    . Another way is to construct a curve from market data
-    using a list of three values, \code{params} , \code{tsQuotes},
-    \code{times}. For more detail, see example or the discountCurve function
+
+\item{discountCurve}{ Can be on of the following:
+\tabular{l}{
+	\code{a DiscountCurve object}   \cr
+	\code{A list that specifies a flat curve in two values "todayDate" and "rate"}   \cr
+	\code{A list that specified 3 values to construct a DiscountCurve object, "params" , "tsQuotes", "times". For more detail, see example or the discountCurve function} \cr
 }
-\item{dateparams}{ A list specifying date paramters, \code{settlemenDays},
-    \code{calendar} - a string 'us' or 'uk', \code{businessDayConvention}- an integer,
-    \code{dayCounter}, \code{period}
-    \code{terminationDateConvention} - an integer,
-    \code{dateGeneration} - an integer,
-    \code{endOfMonth} - value 1 or 0.  For more detail, see \link{Enum} and 
-    the quantlib docs for FixedRateBond
 }
+
+
+\item{dateparams}{QuantLib's date parameters of the bond. 
+	\tabular{ll}{
+	   \code{settlementDays} \tab a double, settlement days. \cr
+	   \code{calendar} \tab a string, either 'us' or 'uk' corresponding to US Goverment Bond calendar and UK Exchange calendar. \cr
+	   \code{dayCounter} \tab a number or string, day counter convention. See \link{Enum} \cr
+	   \code{period}  \tab a number or string, interest compounding interval. See \link{Enum} \cr
+	   \code{businessDayConvention} \tab a number or string, business day convention. See \link{Enum} \cr
+	   \code{terminationDateConvention} \tab a number or string, business day convention. See \link{Enum} \cr
+	   \code{endOfMonth} \tab an integer with value 1 or 0. \cr
+	   \code{dateGeneration} \tab an integer, date generation method. See \link{Enum} \cr
+	}
+	See example below.
+}
+
+
+
 
 }
 \value{

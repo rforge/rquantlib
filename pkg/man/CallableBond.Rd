@@ -4,23 +4,45 @@
 \alias{CallableBond.default}
 \title{CallableBond evaluation}
 \description{
-  The \code{CallableBond} function evaluates a callable fixed rate bond using a Hull-White pricing engine.  
+  The \code{CallableBond} function sets up and evaluates a callable fixed rate bond using Hull-White model and a TreeCallableFixedBondEngine pricing engine.  
   For more detail, see the source codes in quantlib's example folder, Examples/CallableBond/CallableBond.cpp
 
 }
 \usage{
-\method{CallableBond}{default}(bondparams, hullWhite, coupon, dateparams )
+\method{CallableBond}{default}(bondparams, hullWhite, coupon, dateparams)
 \method{plot}{Bond}
 \method{print}{Bond}
 \method{summary}{Bond}
 }
 \arguments{
-\item{bondparams}{bond paramters, \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
-            \code{redemption}, \code{callabilitySchedule} }
-\item{hullWhite}{arguments that are needed to set up a HullWhite pricing engine in QuantLib, \code{term}, \code{alpha}, \code{sigma}, \code{gridIntervals}. Currently, the codes only support a flat rate yield term structure. For more detail, see QuantLib's doc on HullWhite.}
-\item{coupon}{ vector of coupon rate}
-\item{dateparams}{QuantLib's date parameters of the bond. See example below.}
-
+\item{bondparams}{bond parameters:
+	\tabular{ll}{
+           \code{faceAmount}    \tab a double, face amount of the bond\cr
+           \code{issueDate}     \tab a Date, the bond's issue date\cr
+           \code{maturityDate}  \tab a Date, the bond's maturity date\cr
+           \code{redemption}    \tab a double, percentage of the initial face amount that will be returned at maturity date. Normally set at 100\cr
+	}
+}
+\item{hullWhite}{arguments that are needed to set up a HullWhite pricing engine in QuantLib: 
+	\tabular{ll}{
+	   \code{term}  \tab a double, to set up a flat rate yield term structure \cr
+	   \code{alpha} \tab a double, Hull-White model's alpha value \cr
+	   \code{sigma} \tab a double, Hull-White model's sigma value \cr
+	   \code{gridIntervals}. \tab a double, time intervals parameter to set up the TreeCallableFixedBondEngine \cr
+	}
+	Currently, the codes only support a flat rate yield term structure. For more detail, see QuantLib's doc on HullWhite and TreeCallableFixedBondEngine.
+}
+\item{coupon}{ a double vector of coupon rates}
+\item{dateparams}{QuantLib's date parameters of the bond. 
+	\tabular{ll}{
+	   \code{settlementDays} \tab a double, settlement days. \cr
+	   \code{calendar} \tab a string, either 'us' or 'uk' corresponding to US Goverment Bond calendar and UK Exchange calendar. \cr
+	   \code{dayCounter} \tab a number or string, day counter convention. See \link{Enum} \cr
+	   \code{period}  \tab a number or string, interest compounding interval. See \link{Enum} \cr
+	   \code{businessDayConvention} \tab a number or string, business day convention. See \link{Enum} \cr
+	   \code{terminationDateConvention} \tab a number or string, termination day convention. See \link{Enum} \cr
+	}
+	See example below.}
 }
 \value{
   The \code{CallableBond} function returns an object of class

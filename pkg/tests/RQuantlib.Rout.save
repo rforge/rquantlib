@@ -322,7 +322,7 @@ Concise summary of valuation for CallableBond
 > process <- list(underlying=50, divYield = dividendYield,
 +                 rff = riskFreeRate, volatility=0.15)
 > 
-> today <- Sys.Date()
+> today <- as.Date("2009-08-01")
 > bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
 +                    callSch = callabilitySchedule, redemption=100, 
 +                    creditSpread=0.005, conversionRatio = 0.0000000001, 
@@ -336,19 +336,22 @@ Concise summary of valuation for CallableBond
 > coupon <- c(0.05)
 > ConvertibleFixedCouponBond(bondparams, coupon, process, dateparams)
 Concise summary of valuation for ConvertibleFixedCouponBond 
- Net present value :  86.99262 
-       clean price :  86.993 
-       dirty price :  86.993 
-    accrued coupon :  0 
+ Net present value :  87.21563 
+       clean price :  86.98 
+       dirty price :  87.216 
+    accrued coupon :  0.23611 
              yield :  0.055698 
         cash flows : 
        Date  Amount
- 2019-08-09  50.667
- 2019-08-09 100.000
+ 2019-07-30  50.667
+ 2019-07-30 100.000
 > 
 > ## ConvertibleFloatingCouponBond, test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
-> params <- list(tradeDate=Sys.Date()-2,
-+                settleDate=Sys.Date(),
+> 
+> today <- as.Date("2009-08-01")
+> 
+> params <- list(tradeDate=today-2,
++                settleDate=today,
 +                dt=.25,
 +                interpWhat="discount",
 +                interpHow="loglinear")
@@ -366,7 +369,7 @@ Concise summary of valuation for ConvertibleFixedCouponBond
 > process <- list(underlying=50, divYield = dividendYield,
 +                 rff = riskFreeRate, volatility=0.15)
 > 
-> today <- Sys.Date()
+> 
 > bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
 +                    callSch = callabilitySchedule, redemption=100, 
 +                    creditSpread=0.005, conversionRatio = 0.0000000001, 
@@ -386,22 +389,22 @@ Concise summary of valuation for ConvertibleFixedCouponBond
 +                    dayCounter="SimpleDayCounter", 
 +                   businessDayConvention ="Unadjusted")
 > curveparams <- list(method="ExponentialSplinesFitting", 
-+                     origDate = Sys.Date())
++                     origDate = today)
 > curve <- FittedBondCurve(curveparams, lengths, coupons, curvedateparams)
 > iborindex <- list(type="USDLibor", length=6, 
 +                   inTermOf="Month", term=curve)   
 > spreads <- c()
 > ConvertibleFloatingCouponBond(bondparams, iborindex,spreads, process, dateparams)
 Concise summary of valuation for ConvertibleFloatingCouponBond 
- Net present value :  78.08893 
-       clean price :  78.089 
-       dirty price :  78.089 
-    accrued coupon :  0 
+ Net present value :  78.10836 
+       clean price :  78.099 
+       dirty price :  78.108 
+    accrued coupon :  0.0096654 
              yield :  0.055698 
         cash flows : 
        Date  Amount
- 2019-08-09  35.246
- 2019-08-09 100.000
+ 2019-07-30  35.259
+ 2019-07-30 100.000
 > 
 > ## ConvertibleZeroCouponBond, test-suite/convertiblebond.cpp for ConvertibleZeroCouponBond
 > params <- list(tradeDate=Sys.Date()-2,
@@ -423,7 +426,7 @@ Concise summary of valuation for ConvertibleFloatingCouponBond
 > process <- list(underlying=50, divYield = dividendYield,
 +                 rff = riskFreeRate, volatility=0.15)
 > 
-> today <- Sys.Date()
+> today <- as.Date("2009-08-01")
 > bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
 +                    callSch = callabilitySchedule, redemption=100, 
 +                    creditSpread=0.005, conversionRatio = 0.0000000001, 
@@ -437,14 +440,14 @@ Concise summary of valuation for ConvertibleFloatingCouponBond
 > 
 > ConvertibleZeroCouponBond(bondparams, process, dateparams)
 Concise summary of valuation for ConvertibleZeroCouponBond 
- Net present value :  57.73847 
-       clean price :  57.738 
-       dirty price :  57.738 
+ Net present value :  57.88648 
+       clean price :  57.886 
+       dirty price :  57.886 
     accrued coupon :  0 
              yield :  0.055698 
         cash flows : 
        Date Amount
- 2019-08-09    100
+ 2019-07-30    100
 > 
 > 
 > 

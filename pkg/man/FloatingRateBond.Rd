@@ -6,8 +6,8 @@
 \description{
   The \code{FloatingRateBond} function evaluates a floating rate bond using discount curve. 
   More specificly, the calculation is done by DiscountingBondEngine from QuantLib.
+  The NPV, clean price, dirty price, accrued interest, yield and cash flows of the bond is returned. 
   For more detail, see the source codes in quantlib's test-suite. test-suite/bond.cpp
-
 }
 \usage{
 \method{FloatingRateBond}{default}(bond, gearings, spreads,
@@ -18,28 +18,40 @@
 \method{summary}{Bond}
 }
 \arguments{
-\item{bond}{a list specifying the basic arguments of the fixed rate bond,
-            \code{faceAmount}, \code{issueDate},\code{maturityDate}, 
-            \code{redemption}, \code{effectiveDate}}
-\item{gearings, spreads, caps, floors}{double vectors. See quantlib's doc
-on FloatingRateBond for more detail}
 
-\item{curve}{ A list specifying the discount curve 
-    that will be used in pricing of the bond. There are two way to
-    specify a discount curve. One is a flat curve, which can be specify
-    using a list of two values \code{todayDate} and \code{riskFreeRate}
-    . Another way is to construct a curve from market data
-    using a list of three values, \code{params} , \code{tsQuotes},
-    \code{times}. For more detail, see example or the discountCurve function
+\item{bond}{bond parameters:
+	\tabular{ll}{
+           \code{faceAmount}    \tab a double, face amount of the bond \cr
+           \code{issueDate}     \tab a Date, the bond's issue date \cr
+           \code{maturityDate}  \tab a Date, the bond's maturity date \cr
+           \code{redemption}    \tab a double, percentage of the initial face amount that will be returned at maturity date. Normally set at 100 \cr
+	   \code{effectiveDate} \tab a Date, the bond's effective date \cr
+	}
 }
-\item{index}{ A list specifying the discount curve 
-    that will be used in pricing of the bond. There are two way to
-    specify a discount curve. One is a flat curve, which can be specify
-    using a list of two values \code{todayDate} and \code{riskFreeRate}
-    . Another way is to construct a curve from market data
-    using a list of three values, \code{params} , \code{tsQuotes},
-    \code{times}. For more detail, see example or the discountCurve function
+
+\item{gearings}{a double vectors, gearings paramters of FloatingRateBond's constructor. See quantlib's doc on FloatingRateBond for more detail }
+\item{spreads}{a double vectors, spreads paramters of FloatingRateBond's constructor. See quantlib's doc on FloatingRateBond for more detail }
+\item{caps}{a double vectors, spreads paramters of FloatingRateBond's constructor. See quantlib's doc on FloatingRateBond for more detail }
+\item{floors}{a double vectors, spreads paramters of FloatingRateBond's constructor. See quantlib's doc on FloatingRateBond for more detail }
+
+
+\item{curve}{ a discount curve. Can be on of the following:
+\tabular{l}{
+	\code{a DiscountCurve object}   \cr
+	\code{A list that specifies a flat curve in two values "todayDate" and "rate"}   \cr
+	\code{A list that specified 3 values to construct a DiscountCurve object, "params" , "tsQuotes", "times". For more detail, see example or the discountCurve function} \cr
 }
+}
+
+\item{index}{ IborIndex term structure. 
+ \tabular{ll}{
+   \code{type} \tab a string, currently support only "USDLibor" \cr
+   \code{length} \tab an integer, length of the index \cr
+   \code{inTermOf} \tab a string, period unit, currently support only 'Month' \cr
+   \code{term} \tab a DiscountCurve object, the term structure of the index\cr
+  }
+}
+
 \item{dateparams}{ A list specifying date paramters, \code{settlemenDays},
     \code{calendar} - a string 'us' or 'uk', \code{businessDayConvention}- an integer,
     \code{dayCounter}, \code{period}
