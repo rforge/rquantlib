@@ -903,7 +903,7 @@ RcppExport SEXP QL_ConvertibleZeroBond(SEXP bondparams, SEXP process,
             RcppFrame rcppDividendSchedule(dividendScheduleFrame);        
             std::vector<std::vector<ColDatum> > table = rcppDividendSchedule.getTableData();
             int nrow = table.size();
-            int ncol = table[0].size();
+            //int ncol = table[0].size();
             for (int row=0;row<nrow;row++){          
                 int type = (table[row][0].getStringValue()=="Fixed") ? 1 : 0;
                 double amount = table[row][1].getDoubleValue();
@@ -948,7 +948,7 @@ RcppExport SEXP QL_ConvertibleZeroBond(SEXP bondparams, SEXP process,
 
         RcppParams rparam(bondparams);
         
-        double faceAmount = rparam.getDoubleValue("faceAmount");        
+        //double faceAmount = rparam.getDoubleValue("faceAmount");        
         RcppDate mDate = rparam.getDateValue("maturityDate");
         RcppDate iDate = rparam.getDateValue("issueDate");
         QuantLib::Date maturityDate(dateFromR(mDate));
@@ -1097,7 +1097,7 @@ RcppExport SEXP QL_ConvertibleFixedBond(SEXP bondparams, SEXP coupon, SEXP proce
             RcppFrame rcppDividendSchedule(dividendScheduleFrame);        
             std::vector<std::vector<ColDatum> > table = rcppDividendSchedule.getTableData();
             int nrow = table.size();
-            int ncol = table[0].size();
+            //int ncol = table[0].size();
             for (int row=0;row<nrow;row++){          
                 int type = (table[row][0].getStringValue()=="Fixed") ? 1 : 0;
                 double amount = table[row][1].getDoubleValue();
@@ -1142,7 +1142,7 @@ RcppExport SEXP QL_ConvertibleFixedBond(SEXP bondparams, SEXP coupon, SEXP proce
 
         RcppParams rparam(bondparams);
         
-        double faceAmount = rparam.getDoubleValue("faceAmount");        
+        //double faceAmount = rparam.getDoubleValue("faceAmount");        
         RcppDate mDate = rparam.getDateValue("maturityDate");
         RcppDate iDate = rparam.getDateValue("issueDate");
         QuantLib::Date maturityDate(dateFromR(mDate));
@@ -1296,7 +1296,7 @@ RcppExport SEXP QL_ConvertibleFloatingBond(SEXP bondparams,  SEXP process,
             RcppFrame rcppDividendSchedule(dividendScheduleFrame);        
             std::vector<std::vector<ColDatum> > table = rcppDividendSchedule.getTableData();
             int nrow = table.size();
-            int ncol = table[0].size();
+            //int ncol = table[0].size();
             for (int row=0;row<nrow;row++){          
                 int type = (table[row][0].getStringValue()=="Fixed") ? 1 : 0;
                 double amount = table[row][1].getDoubleValue();
@@ -1341,7 +1341,7 @@ RcppExport SEXP QL_ConvertibleFloatingBond(SEXP bondparams,  SEXP process,
 
         RcppParams rparam(bondparams);
         
-        double faceAmount = rparam.getDoubleValue("faceAmount");        
+        //double faceAmount = rparam.getDoubleValue("faceAmount");        
         RcppDate mDate = rparam.getDateValue("maturityDate");
         RcppDate iDate = rparam.getDateValue("issueDate");
         QuantLib::Date maturityDate(dateFromR(mDate));
