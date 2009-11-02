@@ -36,7 +36,7 @@ using namespace QuantLib;
 
 #include "Rcpp.h"
 
-#define NULL_RateHelper (boost::shared_ptr<RateHelper>)Null<boost::shared_ptr<RateHelper> >()
+//#define NULL_RateHelper (boost::shared_ptr<RateHelper>)Null<boost::shared_ptr<RateHelper> >()
 
 // Prototypes for convenience functions (some macros)
 void insertListElement(SEXP &list, SEXP &names,
