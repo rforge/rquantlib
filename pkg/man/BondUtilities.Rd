@@ -42,7 +42,6 @@ matchParams(params)
   the QuantLib Group for \code{QuantLib}}
 \note{The interface might change in future release as \code{QuantLib}
   stabilises its own API.}
-\examples{
-}
+%\examples{}
 \keyword{misc}
 
