@@ -111,7 +111,9 @@ RcppExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
 		double val = tslist.getValue(i);
 		boost::shared_ptr<RateHelper> rh = 
 		    ObservableDB::instance().getRateHelper(name, val);
-		if(rh == NULL_RateHelper)
+                // edd 2009-11-01 FIXME NULL_RateHelper no longer builds under 0.9.9
+ 		// if(rh == NULL_RateHelper)
+		if (rh.get() == NULL)
 		    throw std::range_error("Unknown rate in getRateHelper");
 		curveInput.push_back(rh);
 	    }
