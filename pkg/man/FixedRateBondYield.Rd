@@ -41,8 +41,8 @@
   components:
   \item{yield}{yield of the bond}
 }
-\details{
-}
+%\details{
+%}
 \references{\url{http://quantlib.org} for details on \code{QuantLib}. \url{http://www.mathworks.com/access/helpdesk/help/toolbox/finfixed/FixedRateBondYield.html} for more details about this function}
 \author{Khanh Nguyen \email{knguyen@cs.umb.edu}}
 \note{The interface might change in future release as \code{QuantLib}
