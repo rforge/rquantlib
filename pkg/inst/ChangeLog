@@ -2,6 +2,8 @@
 
 	* DESCRIPTION: Release 0.3.1 for QuantLib 0.9.9
 
+	* src/Makefile.win: Update to QL 0.9.9 as well
+
 2009-11-02  Dirk Eddelbuettel  <edd@debian.org>
 
 	* man/*.Rd: Commented-out a few empty sections as noticed by R 2.10.0

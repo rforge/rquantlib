@@ -13,7 +13,7 @@ CXXFLAGS	= -I$(RHOME)/include -I$(RHOME)/src/include $(RCPP_INCFLAGS) -I$(QUANTL
 SOURCES		:= $(wildcard *.cpp)
 LINKOBJ		:= $(SOURCES:.cpp=.o)
 
-DLLLIBS		= -s -L$(RHOME)/bin -lR $(RCPP_LDFLAGS) -L$(QUANTLIB_ROOT)/lib -lQuantLib-mgw-0_9_7
+DLLLIBS		= -s -L$(RHOME)/bin -lR $(RCPP_LDFLAGS) -L$(QUANTLIB_ROOT)/lib -lQuantLib-mgw-0_9_9
 
 .PHONY: 	all clean
 
