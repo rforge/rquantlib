@@ -1,3 +1,7 @@
+2009-12-12  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: Release 0.3.1 for QuantLib 0.9.9
+
 2009-11-02  Dirk Eddelbuettel  <edd@debian.org>
 
 	* man/*.Rd: Commented-out a few empty sections as noticed by R 2.10.0
