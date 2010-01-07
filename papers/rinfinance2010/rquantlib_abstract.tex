@@ -1,0 +1,69 @@
+\documentclass[nojss]{jss}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% almost as usual
+\author{Khanh Nguyen\\University of Massachusetts-Boston \And 
+        Dirk Eddelbuettel\\Debian Project}
+\title{\pkg{RQuantLib}: Bridging a gap between QuantLib and R}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Khanh Nguyen, Dirk Eddelbuettel} %% comma-separated
+\Plaintitle{RQuantLib: Bridging a gap between QuantLib and R} %% without formatting
+
+%% an abstract and keywords
+\Abstract{
+This paper discusses \pkg{RQuantLib} - an R package that connects R and QuantLib. QuantLib is the premier open source library written in \proglang{C++} aimed at provide a comprehensive software framework for quantitative finance. "QuantLib library offers tools that are useful for both practical implementation and for advanced modeling with features such as market conventions, yield curve models, solves, PDEs, Monte Carlo, exotic options, Var and so on." (QuantLib's homepage). It is intended to be used by both practitioners and academics. R is currently the most popular language and environment for statistical computing. Since statistical computing plays a major role in all financial modeling and risk management tasks, it is highly desirable to combine the features and power of R and QuantLib. RQuantLib is a collection of functions for financial tasks such as option pricing, bond pricing, yield curve interpolation whose underlying computation is implemented in QuantLib. The main portion of this paper describes the current overall functionalities of RQuantLib. In the end, we provide a short instruction to interface QuantLib with R using \pkg{Rcpp}.
+}
+\Keywords{quantlib, fixed income instruments, option pricing, quantitative finance, \proglang{R}, \proglang{C++}}
+\Plainkeywords{quantlib, fixed income instruments, option pricing, quantitative finance, R, C++} %% without formatting
+%% at least one keyword must be supplied
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{13}
+%% \Issue{9}
+%% \Month{September}
+%% \Year{2004}
+%% \Submitdate{2004-09-29}
+%% \Acceptdate{2004-09-29}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Khanh Nguyen\\
+  Department of Computer Science\\
+  University of Massachusetts - Boston\\
+  Boston, MA, USA\\
+  E-mail: \email{knguyen@cs.umb.edu}\\\\
+  Dirk Eddelbuettel\\
+  Debian Project\\
+  Email: \email{edd@debian.org}
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/1/31336-5053
+%% Fax: +43/1/31336-734
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%% include your article here, just as usual
+%% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
+
+\section{Introduction}
+\section{RQuantLib}
+\subsection*{Option Pricing}
+\subsection*{Term Structure}
+\subsection*{Fixed Income}
+\section{Interface QuantLib and R}
+%% Note: If there is markup in \(sub)section, then it has to be escape as above.
+
+\end{document}
