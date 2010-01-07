@@ -7,40 +7,66 @@
 \let\proglang=\textsf
 \newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
 
-\author{Khanh Nguyen\\University of Massachusetts-Boston \and
-       Dirk Eddelbuettel\\Debian Project}
+\author{Dirk Eddelbuettel\\Debian Project 
+  \and Khanh Nguyen\\University of Massachusetts-Boston}
 \title{\pkg{RQuantLib}: Bridging QuantLib and R}
+\date{Abstract submitted for \textsc{R / Finance 2010}}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
+  \noindent % no ident for first paragraph
+  \addtolength{\parskip}{\baselineskip} % a little vertical space
+  \pkg{RQuantLib} is a package for the \proglang{R} language and environment
+  which connects \proglang{R} with QuantLib (\url{http://www.quantlib.org}),
+  the premier open source library for quantitative finance. Written in
+  portable \proglang{C++}, QuantLib aims at providing a comprehensive library
+  spanning most aspects of quantitative finance such as pricing engines for
+  various instruments, yield curve modeling, Monte Carlo and Finite
+  Difference engines, PDE solvers, Risk management and more. At the same
+  time, \proglang{R} has become the preeminent language and environment for
+  statistical computing and data analysis---which are key building blocks for
+  financial modeling, risk management and trading. So it seems natural to
+  combine the features and power of \proglang{R} and QuantLib.
+  \pkg{RQuantLib} is aimed at this goal, and provides a collection of
+  functions for option and bond pricing, yield curve interpolation, financial
+  markets calendaring and more.
 
-\noindent
-\pkg{RQuantLib} in an R package that connects R and QuantLib. QuantLib
-(\url{http://www.quantlib.org}) is a premier open source library written
-in \proglang{C++} aimed at providing a comprehensive software framework for
-quantitative finance. The library spans almost all aspects of practical tools employed in quantitative finance for both practioners and academic researchers such as pricing engines for various instruments, yield curve modeling tools, Monte Carlo and Finite Difference engines, PDE solvers, VaR and so on. On the other hand, R has become a preminent language and environment for statistical computing. Since statistical computing plays a major role and has integrated in all financial modeling, risk management and trading tasks, it is highly desirable to combine the features and power of R and QuantLib. \pkg{RQuantLib} is aimed at that goal. \pkg{RQuantLib} is a collection of functions for financial tasks such as option pricing, bond pricing, and yield curve interpolation whose underlying computation is performed by QuantLib. 
-\newline
-\newline
-\noindent
-RQuantLib was initially started by Dr. Dirk Eddelbuettel for vanilla and equity options pricing. Standard European, American, Asian as well as Barrier and Binary options are supported. In addition, methods to calculate implied volatility for European and American options are available. 
-\newline
-\newline
-\noindent
-For fixed income, essentially there are two categories of fixed-income functions: bond pricing and yield curve building. Dominick Samperi implemented the DiscountCurve function that constructs the spot term interest rates from market date including the settlement date, deposit rates, futures prices, FRA rates, or swap rates, in various combinations. It returns the corresponding discount factors, zero rates, and forward rates for a vector of times that is specified as input. Khanh Nguyen added FittedBondCurve that fits a term structure to a set of bonds in three different popular fitting methods "ExponentialSplinesFitting", "SimplePolynomialFitting", "NelsonSiegelFitting". It returns a three column "date/zero.rate/discount.rate" data frame that can be converted directly into a zoo object and used in time series analysis or input for bond pricing functions. 
-\newline
-\newline
-\noindent
-There is a large support for bond pricing. Currently, RQuantLib can value the followings: zero coupon bond, fixed coupon bond, floating rate bond, callable bond, convertible zero coupon bond, convertible fixed coupon bond, convertible floating coupon bond. These functions return, when applicable, the NPV, the clean price, the dirty price, accrued amount based on the input dates, yield and the cash flows of the bond.
-\newline
-\newline
-\noindent 
-RQuantLib is the first and only R package that utilizes the power of QuantLib. Besides providing an convenient and easy access to QuantLib for users who don't have necessary experience in C++ to make use of QuantLib, it also sets up a friendly environment and simple templates for experienced users who wants to interface their own QuantLib-coded functions in R on their own. 
-\newline
-\newline
-\noindent \textbf{Keywords:} QuantLib, fixed income instruments, option pricing,
-quantitative finance, \proglang{R}, \proglang{C++}
+  \pkg{RQuantLib} was started in 2002 with coverage of equity options
+  containing pricing functionality for vanilla European and American exercise
+  as well as for several exotics such as Asian, Barrier and Binary options.
+  Implied volatility calculations and option analytics were also included.
+  Coverage of Fixed Income markets was first added to \pkg{RQuantLib} in
+  2005. Yield curve building functionality was provided via the DiscountCurve
+  function which constructs spot rates from market data including the
+  settlement date, deposit rates, futures prices, FRA rates, or swap rates,
+  in various combinations. The function returns the corresponding discount
+  factors, zero rates, and forward rates for a vector of times that is
+  specified as input. In 2009, this functionality was significantly extend
+  via the FittedBondCurve function which fits a term structure to a set of
+  bonds using one of three different popular fitting methods
+  ExponentialSplines, SimplePolynomial, or NelsonSiegel.  It returns a
+  data.frame with three columns date, zero.rate and discount.rate which can
+  be converted directly into a \pkg{zoo} object and used in time series
+  analysis or as further input for bond pricing functions. Bond pricing for
+  zero coupon, fixed coupon, floating rate, callable, convertible zeros,
+  convertible fixed coupon, and convertible floating coupon bonds are
+  supported. These functions return, when applicable, the NPV, the clean
+  price, the dirty price, accrued amount based on the input dates, yield and
+  the cash flows of the bond.
+
+  \pkg{RQuantLib} is still the only \proglang{R} package that brings the
+  quantitative analytics of QuantLib to \proglang{R} while conencting the
+  rich interactive \proglang{R} environment for data analysis, statistics and
+  visualization for direct use with QuantLib. Besides providing an convenient
+  and easy access to QuantLib for \proglang{R} users who do not have the
+  necessary experience in C++ to employ QuantLib directly, it also sets up a
+  framework for users who wants to interface their own QuantLib-based
+  functions with \proglang{R}.
+
+  \noindent \textbf{Keywords:} QuantLib, fixed income, yield curve, bond
+  pricing, option pricing, quantitative finance, \proglang{R}, \proglang{C++}
 \end{abstract}
 \end{document}
