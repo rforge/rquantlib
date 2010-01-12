@@ -31,3 +31,131 @@ businessDay <- function(calendar="TARGET", dates=Sys.Date()) {
     names(val) <- dates
     val
 }
+
+isHoliday <- function(calendar="TARGET", dates=Sys.Date()) {
+    stopifnot(is.character(calendar))
+    stopifnot(class(dates)=="Date")
+    val <- .Call("QL_isHoliday",
+                 list(calendar=calendar),
+		 dates,
+                 PACKAGE="RQuantLib")
+    val <- as.logical(val[[1]])
+    names(val) <- dates
+    val
+}
+isWeekend <- function(calendar="TARGET", dates=Sys.Date()) {
+    stopifnot(is.character(calendar))
+    stopifnot(class(dates)=="Date")
+    val <- .Call("QL_isWeekend",
+                 list(calendar=calendar),
+		 dates,
+                 PACKAGE="RQuantLib")
+    val <- as.logical(val[[1]])
+    names(val) <- dates
+    val
+}
+isEndOfMonth <- function(calendar="TARGET", dates=Sys.Date()) {
+    stopifnot(is.character(calendar))
+    stopifnot(class(dates)=="Date")
+    val <- .Call("QL_isEndOfMonth",
+                 list(calendar=calendar),
+		 dates,
+                 PACKAGE="RQuantLib")
+    val <- as.logical(val[[1]])
+    names(val) <- dates
+    val
+}
+endOfMonth <- function(calendar="TARGET", dates=Sys.Date()) {
+    stopifnot(is.character(calendar))
+    stopifnot(class(dates)=="Date")
+    val <- .Call("QL_endOfMonth",
+                 list(calendar=calendar),
+		 dates,
+                 PACKAGE="RQuantLib")
+    val <- val[[1]]
+    names(val) <- dates
+    val
+}
+adjust <- function(calendar="TARGET", dates=Sys.Date(), bdc = 0 ) {
+    stopifnot(is.character(calendar))
+    stopifnot(class(dates)=="Date")
+    val <- .Call("QL_adjust",
+                 list(calendar=calendar,
+                      bdc = as.double(bdc)),
+		 dates,
+                 PACKAGE="RQuantLib")
+    val <- val[[1]]
+    names(val) <- dates
+    val
+}
+
+advance <- function(calendar="TARGET", dates=Sys.Date(),
+                    n, timeUnit, bdc = 0, emr = 0) {
+  stopifnot(is.character(calendar))
+  stopifnot(class(dates)=="Date")
+  val <- .Call("QL_advance1",
+               list(calendar=calendar,
+                    amount = as.double(n),
+                    unit = as.double(timeUnit),
+                    bdc = as.double(bdc),
+                    emr = as.double(emr)),
+               dates,
+               PACKAGE="RQuantLib")
+  val <- val[[1]]
+  val
+}
+
+
+advance <- function(calendar="TARGET", dates=Sys.Date(),
+                    period, bdc = 0, emr = 0) {
+  stopifnot(is.character(calendar))
+  stopifnot(class(dates)=="Date")
+  val <- .Call("QL_advance2",
+               list(calendar=calendar,
+                    period = as.double(period),
+                    bdc = as.double(bdc),
+                    emr = as.double(emr)),
+               dates,
+               PACKAGE="RQuantLib")
+  val <- val[[1]]
+  val
+}
+
+
+businessDaysBetween  <- function(calendar="TARGET",
+                                 from=Sys.Date(),
+                                 to = Sys.Date() + 5,
+                                 includeFirst = 1,
+                                 includeLast = 0
+                                 ) {
+  stopifnot(is.character(calendar))
+  stopifnot(class(from)=="Date")
+  stopifnot(class(to)=="Date")
+  val <- .Call("QL_businessDaysBetween",
+               list(calendar=calendar,
+                    includeFirst = as.double(includeFirst),
+                    includeLast = as.double(includeLast)
+                    ),
+               from, to,
+               PACKAGE="RQuantLib")
+  val <- val[[1]]
+  val
+}
+
+                    
+
+holidayList <- function(calendar="TARGET",
+                        from=Sys.Date(),
+                        to=Sys.Date() + 5,
+                        includeWeekends=0) {
+  stopifnot(is.character(calendar))
+  stopifnot(class(from)=="Date")
+  stopifnot(class(to)=="Date")
+  val <- .Call("QL_holidayList",
+               list(calendar=calendar,
+                    includeWeekends=as.double(includeWeekends),
+                    from=from, to=to
+                    ),               
+               PACKAGE="RQuantLib")
+  val
+}

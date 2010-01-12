@@ -143,6 +143,7 @@ int dateFromR(const RcppDate &d);
 
 //utility functions for parameters of fixed-income instrument function
 Frequency getFrequency(const double n);
+TimeUnit getTimeUnit(const double n);
 Compounding getCompounding(const double n);
 BusinessDayConvention getBusinessDayConvention(const double n);
 DayCounter getDayCounter(const double n);
@@ -157,4 +158,5 @@ boost::shared_ptr<YieldTermStructure> getFlatCurve(SEXP flatcurve);
 boost::shared_ptr<YieldTermStructure> rebuildCurveFromZeroRates(
                                                                 SEXP dateSexp,
                                                                 SEXP zeroSexp);
+Calendar* getCalendar(SEXP calParameters);
 #endif
