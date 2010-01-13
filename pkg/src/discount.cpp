@@ -97,10 +97,10 @@ RcppExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes, SEXP times) {
         
         RcppFrame frame(colNames);
         
-        int ntimes = length(times);
-        SEXP disc  = PROTECT(allocVector(REALSXP, ntimes));
-        SEXP fwds  = PROTECT(allocVector(REALSXP, ntimes));
-        SEXP zero  = PROTECT(allocVector(REALSXP, ntimes));
+        int ntimes = Rf_length(times);
+        SEXP disc  = PROTECT(Rf_allocVector(REALSXP, ntimes));
+        SEXP fwds  = PROTECT(Rf_allocVector(REALSXP, ntimes));
+        SEXP zero  = PROTECT(Rf_allocVector(REALSXP, ntimes));
         
         
         Date current = settlementDate;
@@ -142,7 +142,7 @@ RcppExport SEXP QL_DiscountCurve(SEXP params, SEXP tsQuotes, SEXP times) {
     }
 
     if(exceptionMesg != NULL)
-        error(exceptionMesg);
+        Rf_error(exceptionMesg);
     
     return rl;
 }

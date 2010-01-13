@@ -96,7 +96,7 @@ RcppExport  SEXP QL_EuropeanOptionImpliedVolatility(SEXP optionParameters) {
         exceptionMesg = copyMessageToR("unknown reason");
     }
     if(exceptionMesg != NULL)
-        error(exceptionMesg);
+        Rf_error(exceptionMesg);
     
     return rl;
 }
@@ -166,7 +166,7 @@ RcppExport  SEXP QL_AmericanOptionImpliedVolatility(SEXP optionParameters) {
     }
   
     if(exceptionMesg != NULL)
-        error(exceptionMesg);
+        Rf_error(exceptionMesg);
     
     return rl;
 }

@@ -112,7 +112,7 @@ boost::shared_ptr<YieldTermStructure> buildTermStructure(SEXP params,
         Settings::instance().evaluationDate() = todaysDate;
         std::string firstQuoteName = tslist.getName(0);
         
-        double dt = rparam.getDoubleValue("dt");
+        //double dt = rparam.getDoubleValue("dt");
         
         std::string interpWhat, interpHow;
         bool flatQuotes = true;

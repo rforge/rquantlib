@@ -115,7 +115,7 @@ RcppExport SEXP QL_AsianOption(SEXP optionParameters){
     }
     
     if(exceptionMesg != NULL)
-        error(exceptionMesg);
+        Rf_error(exceptionMesg);
     
     return rl;
 }

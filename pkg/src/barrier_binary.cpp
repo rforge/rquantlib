@@ -140,7 +140,7 @@ RcppExport  SEXP QL_BinaryOption(SEXP optionParameters) {
     }
   
     if(exceptionMesg != NULL)
-        error(exceptionMesg);
+        Rf_error(exceptionMesg);
     
     return rl;
 }
@@ -217,7 +217,7 @@ RcppExport  SEXP QL_BinaryOptionImpliedVolatility(SEXP optionParameters) {
     }
   
     if(exceptionMesg != NULL)
-        error(exceptionMesg);
+        Rf_error(exceptionMesg);
     
     return rl;
 }
@@ -325,7 +325,7 @@ RcppExport  SEXP QL_BarrierOption(SEXP optionParameters) {
     }
   
     if(exceptionMesg != NULL)
-        error(exceptionMesg);
+        Rf_error(exceptionMesg);
     
     return rl;
 }

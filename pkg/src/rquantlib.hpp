@@ -31,8 +31,8 @@
 using namespace QuantLib;
 
 
-#include <R.h>
-#include <Rinternals.h>
+//#include <R.h>
+//#include <Rinternals.h>
 
 #include "Rcpp.h"
 

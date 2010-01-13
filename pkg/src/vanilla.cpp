@@ -89,7 +89,7 @@ RcppExport  SEXP QL_EuropeanOption(SEXP optionParameters) {
     }
   
     if(exceptionMesg != NULL)
-        error(exceptionMesg);
+        Rf_error(exceptionMesg);
     
     return rl;
 }
@@ -169,7 +169,7 @@ RcppExport  SEXP QL_AmericanOption(SEXP optionParameters) {
     }
   
     if(exceptionMesg != NULL)
-        error(exceptionMesg);
+        Rf_error(exceptionMesg);
     
   return rl;
 }

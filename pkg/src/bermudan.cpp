@@ -340,7 +340,7 @@ RcppExport SEXP QL_BermudanSwaption(SEXP params, SEXP tsQuotes,
     }
 
     if(exceptionMesg != NULL)
-	error(exceptionMesg);
+	Rf_error(exceptionMesg);
 
     return rl;
 }
