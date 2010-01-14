@@ -89,7 +89,7 @@ adjust <- function(calendar="TARGET", dates=Sys.Date(), bdc = 0 ) {
     val
 }
 
-advance <- function(calendar="TARGET", dates=Sys.Date(),
+advance.by.timeunit <- function(calendar="TARGET", dates=Sys.Date(),
                     n, timeUnit, bdc = 0, emr = 0) {
   stopifnot(is.character(calendar))
   stopifnot(class(dates)=="Date")
@@ -104,9 +104,7 @@ advance <- function(calendar="TARGET", dates=Sys.Date(),
   val <- val[[1]]
   val
 }
-
-
-advance <- function(calendar="TARGET", dates=Sys.Date(),
+advance.by.period <- function(calendar="TARGET", dates=Sys.Date(),
                     period, bdc = 0, emr = 0) {
   stopifnot(is.character(calendar))
   stopifnot(class(dates)=="Date")
