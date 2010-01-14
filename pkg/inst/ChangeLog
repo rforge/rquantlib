@@ -1,4 +1,9 @@
 2010-01-14  Khanh Nguyen <knguyen@cs.umb.edu>
+	* pkg/R/calendars.R: Fix generic function issue with advance
+	* man/advance_by_timeunit.Rd: idem
+	* man/advance_by_period.Rd: idem
+	* man/advance.Rd: deleted
+2010-01-14  Khanh Nguyen <knguyen@cs.umb.edu>
 
 	* src/dayCounter.cpp: Added dayCounter functions
 	* pkg/R/dayCounter.R: idem
