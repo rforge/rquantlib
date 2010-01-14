@@ -89,35 +89,6 @@ adjust <- function(calendar="TARGET", dates=Sys.Date(), bdc = 0 ) {
     val
 }
 
-advance.by.timeunit <- function(calendar="TARGET", dates=Sys.Date(),
-                    n, timeUnit, bdc = 0, emr = 0) {
-  stopifnot(is.character(calendar))
-  stopifnot(class(dates)=="Date")
-  val <- .Call("QL_advance1",
-               list(calendar=calendar,
-                    amount = as.double(n),
-                    unit = as.double(timeUnit),
-                    bdc = as.double(bdc),
-                    emr = as.double(emr)),
-               dates,
-               PACKAGE="RQuantLib")
-  val <- val[[1]]
-  val
-}
-advance.by.period <- function(calendar="TARGET", dates=Sys.Date(),
-                    period, bdc = 0, emr = 0) {
-  stopifnot(is.character(calendar))
-  stopifnot(class(dates)=="Date")
-  val <- .Call("QL_advance2",
-               list(calendar=calendar,
-                    period = as.double(period),
-                    bdc = as.double(bdc),
-                    emr = as.double(emr)),
-               dates,
-               PACKAGE="RQuantLib")
-  val <- val[[1]]
-  val
-}
 
 advance <- function(calendar="TARGET", dates=Sys.Date(),
                    n, timeUnit, # call 1
