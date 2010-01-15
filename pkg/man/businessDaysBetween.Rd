@@ -1,5 +1,5 @@
 % $Id: Calendars.Rd 64 2009-04-10 20:24:33Z edd $
-\name{Calendars.businessDaysBetween}
+\name{businessDaysBetween}
 \alias{businessDaysBetween}
 \title{Calendar functions from QuantLib}
 \description{
