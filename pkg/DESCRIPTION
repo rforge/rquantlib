@@ -1,14 +1,14 @@
 Package: RQuantLib
 Title: R interface to the QuantLib library
-Version: 0.3.1.1
+Version: 0.3.2
 Date: $Date$
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Author: Dirk Eddelbuettel <edd@debian.org> and Khanh Nguyen <knguyen@cs.umb.edu>
 Description: The RQuantLib package makes parts of QuantLib visible to the R
  user. Currently a number option pricing functions are included, both vanilla
  and exotic, as well as a broad range of fixed-income functions, as well a
- general utilities such as business day calendar computations. Further
- software contributions are welcome.
+ general calendaring and holiday utilities. Further software contributions 
+ are welcome.
  .
  The QuantLib project aims to provide a comprehensive software framework for
  quantitative finance. The goal is to provide a standard open source library
