@@ -2,7 +2,6 @@
 
 	* DESCRIPTION: Release 0.3.2 which works with QuantLib 0.9.9
 	  (as well as with the brand-new first beta for QuantLib 1.0.0)
-	  and containing a bit of cleanup for newer versions  of Rcpp
 
 	* src/Makefile.win: Keep QL 0.9.9 hard-coded until 1.0.0 is out
 
