@@ -461,11 +461,11 @@ matchFrequency <- function(freq = c("NoFrequency","Once", "Annual",
     if (!is.numeric(freq)){
        freq <- match.arg(freq)
        freq <- switch(freq, 
-                      NoFrequency = 0, Once = 1, Annual = 2,
-                      Semiannual = 3, EveryFourthMonth = 4,
-                      Quarterly = 5, Bimonthly = 6,
-                      EveryFourthWeek = 7, Biweekly = 8,
-                      Weekly = 9, Daily = 10)
+                      NoFrequency = -1, Once = 0, Annual = 1,
+                      Semiannual = 2, EveryFourthMonth = 3,
+                      Quarterly = 4, Bimonthly = 6,
+                      Monthly = 12, EveryFourthWeek = 13,
+                      Biweekly = 26, Weekly = 52, Daily = 365)
     }
     freq
 }

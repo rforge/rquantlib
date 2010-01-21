@@ -340,17 +340,26 @@ Compounding getCompounding(const double n){
     else return SimpleThenCompounded;
 }
 Frequency getFrequency(const double n){
-    if (n==0) return NoFrequency;
-    else if (n==1) return Once;
-    else if (n==2) return Annual;
-    else if (n==3) return Semiannual;
-    else if (n==4) return EveryFourthMonth;
-    else if (n==5) return Quarterly;
-    else if (n==6) return Bimonthly;
-    else if (n==7) return EveryFourthWeek;
-    else if (n==8) return Biweekly;
-    else if (n==9) return Weekly;
-    else return Daily;
+
+    Frequency f;
+
+    if (n==-1) f = NoFrequency;
+    else if (n==0) f = Once;
+    else if (n==1) f = Annual;
+    else if (n==2) f = Semiannual;
+    else if (n==3) f = EveryFourthMonth;
+    else if (n==4) f = Quarterly;
+    else if (n==6) f = Bimonthly;
+    else if (n==12) f = Monthly;
+    else if (n==13) f = EveryFourthWeek;
+    else if (n==26) f = Biweekly;
+    else if (n==52) f = Weekly;
+    else if (n==365) f = Daily;
+    else f = OtherFrequency;   
+
+    return f;
+
+
 }
 TimeUnit getTimeUnit(const double n){
     if (n==0) return Days;
