@@ -537,10 +537,38 @@ CallableBond <- function(bondparams, hullWhite, coupon, dateparams){
     UseMethod("CallableBond")
 }
 
-CallableBond.default <- function(bondparams, hullWhite, coupon, dateparams){
+CallableBond.default <- function(bondparams, hullWhite,
+                                 coupon,
+                                 dateparams=list(
+                                   settlementDays=1,
+                                   calendar='us',
+                                   dayCounter='Thirty360',
+                                   period='Semiannual',
+                                   businessDayConvention='Following',
+                                   terminationDateConvention='Following'
+                                 )){
     val <- 0
+
+    if (is.null(bondparams$faceAmount)){bondparams$faceAmount=100}
+    if (is.null(bondparams$redemption)){bondparams$redemption=100}
+    if (is.null(bondparams$callSch)){
+      bondparams$callSch = data.frame(Price=numeric(0), Type=character(0),
+        Date=as.Date(character(0)))
+    }          
+    
+    if (is.null(dateparams$settlementDays)){dateparams$settlementDays=1}
+    if (is.null(dateparams$calendar)){dateparams$calendar='us'}
+    if (is.null(dateparams$businessDayConvention)){
+      dateparams$businessDayConvention='Following'
+    }
+    if (is.null(dateparams$terminationDateConvention)){
+      dateparams$terminationDateConvention='Following'
+    }
+    if (is.null(dateparams$dayCounter)){dateparams$dayCounter='Thirty360'}
+    if (is.null(dateparams$period)){dateparams$period='Semiannual'}
+
     dateparams <- matchParams(dateparams)
-    callSch <- bondparams$callabilitySchedule
+    callSch <- bondparams$callSch
 #    hw.termStructure <- hullWhite$term
     
     val <- .Call("QL_CallableBond", bondparams, hullWhite,coupon,

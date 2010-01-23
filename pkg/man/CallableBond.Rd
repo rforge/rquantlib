@@ -17,10 +17,16 @@
 \arguments{
 \item{bondparams}{bond parameters:
 	\tabular{ll}{
-           \code{faceAmount}    \tab a double, face amount of the bond\cr
+           \code{faceAmount}    \tab a double, face amount of the
+           bond. Default value is 100.\cr
            \code{issueDate}     \tab a Date, the bond's issue date\cr
            \code{maturityDate}  \tab a Date, the bond's maturity date\cr
-           \code{redemption}    \tab a double, percentage of the initial face amount that will be returned at maturity date. Normally set at 100\cr
+           \code{redemption}    \tab a double, percentage of the initial
+           face amount that will be returned at maturity date. Normally
+           set at 100. Default value is 100\cr
+           \code{callSch} \tab a data frame whose columns
+	   are "Price", "Type" and "Date" corresponding to QuantLib's
+	   CallabilitySchedule. Defaule is an empty frame, or no callability. \c
 	}
 }
 \item{hullWhite}{arguments that are needed to set up a HullWhite pricing engine in QuantLib: 
@@ -35,12 +41,20 @@
 \item{coupon}{ a double vector of coupon rates}
 \item{dateparams}{QuantLib's date parameters of the bond. 
 	\tabular{ll}{
-	   \code{settlementDays} \tab a double, settlement days. \cr
-	   \code{calendar} \tab a string, either 'us' or 'uk' corresponding to US Goverment Bond calendar and UK Exchange calendar. \cr
-	   \code{dayCounter} \tab a number or string, day counter convention. See \link{Enum} \cr
-	   \code{period}  \tab a number or string, interest compounding interval. See \link{Enum} \cr
-	   \code{businessDayConvention} \tab a number or string, business day convention. See \link{Enum} \cr
-	   \code{terminationDateConvention} \tab a number or string, termination day convention. See \link{Enum} \cr
+	   \code{settlementDays} \tab a double, settlement days. Default
+           value is 1.\cr
+	   \code{calendar} \tab a string, either 'us' or 'uk'
+           corresponding to US Goverment Bond calendar and UK Exchange
+           calendar. Default value is 'us'.\cr
+	   \code{dayCounter} \tab a number or string, day counter
+           convention. See \link{Enum}. Default value is 'Thirty360'. \cr
+	   \code{period}  \tab a number or string, interest compounding
+           interval. See \link{Enum}. Default value is 'Semiannual'.\cr
+	   \code{businessDayConvention} \tab a number or string,
+           business day convention. See \link{Enum}. Default value is 'Following'. \cr
+	   \code{terminationDateConvention} \tab a number or string,
+           termination day convention. See \link{Enum}. Default value is
+           'Following'.\cr
 	}
 	See example below.}
 }
@@ -81,7 +95,7 @@ callSch$Type <- as.character(callSch$Type)
 
 bondparams <- list(faceAmount=100, issueDate = as.Date("2004-09-16"),
                    maturityDate=as.Date("2012-09-16"), redemption=100,
-                   callabilitySchedule = callSch)
+                   callSch = callSch)
 dateparams <- list(settlementDays=3, calendar="us", 
                    dayCounter = "ActualActual", 
                    period="Quarterly", 
@@ -90,7 +104,19 @@ dateparams <- list(settlementDays=3, calendar="us",
 coupon <- c(0.0465)
 
 CallableBond(bondparams, HullWhite, coupon, dateparams)
+#examples using default values
+CallableBond(bondparams, HullWhite, coupon)
+dateparams <- list(                   
+                   period="Quarterly", 
+                   businessDayConvention = "Unadjusted", 
+                   terminationDateConvention= "Unadjusted")
+CallableBond(bondparams, HullWhite, coupon, dateparams)
 
+
+bondparams <- list(issueDate = as.Date("2004-09-16"),
+                   maturityDate=as.Date("2012-09-16")
+                   )
+CallableBond(bondparams, HullWhite, coupon, dateparams)
 }
 \keyword{misc}
 

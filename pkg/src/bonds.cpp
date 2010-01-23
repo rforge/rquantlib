@@ -1527,9 +1527,7 @@ RcppExport SEXP QL_CallableBond(SEXP bondparams, SEXP hw, SEXP coupon,
                 }            
             }
         }
-        catch (std::exception& ex){
-            exceptionMesg = copyMessageToR(ex.what());
-             Rf_error(exceptionMesg);
+        catch (std::exception& ex){                  
         }
 
         RcppParams rparam(bondparams);
