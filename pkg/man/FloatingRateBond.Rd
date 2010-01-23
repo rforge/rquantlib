@@ -200,6 +200,7 @@ dateparams <- list(settlementDays=1, calendar="us", dayCounter = "Actual360",
 FloatingRateBond(bond, gearings, spreads, caps, floors,
                   ibor, curve2, dateparams)
 
+
 }
 \keyword{misc}
 

@@ -20,11 +20,14 @@
 
 \item{bond}{bond parameters:
   \tabular{ll}{
-    \code{faceAmount}    \tab a numeric, face amount of the bond \cr
+    \code{faceAmount}    \tab a numeric, face amount of the
+  bond. Default value is 100 \cr
     \code{issueDate}     \tab a Date, the bond's issue date \cr
     \code{maturityDate}  \tab a Date, the bond's maturity date \cr
-    \code{redemption}    \tab a numeric, percentage of the initial face amount that will be returned at maturity date. Normally set at 100 \cr
-    \code{effectiveDate} \tab a Date, the bond's effective date \cr
+    \code{redemption}    \tab a numeric, percentage of the initial face
+  amount that will be returned at maturity date. Default value is 100 \cr
+    \code{effectiveDate} \tab a Date, the bond's effective date. Default
+  value is issueDate\cr
   }
 }
 
@@ -42,15 +45,21 @@
 \item{dateparams}{QuantLib's date parameters of the bond. 
   \tabular{ll}{
     \code{settlementDays} \tab a numeric, settlement
-    days. Typically 1, 2, or 3. \cr
-    \code{calendar} \tab a string, either 'us' or 'uk' corresponding to US Goverment Bond calendar and UK Exchange calendar. \cr
-    \code{dayCounter} \tab a numeric or string, day counter convention. See \link{Enum} \cr
-    \code{period}  \tab a numeric or string, frequency of interest compounding interval. See \link{Enum} \cr
-    \code{businessDayConvention} \tab a numeric or string, business day convention. See \link{Enum} \cr
-    \code{terminationDateConvention} \tab a numeric or string, business day convention. See \link{Enum} \cr
+    days. Typically 1, 2, or 3. Default value is 1 \cr
+    \code{calendar} \tab a string, either 'us' or 'uk' corresponding to
+  US Goverment Bond calendar and UK Exchange calendar. Default value is 'us'.\cr
+    \code{dayCounter} \tab a numeric or string, day counter
+  convention. See \link{Enum}. Default value is 'Thirty360' \cr
+    \code{period}  \tab a numeric or string, frequency of interest
+  compounding interval. See \link{Enum}. Default value is 'Semiannual'. \cr
+    \code{businessDayConvention} \tab a numeric or string, business day
+  convention. See \link{Enum}. Default value is 'Following'. \cr
+    \code{terminationDateConvention} \tab a numeric or string, business
+  day convention. See \link{Enum}. Default value is 'Following' \cr
     \code{endOfMonth} \tab a numeric with value 1 or 0. End of
-    Month rule.\cr
-    \code{dateGeneration} \tab a numeric, date generation method. See \link{Enum} \cr
+    Month rule. Default value is 0.\cr
+    \code{dateGeneration} \tab a numeric, date generation method. See
+  \link{Enum}. Default value is 'Backward' \cr
   }
   See example below.
 }
@@ -129,6 +138,17 @@ dateparams <- list(settlementDays=1, calendar="us", dayCounter = "Thirty360",
                    period="Annual", businessDayConvention = "Preceding", 
                    terminationDateConvention="Preceding",
                    dateGeneration="Forward", endOfMonth=1)
+FixedRateBond(bond, rates, curve, dateparams)
+
+
+#example with default dateparams
+FixedRateBond(bond, rates, curve)
+
+##exampe with defaul bond parameter and dateparams
+bond <- list(issueDate=as.Date("2004-11-30"),
+maturityDate=as.Date("2008-11-30"))
+dateparams <- list(calendar="us", dayCounter = "ActualActual", 
+                   period="Annual")
 FixedRateBond(bond, rates, curve, dateparams)
 
 }

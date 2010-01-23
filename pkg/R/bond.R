@@ -126,8 +126,41 @@ ZeroYield.default <- function(price, faceAmount,
 FixedRateBond <- function(bond, rates, discountCurve, dateparams){
      UseMethod("FixedRateBond")
 }
-FixedRateBond.default <- function(bond, rates, discountCurve, dateparams){
+FixedRateBond.default <- function(bond,
+                                  rates,
+                                  discountCurve,
+                                  dateparams=list(
+                                    settlementDays=1,
+                                    calendar='us',
+                                    businessDayConvention='Following',
+                                    terminationDateConvention='Following',
+                                    dayCounter='Thirty360',
+                                    period='Semiannual',
+                                    dateGeneration='Backward',
+                                    endOfMonth=0,
+                                    fixingDays=2
+                                    )){
     val <- 0
+
+    if (is.null(bond$faceAmount)){bond$faceAmount=100}
+    if (is.null(bond$redemption)){bond$redemption=100}
+    if (is.null(bond$effectiveDate)){bond$effectiveDate=bond$issueDate}
+
+    
+    if (is.null(dateparams$settlementDays)){dateparams$settlementDays=1}
+    if (is.null(dateparams$calendar)){dateparams$calendar='us'}
+    if (is.null(dateparams$businessDayConvention)){
+      dateparams$businessDayConvention='Following'
+    }
+    if (is.null(dateparams$terminationDateConvention)){
+      dateparams$terminationDateConvention='Following'
+    }
+    if (is.null(dateparams$dayCounter)){dateparams$dayCounter='Thirty360'}
+    if (is.null(dateparams$period)){dateparams$period='Semiannual'}
+    if (is.null(dateparams$dateGeneration)){dateparams$dateGeneration='Backward'}        
+    if (is.null(dateparams$endOfMonth)){dateparams$endOfMonth=0}        
+    if (is.null(dateparams$fixingDays)){dateparams$fixingDays=2}
+    
     dateparams <- matchParams(dateparams)
     if (class(discountCurve)=="DiscountCurve"){
          val <- .Call("QL_FixedRateWithRebuiltCurve",
