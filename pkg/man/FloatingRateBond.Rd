@@ -21,18 +21,25 @@
 
 \item{bond}{bond parameters:
 	\tabular{ll}{
-           \code{faceAmount}    \tab a numeric, face amount of the bond \cr
+           \code{faceAmount}    \tab a numeric, face amount of the bond.
+	Default value is 100.\cr
            \code{issueDate}     \tab a Date, the bond's issue date \cr
            \code{maturityDate}  \tab a Date, the bond's maturity date \cr
-           \code{redemption}    \tab a numeric, percentage of the initial face amount that will be returned at maturity date. Normally set at 100 \cr
-	   \code{effectiveDate} \tab a Date, the bond's effective date \cr
+           \code{redemption}    \tab a numeric, percentage of the
+	initial face amount that will be returned at maturity
+	date. Default value is 100 \cr
+	   \code{effectiveDate} \tab a Date, the bond's effective
+	date. Default value is issueDate \cr
 	}
 }
 
-\item{gearings}{a numeric vector, bond's gearings. See quantlib's doc on FloatingRateBond for more detail }
-\item{spreads}{a numeric vector, bond's spreads. See quantlib's doc on FloatingRateBond for more detail }
-\item{caps}{a numeric vector, bond's caps. See quantlib's doc on FloatingRateBond for more detail }
-\item{floors}{a numeric vector, bond's floors. See quantlib's doc on FloatingRateBond for more detail }
+\item{gearings}{a numeric vector, bond's gearings. See quantlib's doc on
+  FloatingRateBond for more detail. Default value is an empty vector c(). }
+\item{spreads}{a numeric vector, bond's spreads. See quantlib's doc on FloatingRateBond for more detail.Default value is an empty vector c() }
+\item{caps}{a numeric vector, bond's caps. See quantlib's doc on
+  FloatingRateBond for more detail. Default value is an empty vector c() }
+\item{floors}{a numeric vector, bond's floors. See quantlib's doc on
+  FloatingRateBond for more detail. Default value is an empty vector c() }
 
 
 \item{curve}{a discount curve. Can be on of the following:
@@ -52,27 +59,30 @@
   }
 }
 
-\item{dateparams}{ A list specifying date paramters.
+
+\item{dateparams}{QuantLib's date parameters of the bond. 
   \tabular{ll}{
-    \code{settlemenDays}     \tab a numeric, settlementdays. Typically 1, 2
-    or 3. \cr
-    \code{calendar} \tab a string,either 'us' or 'uk' corresponding to
-    US Goverment Bond calendar and UK Exchange calendar \cr
-    \code{businessDayConvention} \tab an numeric, business day
-    convention. See \link{Enum} for more detail. \cr
-    \code{terminationDateConvention} \tab a numeric, termination date
-    convention. See \link{Enum}.\cr    
-    \code{dayCounter} \tab a numeric or string, day counting method. See
-    \link{Enum}. \cr
-    \code{period} \tab a numeric or string, frequency of interest
-    compounding. See \link{Enum}.\cr    
-    \code{dateGeneration} - a numeric, date generation method.
-    See \link{Enum}.\cr
-    \code{endOfMonth} \tab a numeric, 1 or 0. End of month rule.\cr
-    \code{fixingDays} \tab a numeric, usually 1 or 2.   \cr
+    \code{settlementDays} \tab a numeric, settlement
+    days. Typically 1, 2, or 3. Default value is 1 \cr
+    \code{calendar} \tab a string, either 'us' or 'uk' corresponding to
+  US Goverment Bond calendar and UK Exchange calendar. Default value is 'us'.\cr
+    \code{dayCounter} \tab a numeric or string, day counter
+  convention. See \link{Enum}. Default value is 'Thirty360' \cr
+    \code{period}  \tab a numeric or string, frequency of interest
+  compounding interval. See \link{Enum}. Default value is 'Semiannual'. \cr
+    \code{businessDayConvention} \tab a numeric or string, business day
+  convention. See \link{Enum}. Default value is 'Following'. \cr
+    \code{terminationDateConvention} \tab a numeric or string, business
+  day convention. See \link{Enum}. Default value is 'Following' \cr
+    \code{endOfMonth} \tab a numeric with value 1 or 0. End of
+    Month rule. Default value is 0.\cr
+    \code{dateGeneration} \tab a numeric, date generation method. See
+  \link{Enum}. Default value is 'Backward' \cr
   }
-  See \link{Enum} on how each values represents
+  See example below.
 }
+
+
 
 }
 \value{
@@ -199,6 +209,9 @@ dateparams <- list(settlementDays=1, calendar="us", dayCounter = "Actual360",
                    endOfMonth=0, fixingDays = 1)
 FloatingRateBond(bond, gearings, spreads, caps, floors,
                   ibor, curve2, dateparams)
+
+#example using default values
+FloatingRateBond(bond=bond, index=ibor, curve=curve2)
 
 
 }

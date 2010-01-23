@@ -259,9 +259,45 @@ FloatingRateBond <- function(bond, gearings, spreads, caps, floors,
     UseMethod("FloatingRateBond")
 }
 
-FloatingRateBond.default <- function(bond, gearings, spreads, caps, floors,
-                                     index, curve, dateparams){
+FloatingRateBond.default <- function(bond,
+                                     gearings=c(),
+                                     spreads=c(),
+                                     caps=c(),
+                                     floors=c(),
+                                     index,
+                                     curve,
+                                     dateparams=list(
+                                       settlementDays=1,
+                                       calendar='us',
+                                       businessDayConvention='Following',
+                                       terminationDateConvention='Following',
+                                       dayCounter='Thirty360',
+                                       period='Semiannual',
+                                       dateGeneration='Backward',
+                                       endOfMonth=0,
+                                       fixingDays=2)
+                                     ){
     val <- 0
+
+    if (is.null(bond$faceAmount)){bond$faceAmount=100}
+    if (is.null(bond$redemption)){bond$redemption=100}
+    if (is.null(bond$effectiveDate)){bond$effectiveDate=bond$issueDate}
+    
+
+    if (is.null(dateparams$settlementDays)){dateparams$settlementDays=1}
+    if (is.null(dateparams$calendar)){dateparams$calendar='us'}
+    if (is.null(dateparams$businessDayConvention)){
+      dateparams$businessDayConvention='Following'
+    }
+    if (is.null(dateparams$terminationDateConvention)){
+      dateparams$terminationDateConvention='Following'
+    }
+    if (is.null(dateparams$dayCounter)){dateparams$dayCounter='Thirty360'}
+    if (is.null(dateparams$period)){dateparams$period='Semiannual'}
+    if (is.null(dateparams$dateGeneration)){dateparams$dateGeneration='Backward'}        
+    if (is.null(dateparams$endOfMonth)){dateparams$endOfMonth=0}        
+    if (is.null(dateparams$fixingDays)){dateparams$fixingDays=2}
+    
     dateparams <- matchParams(dateparams)
     if (class(curve)=="DiscountCurve"){
         indexparams <- list(type=index$type, length=index$length, 
