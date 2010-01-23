@@ -16,13 +16,22 @@ The \code{ConvertibleFixedCouponBond} function setups and evaluates a Convertibl
 
 \item{bondparams}{bond parameters:
 	\tabular{ll}{
-	   \code{exercuse} 	\tab a string, either "eu" for European option, or "am" for American option. \cr
-           \code{faceAmount}    \tab a double, face amount of the bond\cr
+	   \code{exercuse} 	\tab a string, either "eu" for European
+	option, or "am" for American option. Default value is 'am'.\cr
+           \code{faceAmount}    \tab a double, face amount of the
+	bond. Default value is 100. \cr
            \code{issueDate}     \tab a Date, the bond's issue date\cr
            \code{maturityDate}  \tab a Date, the bond's maturity date\cr
-           \code{redemption}    \tab a double, percentage of the initial face amount that will be returned at maturity date. Normally set at 100\cr
-	   \code{dividendSchedule} \tab a data frame whose columns are "Type", "Amount", "Rate", and "Date" corresponding to QuantLib's DividendSchedule \cr
-	   \code{callabilitySchedule} \tab a data frame whose columns are "Price", "Type" and "Date" corresponding to QuantLib's CallabilitySchedule \cr
+           \code{redemption}    \tab a double, percentage of the initial
+	face amount that will be returned at maturity date. Normally set
+	at 100. Default value is 100.\cr
+	   \code{divSch} \tab a data frame whose columns are
+	"Type", "Amount", "Rate", and "Date" corresponding to QuantLib's
+	DividendSchedule. Default value is an empty frame, or no
+	dividend. \cr
+	   \code{callSch} \tab a data frame whose columns
+	are "Price", "Type" and "Date" corresponding to QuantLib's
+	CallabilitySchedule. Defaule is an empty frame, or no callability. \cr
 	   \code{creditSpread}  \tab a double, credit spread parameter in the constructor of the bond. \cr
 	   \code{conversitionRatio}  \tab a double, conversition ratio parameter in the constructor of the bond. \cr
 	}
@@ -42,12 +51,17 @@ The \code{ConvertibleFixedCouponBond} function setups and evaluates a Convertibl
 
 \item{dateparams}{QuantLib's date parameters of the bond. 
 	\tabular{ll}{
-	   \code{settlementDays} \tab a double, settlement days. \cr
-	   \code{calendar} \tab a string, either 'us' or 'uk' corresponding to US Goverment Bond calendar and UK Exchange calendar. \cr
-	   \code{dayCounter} \tab a number or string, day counter convention. See \link{Enum} \cr
-	   \code{period}  \tab a number or string, interest compounding interval. See \link{Enum} \cr
-	   \code{businessDayConvention} \tab a number or string, business day convention. See \link{Enum} \cr
-	   \code{todayDate} \tab a date, date of today. \cr
+	   \code{settlementDays} \tab a double, settlement days. Default
+	value is 1.\cr
+	   \code{calendar} \tab a string, either 'us' or 'uk'
+	corresponding to US Goverment Bond calendar and UK Exchange
+	calendar. Default value is 'us'.\cr
+	   \code{dayCounter} \tab a number or string, day counter
+	convention. See \link{Enum}. Default value is 'Thrty360'. \cr
+	   \code{period}  \tab a number or string, interest compounding
+	interval. See \link{Enum}. Default value is 'Semiannual'. \cr
+	   \code{businessDayConvention} \tab a number or string,
+	business day convention. See \link{Enum}. Default value is 'Following'. \cr	  
 	}
 	See example below.
 }
@@ -107,9 +121,22 @@ bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule,
 dateparams <- list(settlementDays=3, 
                    dayCounter="Actual360", 
                    period = "Once", calendar = "us", 
-                   businessDayConvention="Following", 
-                   todayDate=as.Date(today))
+                   businessDayConvention="Following"
+                   )
 coupon <- c(0.05)
 ConvertibleFixedCouponBond(bondparams, coupon, process, dateparams)
 
+#example with default value
+ConvertibleFixedCouponBond(bondparams, coupon, process)
+
+dateparams <- list(settlementDays=3, 
+                   dayCounter="Actual360")
+ConvertibleFixedCouponBond(bondparams, coupon, process, dateparams)
+
+bondparams <- list(creditSpread=0.005, conversionRatio = 0.0000000001, 
+                   issueDate=as.Date(today+2), 
+                   maturityDate=as.Date(today+3650))
+ConvertibleFixedCouponBond(bondparams, coupon, process, dateparams)
+
+                   
 }

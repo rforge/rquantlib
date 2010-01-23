@@ -1,3 +1,9 @@
+2010-01-22  Khanh Nguyen <knguyen@cs.umb.edu>
+	* DESCRIPTION: add default values to bond functions, especially the date
+	parameters (dayCounter, settlement days, compounding frequency,..) so that 
+	it is less confusing when using the functions.
+	* R/bond.R: idem
+	* New examples that use default values for bonds.
 2010-01-14  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Release 0.3.2 which works with QuantLib 0.9.9

@@ -965,8 +965,8 @@ RcppExport SEXP QL_ConvertibleZeroBond(SEXP bondparams, SEXP process,
         double dayCounter = misc.getDoubleValue("dayCounter");
         double frequency = misc.getDoubleValue("period");
         double businessDayConvention = misc.getDoubleValue("businessDayConvention");
-        RcppDate tDate = misc.getDateValue("todayDate");
-        QuantLib::Date todayDate(dateFromR(tDate));
+
+        QuantLib::Date todayDate(dateFromR(iDate));
         
         Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
         if (cal == "us"){
@@ -1163,8 +1163,8 @@ RcppExport SEXP QL_ConvertibleFixedBond(SEXP bondparams, SEXP coupon, SEXP proce
         double dayCounter = misc.getDoubleValue("dayCounter");
         double frequency = misc.getDoubleValue("period");
         double businessDayConvention = misc.getDoubleValue("businessDayConvention");
-        RcppDate tDate = misc.getDateValue("todayDate");
-        QuantLib::Date todayDate(dateFromR(tDate));
+       
+        QuantLib::Date todayDate(dateFromR(iDate));
         
         Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
         if (cal == "us"){

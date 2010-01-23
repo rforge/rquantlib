@@ -24,4 +24,3 @@
   #cat("This is a pre-release. The interface might change...\n")
   library.dynam("RQuantLib", pkg, lib )
 }
-
