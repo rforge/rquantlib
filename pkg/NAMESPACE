@@ -1,0 +1,70 @@
+import("Rcpp")
+useDynLib(RQuantLib)
+
+exportPattern("*.default")
+export(
+#asian.R
+       "AsianOption",
+#plot.Option, print.Option, summary.Option ????
+
+#bond.R
+       "ZeroCouponBond",
+       "ZeroPriceByYield",
+       "ZeroYield",
+       "FixedRateBond",
+       "FixedRateBondYield",
+       "FixedRateBondPriceByYield",
+       "FloatingRateBond",
+       "ConvertibleZeroCouponBond",
+       "ConvertibleFixedCouponBond",
+       "ConvertibleFloatingCouponBond",
+       "CallableBond",
+       "FittedBondCurve",
+       "plot.Bond", #?
+       "print.Bond", #?
+       "summary.Bond", #?
+#dayCounter.R
+       "dayCount",
+       "yearFraction",
+#implied.R
+       "EuropeanOptionImpliedVolatility",
+       "AmericanOptionImpliedVolatility",
+       "BinaryOptionImpliedVolatility",
+#arrays.R
+       "EuropeanOptionArrays",
+#bermudan.R
+       "BermudanSwaption",
+       "summary.G2Analytic", #?
+       "summary.HWAnalytic", #?
+       "summary.HWTree", #?
+       "summary.BKTree", #?
+#calendars.R
+       "businessDay",
+       "isHoliday",
+       "isWeekend",
+       "isEndOfMonth",
+       "endOfMonth",
+       "adjust",
+       "advance",
+       "businessDaysBetween",
+       "holidayList",
+#discount.R
+       "DiscountCurve",
+       "plot.DiscountCurve", #?
+#option.R
+       "EuropeanOption",
+       "AmericanOption",
+       "AmericanOption.default",       
+       "BinaryOption",
+       "BarrierOption",
+#asian.R
+       "AsianOption"
+       )
+
+S3method("plot", "Option")
+S3method("print", "Option")
+S3method("summary", "Option")
+
+S3method("plot", "Bond")
+S3method("print", "Bond")
+S3method("summary", "Bond")
