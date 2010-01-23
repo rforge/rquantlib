@@ -26,7 +26,7 @@
            set at 100. Default value is 100\cr
            \code{callSch} \tab a data frame whose columns
 	   are "Price", "Type" and "Date" corresponding to QuantLib's
-	   CallabilitySchedule. Defaule is an empty frame, or no callability. \c
+	   CallabilitySchedule. Defaule is an empty frame, or no callability.
 	}
 }
 \item{hullWhite}{arguments that are needed to set up a HullWhite pricing engine in QuantLib: 
