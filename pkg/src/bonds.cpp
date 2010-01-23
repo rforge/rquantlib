@@ -1382,8 +1382,8 @@ RcppExport SEXP QL_ConvertibleFloatingBond(SEXP bondparams,  SEXP process,
         double dayCounter = misc.getDoubleValue("dayCounter");
         double frequency = misc.getDoubleValue("period");
         double businessDayConvention = misc.getDoubleValue("businessDayConvention");
-        RcppDate tDate = misc.getDateValue("todayDate");
-        QuantLib::Date todayDate(dateFromR(tDate));
+
+        QuantLib::Date todayDate(dateFromR(iDate));
         
         Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
         if (cal == "us"){
