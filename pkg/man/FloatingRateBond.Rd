@@ -2,7 +2,7 @@
 \name{FloatingRateBond}
 \alias{FloatingRateBond}
 \alias{FloatingRateBond.default}
-\title{Fixed rate bond evaluation using discount curve solution}
+\title{Floating rate bond pricing}
 \description{
   The \code{FloatingRateBond} function evaluates a floating rate bond using discount curve. 
   More specificly, the calculation is done by DiscountingBondEngine from QuantLib.
@@ -21,25 +21,25 @@
 
 \item{bond}{bond parameters:
 	\tabular{ll}{
-           \code{faceAmount}    \tab a double, face amount of the bond \cr
+           \code{faceAmount}    \tab a numeric, face amount of the bond \cr
            \code{issueDate}     \tab a Date, the bond's issue date \cr
            \code{maturityDate}  \tab a Date, the bond's maturity date \cr
-           \code{redemption}    \tab a double, percentage of the initial face amount that will be returned at maturity date. Normally set at 100 \cr
+           \code{redemption}    \tab a numeric, percentage of the initial face amount that will be returned at maturity date. Normally set at 100 \cr
 	   \code{effectiveDate} \tab a Date, the bond's effective date \cr
 	}
 }
 
-\item{gearings}{a double vectors, gearings paramters of FloatingRateBond's constructor. See quantlib's doc on FloatingRateBond for more detail }
-\item{spreads}{a double vectors, spreads paramters of FloatingRateBond's constructor. See quantlib's doc on FloatingRateBond for more detail }
-\item{caps}{a double vectors, spreads paramters of FloatingRateBond's constructor. See quantlib's doc on FloatingRateBond for more detail }
-\item{floors}{a double vectors, spreads paramters of FloatingRateBond's constructor. See quantlib's doc on FloatingRateBond for more detail }
+\item{gearings}{a numeric vector, bond's gearings. See quantlib's doc on FloatingRateBond for more detail }
+\item{spreads}{a numeric vector, bond's spreads. See quantlib's doc on FloatingRateBond for more detail }
+\item{caps}{a numeric vector, bond's caps. See quantlib's doc on FloatingRateBond for more detail }
+\item{floors}{a numeric vector, bond's floors. See quantlib's doc on FloatingRateBond for more detail }
 
 
-\item{curve}{ a discount curve. Can be on of the following:
+\item{curve}{a discount curve. Can be on of the following:
 \tabular{l}{
 	\code{a DiscountCurve object}   \cr
 	\code{A list that specifies a flat curve in two values "todayDate" and "rate"}   \cr
-	\code{A list that specified 3 values to construct a DiscountCurve object, "params" , "tsQuotes", "times". For more detail, see example or the discountCurve function} \cr
+	\code{A list that specifies three values to construct a DiscountCurve object, "params" , "tsQuotes", "times". For more detail, see example or the discountCurve function} \cr
 }
 }
 
@@ -52,17 +52,26 @@
   }
 }
 
-\item{dateparams}{ A list specifying date paramters, \code{settlemenDays},
-    \code{calendar} - a string 'us' or 'uk', \code{businessDayConvention}- an integer,
-    \code{dayCounter}, \code{period}
-    \code{terminationDateConvention} - an integer,
-    \code{period} - an integer
-    \code{dateGeneration} - an integer,
-    \code{endOfMonth} - value 1 or 0.  For more detail, see \link{Enum} and 
-    the quantlib docs for FloatingRateBond
-    \code{fixingDays} - an integer
-
-See \link{Enum} on how each values represents
+\item{dateparams}{ A list specifying date paramters.
+  \tabular{ll}{
+    \code{settlemenDays}     \tab a numeric, settlementdays. Typically 1, 2
+    or 3. \cr
+    \code{calendar} \tab a string,either 'us' or 'uk' corresponding to
+    US Goverment Bond calendar and UK Exchange calendar \cr
+    \code{businessDayConvention} \tab an numeric, business day
+    convention. See \link{Enum} for more detail. \cr
+    \code{terminationDateConvention} \tab a numeric, termination date
+    convention. See \link{Enum}.\cr    
+    \code{dayCounter} \tab a numeric or string, day counting method. See
+    \link{Enum}. \cr
+    \code{period} \tab a numeric or string, frequency of interest
+    compounding. See \link{Enum}.\cr    
+    \code{dateGeneration} - a numeric, date generation method.
+    See \link{Enum}.\cr
+    \code{endOfMonth} \tab a numeric, 1 or 0. End of month rule.\cr
+    \code{fixingDays} \tab a numeric, usually 1 or 2.   \cr
+  }
+  See \link{Enum} on how each values represents
 }
 
 }
@@ -72,7 +81,7 @@ See \link{Enum} on how each values represents
   \code{Bond}). It contains a list with the following
   components:
   \item{NPV}{net present value of the bond}
-  \item{cleanPrice}{price price of the bond}
+  \item{cleanPrice}{clean price of the bond}
   \item{dirtyPrice}{dirty price of the bond}
   \item{accruedAmount}{accrued amount of the bond}
   \item{yield}{yield of the bond}
@@ -87,7 +96,7 @@ See \link{Enum} on how each values represents
 }
 \references{\url{http://quantlib.org} for details on \code{QuantLib}.}
 
-\author{Khanh Nguyen \email{knguyen@cs.umb.edu} for the inplementation; Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
+\author{Khanh Nguyen \email{knguyen@cs.umbno.edu} for the inplementation; Dirk Eddelbuettel \email{edd@debian.org} for the \R interface;
   the QuantLib Group for \code{QuantLib}}
 \note{The interface might change in future release as \code{QuantLib}
   stabilises its own API.}

@@ -25,9 +25,22 @@ ZeroCouponBond <- function(bond, discountCurve, dateparams ) {
     UseMethod("ZeroCouponBond")
 }
 
-ZeroCouponBond.default <- function(bond, discountCurve, dateparams) {
-    val <- 0
+ZeroCouponBond.default <- function(bond,
+                                   discountCurve,
+                                   dateparams=list(settlementDays=1,
+                                     calendar='us',
+                                     businessDayConvention='Following')) {
+    val <- 0 
+
+    if (is.null(bond$faceAmount)) {bond$faceAmount=100}
+    if (is.null(bond$redemption)) {bond$redemption=100}
+
+    if (is.null(dateparams$settlementDays)) {dateparams$settlementDays=1}
+    if (is.null(dateparams$calendar)) {dateparams$calendar='us'}
+    if (is.null(dateparams$businessDayConvention)) {dateparams$businessDayConvention='Following'}    
+    
     dateparams <- matchParams(dateparams)
+
     if (class(discountCurve)=="DiscountCurve"){
         val <- .Call("QL_ZeroBondWithRebuiltCurve",
                   bond, c(discountCurve$table$date), 

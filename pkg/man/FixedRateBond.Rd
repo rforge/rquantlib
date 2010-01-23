@@ -2,7 +2,7 @@
 \name{FixedRateBond}
 \alias{FixedRateBond}
 \alias{FixedRateBond.default}
-\title{Fixed rate bond evaluation using discount curve solution}
+\title{Fixed-Rate bond pricing}
 \description{
   The \code{FixedRateBond} function evaluates a fixed rate bond using discount curve. 
   More specificly, the calculation is done by DiscountingBondEngine from QuantLib.
@@ -19,39 +19,40 @@
 \arguments{
 
 \item{bond}{bond parameters:
-	\tabular{ll}{
-           \code{faceAmount}    \tab a double, face amount of the bond \cr
-           \code{issueDate}     \tab a Date, the bond's issue date \cr
-           \code{maturityDate}  \tab a Date, the bond's maturity date \cr
-           \code{redemption}    \tab a double, percentage of the initial face amount that will be returned at maturity date. Normally set at 100 \cr
-	   \code{effectiveDate} \tab a Date, the bond's effective date \cr
-	}
+  \tabular{ll}{
+    \code{faceAmount}    \tab a numeric, face amount of the bond \cr
+    \code{issueDate}     \tab a Date, the bond's issue date \cr
+    \code{maturityDate}  \tab a Date, the bond's maturity date \cr
+    \code{redemption}    \tab a numeric, percentage of the initial face amount that will be returned at maturity date. Normally set at 100 \cr
+    \code{effectiveDate} \tab a Date, the bond's effective date \cr
+  }
 }
 
-
-\item{rates}{a double vector of rates}
+\item{rates}{a numeric vector, bond's coupon rates}
 
 \item{discountCurve}{ Can be on of the following:
-\tabular{l}{
-	\code{a DiscountCurve object}   \cr
-	\code{A list that specifies a flat curve in two values "todayDate" and "rate"}   \cr
-	\code{A list that specified 3 values to construct a DiscountCurve object, "params" , "tsQuotes", "times". For more detail, see example or the discountCurve function} \cr
-}
+  \tabular{l}{
+    \code{a DiscountCurve object}   \cr
+    \code{A list that specifies a flat curve in two values "todayDate" and "rate"}   \cr
+    \code{A list that specifies three values to construct a DiscountCurve object, "params" , "tsQuotes", "times". For more detail, see example or the discountCurve function} \cr
+  }
 }
 
 
 \item{dateparams}{QuantLib's date parameters of the bond. 
-	\tabular{ll}{
-	   \code{settlementDays} \tab a double, settlement days. \cr
-	   \code{calendar} \tab a string, either 'us' or 'uk' corresponding to US Goverment Bond calendar and UK Exchange calendar. \cr
-	   \code{dayCounter} \tab a number or string, day counter convention. See \link{Enum} \cr
-	   \code{period}  \tab a number or string, interest compounding interval. See \link{Enum} \cr
-	   \code{businessDayConvention} \tab a number or string, business day convention. See \link{Enum} \cr
-	   \code{terminationDateConvention} \tab a number or string, business day convention. See \link{Enum} \cr
-	   \code{endOfMonth} \tab an integer with value 1 or 0. \cr
-	   \code{dateGeneration} \tab an integer, date generation method. See \link{Enum} \cr
-	}
-	See example below.
+  \tabular{ll}{
+    \code{settlementDays} \tab a numeric, settlement
+    days. Typically 1, 2, or 3. \cr
+    \code{calendar} \tab a string, either 'us' or 'uk' corresponding to US Goverment Bond calendar and UK Exchange calendar. \cr
+    \code{dayCounter} \tab a numeric or string, day counter convention. See \link{Enum} \cr
+    \code{period}  \tab a numeric or string, frequency of interest compounding interval. See \link{Enum} \cr
+    \code{businessDayConvention} \tab a numeric or string, business day convention. See \link{Enum} \cr
+    \code{terminationDateConvention} \tab a numeric or string, business day convention. See \link{Enum} \cr
+    \code{endOfMonth} \tab a numeric with value 1 or 0. End of
+    Month rule.\cr
+    \code{dateGeneration} \tab a numeric, date generation method. See \link{Enum} \cr
+  }
+  See example below.
 }
 
 
@@ -64,7 +65,7 @@
   \code{Bond}). It contains a list with the following
   components:
   \item{NPV}{net present value of the bond}
-  \item{cleanPrice}{price price of the bond}
+  \item{cleanPrice}{clean price of the bond}
   \item{dirtyPrice}{dirty price of the bond}
   \item{accruedAmount}{accrued amount of the bond}
   \item{yield}{yield of the bond}

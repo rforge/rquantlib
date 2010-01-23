@@ -16,11 +16,11 @@
 
 
 
-DiscountCurve <- function(params, tsQuotes, times) {
+DiscountCurve <- function(params, tsQuotes, times=seq(0,10,.1)) {
   UseMethod("DiscountCurve")
 }
 
-DiscountCurve.default <- function(params, tsQuotes, times) {
+DiscountCurve.default <- function(params, tsQuotes, times=seq(0,10,.1)) {
 
   # Check that params is properly formatted.
   if(!is.list(params) || length(params) == 0) {
