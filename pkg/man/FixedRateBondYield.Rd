@@ -11,7 +11,8 @@
                                  effectiveDate, maturityDate,
                                  period, calendar="us", 
                                  rates, dayCounter=2,
-                                 businessDayConvention=0, compound = 0, redemption=100, 
+                                 businessDayConvention=0, 
+                                 compound = 0, redemption=100, 
                                  issueDate)
 
 \method{plot}{Bond}

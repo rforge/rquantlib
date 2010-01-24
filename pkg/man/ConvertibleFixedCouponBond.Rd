@@ -14,32 +14,33 @@ The \code{ConvertibleFixedCouponBond} function setups and evaluates a Convertibl
 }
 \arguments{
 
-\item{bondparams}{bond parameters:
+\item{bondparams}{bond parameters, a named list whose elements are: 
 	\tabular{ll}{
-	   \code{exercuse} 	\tab a string, either "eu" for European
-	option, or "am" for American option. Default value is 'am'.\cr
-           \code{faceAmount}    \tab a double, face amount of the
-	bond. Default value is 100. \cr
-           \code{issueDate}     \tab a Date, the bond's issue date\cr
-           \code{maturityDate}  \tab a Date, the bond's maturity date\cr
-           \code{redemption}    \tab a double, percentage of the initial
-	face amount that will be returned at maturity date. Normally set
-	at 100. Default value is 100.\cr
-	   \code{divSch} \tab a data frame whose columns are
-	"Type", "Amount", "Rate", and "Date" corresponding to QuantLib's
-	DividendSchedule. Default value is an empty frame, or no
-	dividend. \cr
-	   \code{callSch} \tab a data frame whose columns
-	are "Price", "Type" and "Date" corresponding to QuantLib's
-	CallabilitySchedule. Defaule is an empty frame, or no callability. \cr
-	   \code{creditSpread}  \tab a double, credit spread parameter in the constructor of the bond. \cr
-	   \code{conversitionRatio}  \tab a double, conversition ratio parameter in the constructor of the bond. \cr
+       \code{issueDate}     \tab a Date, the bond's issue date\cr
+       \code{maturityDate}  \tab a Date, the bond's maturity date\cr
+	   \code{creditSpread}  \tab a double, credit spread parameter \cr 
+    	\code{}        \tab  in the constructor of the bond. \cr
+	   \code{conversitionRatio}  \tab a double, conversition ratio \cr 
+		\code{}        \tab parameter in the constructor of the bond. \cr
+	   \code{exercise} 	\tab (Optional) a string, either "eu" for European \cr
+		\code{}        \tab 	option, or "am" for American option. \cr
+		\code{}        \tab  Default value is 'am'.\cr
+         \code{faceAmount}    \tab (Optional) a double, face amount of the bond.\cr
+		\code{}        \tab  Default value is 100. \cr
+           \code{redemption}    \tab (Optional) a double, percentage of the initial \cr
+		\code{}        \tab 	face amount that will be returned at maturity \cr
+		\code{}        \tab    date. Default value is 100.\cr
+	   \code{divSch} \tab (Optional) a data frame whose columns are \cr
+		\code{}        \tab "Type", "Amount", "Rate", and "Date" \cr 
+		\code{}        \tab corresponding to QuantLib's DividendSchedule. \cr
+		\code{}        \tab  Default value is an empty frame, or no dividend. \cr
+		\code{callSch} \tab (Optional) a data frame whose columns are "Price",\cr
+        \code{}        \tab "Type" and "Date" corresponding to QuantLib's \cr
+		\code{}        \tab CallabilitySchedule. Defaule is an empty frame, \cr 
+        \code{}         \tab or no callability.\cr
 	}
 }
-
-
 \item{coupon}{a double vector of coupon rate}
-
 \item{process}{arguments to construct a BlackScholes process and set up the binomial pricing engine for this bond. 
 	\tabular{ll}{
 	   \code{underlying} \tab a double, flat underlying term structure \cr
@@ -48,24 +49,26 @@ The \code{ConvertibleFixedCouponBond} function setups and evaluates a Convertibl
 	   \code{riskFreeRate} \tab a DiscountCurve object \cr
 	}
 }
-
-\item{dateparams}{QuantLib's date parameters of the bond. 
+\item{dateparams}{(Optional) a named list, QuantLib's date parameters of the bond. 
 	\tabular{ll}{
-	   \code{settlementDays} \tab a double, settlement days. Default
-	value is 1.\cr
-	   \code{calendar} \tab a string, either 'us' or 'uk'
-	corresponding to US Goverment Bond calendar and UK Exchange
-	calendar. Default value is 'us'.\cr
-	   \code{dayCounter} \tab a number or string, day counter
-	convention. See \link{Enum}. Default value is 'Thrty360'. \cr
-	   \code{period}  \tab a number or string, interest compounding
-	interval. See \link{Enum}. Default value is 'Semiannual'. \cr
-	   \code{businessDayConvention} \tab a number or string,
-	business day convention. See \link{Enum}. Default value is 'Following'. \cr	  
+	   \code{settlementDays} \tab (Optional) a double, settlement days. \cr 
+		\code{}        \tab Default value is 1.\cr
+	   \code{calendar} \tab (Optional) a string, either 'us' or 'uk' \cr 
+		\code{}        \tab corresponding to US Goverment Bond \cr
+		\code{}		   \tab calendar and UK Exchange calendar.\cr
+		\code{}        \tab  Default value is 'us'.\cr
+	   \code{dayCounter} \tab (Optional) a number or string, \cr 
+		\code{}        \tab day counter convention.\cr
+	   \code{}        \tab  See \link{Enum}. Default value is 'Thirty360' \cr 
+	   \code{period}  \tab (Optional) a number or string, \cr
+		\code{}       \tab  interest compounding interval. See \link{Enum}. \cr
+        \code{}       \tab Default value is 'Semiannual'.\cr
+	   \code{businessDayConvention} \tab (Optional) a number or string, \cr 
+    		\code{}                 \tab business day convention. \cr 
+                                    \tab See \link{Enum}. Default value is 'Following'. \cr
 	}
 	See example below.
 }
-
 }
 \value{
   The \code{ConvertibleFixedCouponBond} function returns an object of class
@@ -91,7 +94,8 @@ The \code{ConvertibleFixedCouponBond} function setups and evaluates a Convertibl
   the QuantLib Group for \code{QuantLib}
 }
 \examples{
-#this follow an example in test-suite/convertiblebond.cpp for ConvertibleFixedCouponBond
+#this follow an example in test-suite/convertiblebond.cpp 
+#for ConvertibleFixedCouponBond
 
 #set up arguments to build a pricing engine.
 params <- list(tradeDate=Sys.Date()-2,

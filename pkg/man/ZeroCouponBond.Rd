@@ -19,43 +19,48 @@
 }
 \arguments{
 
-
-\item{bond}{bond parameters:
+\item{bondparams}{bond parameters, a named list whose elements are: 
 	\tabular{ll}{
-           \code{faceAmount}    \tab a numeric, face amount of the bond.
-	   Default value is 100.\cr
-           \code{issueDate}     \tab a Date, the bond's issue date \cr
-           \code{maturityDate}  \tab a Date, the bond's maturity date \cr
-           \code{redemption}    \tab a numeric, percentage of the
-	   initial face amount that will be returned at maturity
-	   date. Default value is 100 \cr
+       \code{issueDate}     \tab a Date, the bond's issue date\cr
+       \code{maturityDate}  \tab a Date, the bond's maturity date\cr
+         \code{faceAmount}    \tab (Optional) a double, face amount of the bond.\cr
+		\code{}        \tab  Default value is 100. \cr
+           \code{redemption}    \tab (Optional) a double, percentage of the initial \cr
+		\code{}        \tab 	face amount that will be returned at maturity \cr
+		\code{}        \tab    date. Default value is 100.\cr
 	}
 }
-
-
-
-\item{discountCurve}{ Can be one of the following:
-\tabular{l}{
-	\code{a DiscountCurve object}   \cr
-	\code{A list that specifies a flat curve in two values "todayDate" and "rate"}   \cr
-	\code{A list that specifies three values to construct a DiscountCurve object, "params" , "tsQuotes", "times". For more detail, see example or the discountCurve function} \cr
-}
-}
-
-
-\item{dateparams}{QuantLib's date parameters of the bond. 
+\item{curve}{Can be one of the following:
   \tabular{ll}{
-    \code{settlementDays} \tab a numeric, settlement
-    days. Typically 1, 2 or 3. Default value is 1. \cr
-    \code{calendar} \tab a string, either 'us' or 'uk'
-    corresponding to US Goverment Bond calendar and UK Exchange
-    calendar. Default value is 'us'.\cr
-    \code{businessDayConvention} \tab a numeric or string,
-    business day convention. See \link{Enum}. Default value is 'Following'. \cr
+    \code{a DiscountCurve} \tab  a object of DiscountCurve class \cr
+    \code{}                \tab For more detail, see example or \cr 
+    \code{}                \tab the discountCurve function \cr
+    \code{A 2 items list} \tab specifies a flat curve in two \cr 
+    \code{}               \tab values "todayDate" and "rate"   \cr
+    \code{A 3 items list} \tab specifies three values to construct a \cr
+    \code{}                \tab DiscountCurve object, "params" , \cr 
+\code{} \tab "tsQuotes", "times". \cr
+    \code{}                \tab For more detail, see example or \cr 
+    \code{}                \tab the discountCurve function \cr
   }
-  See example below.
 }
 
+
+
+\item{dateparams}{(Optional) a named list, QuantLib's date parameters of the bond. 
+	\tabular{ll}{
+	   \code{settlementDays} \tab (Optional) a double, settlement days. \cr 
+		\code{}        \tab Default value is 1.\cr
+	   \code{calendar} \tab (Optional) a string, either 'us' or 'uk' \cr 
+		\code{}        \tab corresponding to US Goverment Bond \cr
+		\code{}		   \tab calendar and UK Exchange calendar.\cr
+		\code{}        \tab  Default value is 'us'.\cr
+	   \code{businessDayConvention} \tab (Optional) a number or string, \cr 
+    		\code{}                 \tab business day convention. \cr 
+                                    \tab See \link{Enum}. Default value is 'Following'. \cr
+	}
+	See example below.
+}
 }
 \value{
   The \code{ZeroCouponBond} function returns an object of class

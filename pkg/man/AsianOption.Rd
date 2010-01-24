@@ -11,7 +11,8 @@
 }
 \usage{
 \method{AsianOption}{default}(averageType, type, underlying, strike,
-	dividendYield, riskFreeRate, maturity, volatility, timeSteps=150, gridPoints=151)
+			                  dividendYield, riskFreeRate, maturity, 
+			                  volatility, timeSteps=150, gridPoints=151)
 \method{plot}{Option}
 \method{print}{Option}
 \method{summary}{Option}
