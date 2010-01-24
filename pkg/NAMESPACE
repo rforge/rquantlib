@@ -3,11 +3,17 @@ useDynLib(RQuantLib)
 
 exportPattern("*.default")
 export(
-#asian.R
+       ##--arrays.R
+       "EuropeanOptionArrays",
+       ##--asian.R
        "AsianOption",
-#plot.Option, print.Option, summary.Option ????
-
-#bond.R
+       ##--bermudan.R
+       "BermudanSwaption",
+       "summary.G2Analytic",
+       "summary.HWAnalytic",
+       "summary.HWTree",
+       "summary.BKTree",
+       ##--bond.R
        "ZeroCouponBond",
        "ZeroPriceByYield",
        "ZeroYield",
@@ -20,25 +26,7 @@ export(
        "ConvertibleFloatingCouponBond",
        "CallableBond",
        "FittedBondCurve",
-       "plot.Bond", #?
-       "print.Bond", #?
-       "summary.Bond", #?
-#dayCounter.R
-       "dayCount",
-       "yearFraction",
-#implied.R
-       "EuropeanOptionImpliedVolatility",
-       "AmericanOptionImpliedVolatility",
-       "BinaryOptionImpliedVolatility",
-#arrays.R
-       "EuropeanOptionArrays",
-#bermudan.R
-       "BermudanSwaption",
-       "summary.G2Analytic", #?
-       "summary.HWAnalytic", #?
-       "summary.HWTree", #?
-       "summary.BKTree", #?
-#calendars.R
+       ##--calendars.R
        "businessDay",
        "isHoliday",
        "isWeekend",
@@ -48,17 +36,22 @@ export(
        "advance",
        "businessDaysBetween",
        "holidayList",
-#discount.R
+       ##--dayCounter.R
+       "dayCount",
+       "yearFraction",
+       ##--discount.R
        "DiscountCurve",
-       "plot.DiscountCurve", #?
-#option.R
+       "plot.DiscountCurve",
+       ##--implied.R
+       "EuropeanOptionImpliedVolatility",
+       "AmericanOptionImpliedVolatility",
+       "BinaryOptionImpliedVolatility",
+       ##--option.R
        "EuropeanOption",
        "AmericanOption",
-       "AmericanOption.default",       
+       "AmericanOption.default",
        "BinaryOption",
-       "BarrierOption",
-#asian.R
-       "AsianOption"
+       "BarrierOption"
        )
 
 S3method("plot", "Option")
