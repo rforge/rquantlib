@@ -19,7 +19,7 @@
 }
 \arguments{
 
-\item{bondparams}{bond parameters, a named list whose elements are: 
+\item{bond}{bond parameters, a named list whose elements are: 
 	\tabular{ll}{
        \code{issueDate}     \tab a Date, the bond's issue date\cr
        \code{maturityDate}  \tab a Date, the bond's maturity date\cr
@@ -30,7 +30,7 @@
 		\code{}        \tab    date. Default value is 100.\cr
 	}
 }
-\item{curve}{Can be one of the following:
+\item{discountCurve}{Can be one of the following:
   \tabular{ll}{
     \code{a DiscountCurve} \tab  a object of DiscountCurve class \cr
     \code{}                \tab For more detail, see example or \cr 

@@ -20,7 +20,7 @@
 \arguments{
 
 
-\item{bondparams}{bond parameters, a named list whose elements are: 
+\item{bond}{bond parameters, a named list whose elements are: 
 	\tabular{ll}{
        \code{issueDate}     \tab a Date, the bond's issue date\cr
        \code{maturityDate}  \tab a Date, the bond's maturity date\cr

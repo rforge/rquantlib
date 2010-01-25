@@ -36,6 +36,10 @@ export(
        "advance",
        "businessDaysBetween",
        "holidayList",
+       ##--cd.R
+       "mf.cdai",
+       "mf.cdprice",
+       "mf.cdyield",
        ##--dayCounter.R
        "dayCount",
        "yearFraction",
