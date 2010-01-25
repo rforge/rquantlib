@@ -50,6 +50,8 @@ export(
        "EuropeanOptionImpliedVolatility",
        "AmericanOptionImpliedVolatility",
        "BinaryOptionImpliedVolatility",
+       ##MFCBond.R
+       "mf.cbprice",
        ##--option.R
        "EuropeanOption",
        "AmericanOption",
