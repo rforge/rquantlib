@@ -52,6 +52,13 @@ export(
        "BinaryOptionImpliedVolatility",
        ##MFCBond.R
        "mf.cbprice",
+       ##MFtb.R      
+       "mf.tbilldisc2yield",
+       "mf.tbillprice",
+       "mf.tbillyield2disc",
+       "mf.tbillrepo",
+       "mf.tbillval01",   
+       "mf.tbillyield",  
        ##--option.R
        "EuropeanOption",
        "AmericanOption",
