@@ -75,7 +75,7 @@ ZeroPriceByYield <- function(yield, faceAmount,
           UseMethod("ZeroPriceByYield")
 }
 
-ZeroPriceByYield.default <- function(yield, faceAmount,
+ZeroPriceByYield.default <- function(yield, faceAmount=100,
                               issueDate, maturityDate,
                               dayCounter=2, frequency=2,
                               compound=0, businessDayConvention=4){
@@ -101,7 +101,7 @@ ZeroYield <- function(price, faceAmount,
                       compound,	businessDayConvention){
 	  UseMethod("ZeroYield")
 }
-ZeroYield.default <- function(price, faceAmount,
+ZeroYield.default <- function(price, faceAmount=100,
                               issueDate, maturityDate,
                               dayCounter=2, frequency=2,
                               compound=0, businessDayConvention=4){
@@ -195,7 +195,7 @@ FixedRateBondYield <- function( settlementDays, price, faceAmount,
                            compound, redemption, issueDate) {
      UseMethod("FixedRateBondYield")
 }
-FixedRateBondYield.default <- function(settlementDays = 1,price, faceAmount,
+FixedRateBondYield.default <- function(settlementDays = 1,price, faceAmount=100,
                                 effectiveDate, maturityDate,
                                 period, calendar = "us", rates,
                                 dayCounter=2, businessDayConvention=0,
@@ -228,8 +228,8 @@ FixedRateBondPriceByYield <- function( settlementDays, yield, faceAmount,
                            compound, redemption, issueDate) {
      UseMethod("FixedRateBondPriceByYield")
 }
-FixedRateBondPriceByYield.default <- function(settlementDays = 1, yield, faceAmount,
-                                effectiveDate, maturityDate,
+FixedRateBondPriceByYield.default <- function(settlementDays = 1, yield, faceAmount=100,
+                                effectiveDate=issueDate, maturityDate,
                                 period, calendar = "us", rates,
                                 dayCounter=2, businessDayConvention=0,
                                 compound = 0, redemption = 100, issueDate) {

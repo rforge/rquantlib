@@ -18,16 +18,16 @@
 }
 \arguments{
 \item{bond}{bond parameters, a named list whose elements are: 
-	\tabular{ll}{
-       \code{issueDate}     \tab a Date, the bond's issue date\cr
-       \code{maturityDate}  \tab a Date, the bond's maturity date\cr
-         \code{faceAmount}    \tab (Optional) a double, face amount of the bond.\cr
-		\code{}        \tab  Default value is 100. \cr
-           \code{redemption}    \tab (Optional) a double, percentage of the initial \cr
-		\code{}        \tab 	face amount that will be returned at maturity \cr
-		\code{}        \tab    date. Default value is 100.\cr
-       \code{effectiveDate}  \tab (Optinal) a Date, the bond's effective date. Default value is issueDate\cr
-	}
+  \tabular{ll}{
+    \code{issueDate}     \tab a Date, the bond's issue date\cr
+    \code{maturityDate}  \tab a Date, the bond's maturity date\cr
+    \code{faceAmount}    \tab (Optional) a double, face amount of the bond.\cr
+    \code{}        \tab  Default value is 100. \cr
+    \code{redemption}    \tab (Optional) a double, percentage of the initial \cr
+    \code{}        \tab 	face amount that will be returned at maturity \cr
+    \code{}        \tab    date. Default value is 100.\cr
+    \code{effectiveDate}  \tab (Optinal) a Date, the bond's effective date. Default value is issueDate\cr
+  }
 }
 
 \item{rates}{a numeric vector, bond's coupon rates}
@@ -41,38 +41,38 @@
     \code{}               \tab values "todayDate" and "rate"   \cr
     \code{A 3 items list} \tab specifies three values to construct a \cr
     \code{}                \tab DiscountCurve object, "params" , \cr 
-\code{} \tab "tsQuotes", "times". \cr
+    \code{} \tab "tsQuotes", "times". \cr
     \code{}                \tab For more detail, see example or \cr 
     \code{}                \tab the discountCurve function \cr
   }
 }
 
 \item{dateparams}{(Optional) a named list, QuantLib's date parameters of the bond. 
-	\tabular{ll}{
-	   \code{settlementDays} \tab (Optional) a double, settlement days. \cr 
-		\code{}        \tab Default value is 1.\cr
-	   \code{calendar} \tab (Optional) a string, either 'us' or 'uk' \cr 
-		\code{}        \tab corresponding to US Goverment Bond \cr
-		\code{}		   \tab calendar and UK Exchange calendar.\cr
-		\code{}        \tab  Default value is 'us'.\cr
-	   \code{dayCounter} \tab (Optional) a number or string, \cr 
-		\code{}        \tab day counter convention.\cr
-	   \code{}        \tab  See \link{Enum}. Default value is 'Thirty360' \cr 
-	   \code{period}  \tab (Optional) a number or string, \cr
-		\code{}       \tab  interest compounding interval. See \link{Enum}. \cr
-        \code{}       \tab Default value is 'Semiannual'.\cr
-	   \code{businessDayConvention} \tab (Optional) a number or string, \cr 
-    		\code{}                 \tab business day convention. \cr 
-                                    \tab See \link{Enum}. Default value is 'Following'. \cr
-	   \code{terminationDateConvention} \tab (Optional) a number or string, \cr 
-    		\code{}                 \tab termination day convention. \cr 
-                                    \tab See \link{Enum}. Default value is 'Following'. \cr
-      \code{endOfMonth} \tab (Optional) a numeric with value 1 or 0. \cr 
-      \code{}           \tab End of Month rule. Default value is 0.\cr
-      \code{dateGeneration} \tab (Optional) a numeric, date generation method. \cr 
-      \code{} \tab See \link{Enum}. Default value is 'Backward' \cr
-	}
-	See example below.
+  \tabular{ll}{
+    \code{settlementDays} \tab (Optional) a double, settlement days. \cr 
+    \code{}        \tab Default value is 1.\cr
+    \code{calendar} \tab (Optional) a string, either 'us' or 'uk' \cr 
+    \code{}        \tab corresponding to US Goverment Bond \cr
+    \code{}		   \tab calendar and UK Exchange calendar.\cr
+    \code{}        \tab  Default value is 'us'.\cr
+    \code{dayCounter} \tab (Optional) a number or string, \cr 
+    \code{}        \tab day counter convention.\cr
+    \code{}        \tab  See \link{Enum}. Default value is 'Thirty360' \cr 
+    \code{period}  \tab (Optional) a number or string, \cr
+    \code{}       \tab  interest compounding interval. See \link{Enum}. \cr
+    \code{}       \tab Default value is 'Semiannual'.\cr
+    \code{businessDayConvention} \tab (Optional) a number or string, \cr 
+    \code{}                 \tab business day convention. \cr 
+    \tab See \link{Enum}. Default value is 'Following'. \cr
+    \code{terminationDateConvention} \tab (Optional) a number or string, \cr 
+    \code{}                 \tab termination day convention. \cr 
+    \tab See \link{Enum}. Default value is 'Following'. \cr
+    \code{endOfMonth} \tab (Optional) a numeric with value 1 or 0. \cr 
+    \code{}           \tab End of Month rule. Default value is 0.\cr
+    \code{dateGeneration} \tab (Optional) a numeric, date generation method. \cr 
+    \code{} \tab See \link{Enum}. Default value is 'Backward' \cr
+  }
+  See example below.
 }
 }
 \value{

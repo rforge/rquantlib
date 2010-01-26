@@ -1,5 +1,5 @@
 % $Id: MFCD.Rd 121 2009-11-02 22:50:50Z edd $
-\name{Certificate of Deposit}
+\name{Matlab Certificate of Deposit}
 \alias{mf.cdai}
 \alias{mf.cdprice}
 \alias{mf.cdyield}
@@ -25,7 +25,9 @@ mf.cdyield(Price, CouponRate, Settle, Maturity, IssueDate, Basis=6)
 }
 \value{
   mf.cdai returns the accrued interest on the CD
+  
   mf.cdprice returns a two items list.  AccrtInt and Price.
+  
   mf.cdyield returns the yield on the CD
 }
 \references{\url{http://www.mathworks.com/access/helpdesk/help/toolbox/finfixed/f5-6010.html#f5-8321}}

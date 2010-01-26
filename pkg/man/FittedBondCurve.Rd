@@ -15,37 +15,37 @@ FittedBondCurve(curveparams, lengths, coupons, dateparams)
 
 \arguments{
 \item{curveparams}{curve parameters
-	\tabular{ll}{
-		\code{method} \tab a string, fitting methods: "ExponentialSplinesFitting", \cr 
-        \code{} \tab  "SimplePolynomialFitting", "NelsonSiegelFitting"\cr
-		\code{origDate} \tab a Date, starting date of the curve \cr
-	}
+  \tabular{ll}{
+    \code{method} \tab a string, fitting methods: "ExponentialSplinesFitting", \cr 
+    \code{} \tab  "SimplePolynomialFitting", "NelsonSiegelFitting"\cr
+    \code{origDate} \tab a Date, starting date of the curve \cr
+  }
 }
 \item{lengths}{an numeric vector, length of the bonds in year}
 \item{coupons}{a numeric vector, coupon rate of the bonds}
 \item{dateparams}{(Optional) a named list, QuantLib's date parameters of the bond. 
-	\tabular{ll}{
-	   \code{settlementDays} \tab (Optional) a double, settlement days. \cr 
-		\code{}        \tab Default value is 1.\cr
-	   \code{dayCounter} \tab (Optional) a number or string, \cr 
-		\code{}        \tab day counter convention.\cr
-	   \code{}        \tab  See \link{Enum}. Default value is 'Thirty360' \cr 
-	   \code{period}  \tab (Optional) a number or string, \cr
-		\code{}       \tab  interest compounding interval. See \link{Enum}. \cr
-        \code{}       \tab Default value is 'Semiannual'.\cr
-	   \code{businessDayConvention} \tab (Optional) a number or string, \cr 
-    		\code{}                 \tab business day convention. \cr 
-                                    \tab See \link{Enum}. Default value is 'Following'. \cr
-	}
-	See example below.
+  \tabular{ll}{
+    \code{settlementDays} \tab (Optional) a double, settlement days. \cr 
+    \code{}        \tab Default value is 1.\cr
+    \code{dayCounter} \tab (Optional) a number or string, \cr 
+    \code{}        \tab day counter convention.\cr
+    \code{}        \tab  See \link{Enum}. Default value is 'Thirty360' \cr 
+    \code{period}  \tab (Optional) a number or string, \cr
+    \code{}       \tab  interest compounding interval. See \link{Enum}. \cr
+    \code{}       \tab Default value is 'Semiannual'.\cr
+    \code{businessDayConvention} \tab (Optional) a number or string, \cr 
+    \code{}                 \tab business day convention. \cr 
+    \tab See \link{Enum}. Default value is 'Following'. \cr
+  }
+  See example below.
 }
 }
 \value{
- \code{table}, a three columns "date - zeroRate - discount" data frame 
+  \code{table}, a three columns "date - zeroRate - discount" data frame 
 }
 
 \details{
- Please see any decent Finance textbook for background reading, and the
+  Please see any decent Finance textbook for background reading, and the
   \code{QuantLib} documentation for details on the \code{QuantLib}
   implementation.
 }

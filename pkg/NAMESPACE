@@ -57,7 +57,10 @@ export(
        "AmericanOption",
        "AmericanOption.default",
        "BinaryOption",
-       "BarrierOption"
+       "BarrierOption",
+       ##zero.R
+       "mf.zeroprice",
+       "mf.zeroyield"
        )
 
 S3method("plot", "Option")

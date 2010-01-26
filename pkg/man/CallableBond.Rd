@@ -15,53 +15,53 @@
 }
 \arguments{
 \item{bondparams}{a named list whose elements are: 
-	\tabular{ll}{
-		\code{issueDate}  \tab a Date, the bond's issue date \cr
-		\code{maturityDate} \tab a Date, the bond's maturity date \cr
-		\code{faceAmount} \tab (Optional) a double, face amount of the bond. \cr
-        \code{}           \tab Default value is 100.\cr
-		\code{redemption} \tab (Optional) a double, percentage of the initial face \cr 
-        \code{}           \tab amount that will be returned at maturity date. \cr
-        \code{}           \tab Default value is 100. \cr
-		\code{callSch} \tab (Optional) a data frame whose columns are "Price",\cr
-        \code{}        \tab "Type" and "Date" corresponding to QuantLib's \cr
-		\code{}        \tab CallabilitySchedule. Defaule is an empty frame, or no callability.\cr
-    	} 
+  \tabular{ll}{
+    \code{issueDate}  \tab a Date, the bond's issue date \cr
+    \code{maturityDate} \tab a Date, the bond's maturity date \cr
+    \code{faceAmount} \tab (Optional) a double, face amount of the bond. \cr
+    \code{}           \tab Default value is 100.\cr
+    \code{redemption} \tab (Optional) a double, percentage of the initial face \cr 
+    \code{}           \tab amount that will be returned at maturity date. \cr
+    \code{}           \tab Default value is 100. \cr
+    \code{callSch} \tab (Optional) a data frame whose columns are "Price",\cr
+    \code{}        \tab "Type" and "Date" corresponding to QuantLib's \cr
+    \code{}        \tab CallabilitySchedule. Defaule is an empty frame, or no callability.\cr
+  } 
 }
 \item{hullWhite}{a named list whose elements are parameters needed to set up a HullWhite pricing engine in QuantLib: 
-	\tabular{ll}{
-	   \code{term}  \tab a double, to set up a flat rate yield term structure \cr
-	   \code{alpha} \tab a double, Hull-White model's alpha value \cr
-	   \code{sigma} \tab a double, Hull-White model's sigma value \cr
-	   \code{gridIntervals}. \tab a double, time intervals parameter to \cr
-   	   \code{}              \tab set up the TreeCallableFixedBondEngine \cr
-	} 
-	Currently, the codes only support a flat rate yield term structure. For more detail, see QuantLib's doc on HullWhite 
-    and TreeCallableFixedBondEngine.
+  \tabular{ll}{
+    \code{term}  \tab a double, to set up a flat rate yield term structure \cr
+    \code{alpha} \tab a double, Hull-White model's alpha value \cr
+    \code{sigma} \tab a double, Hull-White model's sigma value \cr
+    \code{gridIntervals}. \tab a double, time intervals parameter to \cr
+    \code{}              \tab set up the TreeCallableFixedBondEngine \cr
+  } 
+  Currently, the codes only support a flat rate yield term structure. For more detail, see QuantLib's doc on HullWhite 
+  and TreeCallableFixedBondEngine.
 }
 \item{coupon}{a numeric vector of coupon rates}
 \item{dateparams}{(Optional) a named list, QuantLib's date parameters of the bond. 
-	\tabular{ll}{
-	   \code{settlementDays} \tab (Optional) a double, settlement days. \cr 
-		\code{}        \tab Default value is 1.\cr
-	   \code{calendar} \tab (Optional) a string, either 'us' or 'uk' \cr 
-		\code{}        \tab corresponding to US Goverment Bond \cr
-		\code{}		   \tab calendar and UK Exchange calendar.\cr
-		\code{}        \tab  Default value is 'us'.\cr
-	   \code{dayCounter} \tab (Optional) a number or string, \cr 
-		\code{}        \tab day counter convention.\cr
-	   \code{}        \tab  See \link{Enum}. Default value is 'Thirty360' \cr 
-	   \code{period}  \tab (Optional) a number or string, \cr
-		\code{}       \tab  interest compounding interval. See \link{Enum}. \cr
-        \code{}       \tab Default value is 'Semiannual'.\cr
-	   \code{businessDayConvention} \tab (Optional) a number or string, \cr 
-    		\code{}                 \tab business day convention. \cr 
-                                    \tab See \link{Enum}. Default value is 'Following'. \cr
-	   \code{terminationDateConvention} \tab (Optional) a number or string \cr 
-		\code{}                         \tab termination day convention.\cr
-		\code{}                         \tab See \link{Enum}. Default value is'Following'.\cr
-	}
-	See example below.
+  \tabular{ll}{
+    \code{settlementDays} \tab (Optional) a double, settlement days. \cr 
+    \code{}        \tab Default value is 1.\cr
+    \code{calendar} \tab (Optional) a string, either 'us' or 'uk' \cr 
+    \code{}        \tab corresponding to US Goverment Bond \cr
+    \code{}		   \tab calendar and UK Exchange calendar.\cr
+    \code{}        \tab  Default value is 'us'.\cr
+    \code{dayCounter} \tab (Optional) a number or string, \cr 
+    \code{}        \tab day counter convention.\cr
+    \code{}        \tab  See \link{Enum}. Default value is 'Thirty360' \cr 
+    \code{period}  \tab (Optional) a number or string, \cr
+    \code{}       \tab  interest compounding interval. See \link{Enum}. \cr
+    \code{}       \tab Default value is 'Semiannual'.\cr
+    \code{businessDayConvention} \tab (Optional) a number or string, \cr 
+    \code{}                 \tab business day convention. \cr 
+    \code{} \tab See \link{Enum}. Default value is 'Following'. \cr
+    \code{terminationDateConvention} \tab (Optional) a number or string \cr 
+    \code{}                         \tab termination day convention.\cr
+    \code{}                         \tab See \link{Enum}. Default value is'Following'.\cr
+  }
+  See example below.
 }
 }
 \value{
