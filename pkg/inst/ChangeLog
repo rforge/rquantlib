@@ -1,3 +1,5 @@
+2010-01-30  Khanh Nguyen  <knguyen@cs.umb.edu>
+	* Matlab's function: derivative securities, bkcaplet and bkfloorlet
 2010-01-26  Khanh Nguyen  <knguyen@cs.umb.edu>
 	* Matlab's functions: zero, treasury, convertible, certificate of deposit.
 2010-01-23  Dirk Eddelbuettel  <edd@debian.org>

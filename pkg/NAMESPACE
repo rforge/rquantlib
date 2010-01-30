@@ -36,10 +36,25 @@ export(
        "advance",
        "businessDaysBetween",
        "holidayList",
-       ##--cd.R
+       ##--MFcd.R
        "mf.cdai",
        "mf.cdprice",
        "mf.cdyield",
+       ##--MFCBond.R
+       "mf.cbprice",       
+       ##--MFds.R
+       "mf.bkcaplet",
+       "mf.bkfloorlet",             
+       ##--MFtb.R      
+       "mf.tbilldisc2yield",
+       "mf.tbillprice",
+       "mf.tbillyield2disc",
+       "mf.tbillrepo",
+       "mf.tbillval01",   
+       "mf.tbillyield",  
+       ##--MFzero.R
+       "mf.zeroprice",
+       "mf.zeroyield",
        ##--dayCounter.R
        "dayCount",
        "yearFraction",
@@ -50,24 +65,12 @@ export(
        "EuropeanOptionImpliedVolatility",
        "AmericanOptionImpliedVolatility",
        "BinaryOptionImpliedVolatility",
-       ##MFCBond.R
-       "mf.cbprice",
-       ##MFtb.R      
-       "mf.tbilldisc2yield",
-       "mf.tbillprice",
-       "mf.tbillyield2disc",
-       "mf.tbillrepo",
-       "mf.tbillval01",   
-       "mf.tbillyield",  
        ##--option.R
        "EuropeanOption",
        "AmericanOption",
        "AmericanOption.default",
        "BinaryOption",
-       "BarrierOption",
-       ##zero.R
-       "mf.zeroprice",
-       "mf.zeroyield"
+       "BarrierOption"
        )
 
 S3method("plot", "Option")
