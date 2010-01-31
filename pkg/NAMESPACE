@@ -41,10 +41,14 @@ export(
        "mf.cdprice",
        "mf.cdyield",
        ##--MFCBond.R
-       "mf.cbprice",       
+       "mf.cbprice",
+       ##--MFcoupon.R
+       "mf.cfamounts",
        ##--MFds.R
+       "mf.bkcall",
        "mf.bkcaplet",
-       "mf.bkfloorlet",             
+       "mf.bkfloorlet",
+       "mf.bkput",
        ##--MFtb.R      
        "mf.tbilldisc2yield",
        "mf.tbillprice",
