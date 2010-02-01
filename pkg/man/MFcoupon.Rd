@@ -1,6 +1,7 @@
 % $Id: MFCD.Rd 121 2009-11-02 22:50:50Z edd $
 \name{Matlab Coupon Bond Dates}
 \alias{mf.cfamounts}
+\alias{mf.cfdates}
 \title{Matlab's coupon bond date functions}
 \description{
 Matlab's coupon bond date functions from Matlab financial toolbox.
@@ -9,6 +10,8 @@ Matlab's coupon bond date functions from Matlab financial toolbox.
 mf.cfamounts(CouponRate, Settle, Maturity,
              Period = 2, Basis = 6, EndMonthRule = 1,
              IssueDate = Settle, Face = 100)
+mf.cfdates(Settle, Maturity, Period = 2,
+            Basis = 6, EndMonthRule = 0)
 }
 \arguments{
   \item{CouponRate}{a numeric, coupon rate of the bond}
@@ -25,8 +28,10 @@ mf.cfamounts(CouponRate, Settle, Maturity,
 }
 \value{
   mf.cfamounts returns the cash flow and time mapping of a bond
+
+  mf.cfdates returns the cash flow dates for a fixed-income security
 }
-\references{\url{http://www.mathworks.com/access/helpdesk/help/toolbox/finance/cfamounts.html}}
+\references{\url{http://www.mathworks.com/access/helpdesk/help/toolbox/finance/f6-213137.html#f0-221597}}
 \author{Khanh Nguyen \email{knguyen@cs.umb.edu}}
 \examples{
 CouponRate <- 0.05
@@ -35,6 +40,7 @@ Maturity <- as.Date('2002-03-31')
 
 mf.cfamounts(CouponRate, Settle, Maturity)
 
+mf.cfdates(as.Date('1997-03-14'), as.Date('1998-10-31'))
 }
 
 

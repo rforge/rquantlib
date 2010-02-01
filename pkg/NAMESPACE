@@ -40,10 +40,13 @@ export(
        "mf.cdai",
        "mf.cdprice",
        "mf.cdyield",
+       ##--MFbf.R
+       "mf.convfactor",
        ##--MFCBond.R
        "mf.cbprice",
        ##--MFcoupon.R
        "mf.cfamounts",
+       "mf.cfdates",
        ##--MFds.R
        "mf.bkcall",
        "mf.bkcaplet",

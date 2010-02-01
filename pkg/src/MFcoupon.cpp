@@ -62,4 +62,56 @@ RcppExport SEXP cfamounts(SEXP params){
 }
 
 
+RcppExport SEXP cfdates(SEXP params){
+    SEXP rl = R_NilValue;
+    char* exceptionMesg = NULL;
+    try {
+        RcppParams rparam(params);
+        
+        double basis = rparam.getDoubleValue("dayCounter");
+        DayCounter dayCounter = getDayCounter(basis);
+        double p = rparam.getDoubleValue("period");        
+        Frequency freq = getFrequency(p);
+        Period period(freq);
+        double emr = rparam.getDoubleValue("emr");
+
+        bool endOfMonth = false;
+        if (emr == 1) endOfMonth = true;
+
+        QuantLib::Date d1(dateFromR(rparam.getDateValue("settle")));        
+        QuantLib::Date d2(dateFromR(rparam.getDateValue("maturity")));
+        Calendar calendar=UnitedStates(UnitedStates::GovernmentBond); 
+        
+        Schedule sch(d1, d2, period, calendar, Unadjusted,
+                     Unadjusted, DateGeneration::Backward, endOfMonth);
+
+        //cfdates
+        int numCol = 1;
+        std::vector<std::string> colNames(numCol);
+        colNames[0] = "Date";        
+        RcppFrame frame(colNames);
+        
+        std::vector<QuantLib::Date> dates = sch.dates();
+        for (unsigned int i = 0; i< dates.size(); i++){
+            std::vector<ColDatum> row(numCol);
+            Date d = dates[i];
+            row[0].setDateValue(RcppDate(d.month(), d.dayOfMonth(), d.year()));           
+            frame.addRow(row);
+        }
+        RcppResultSet rs;
+        rs.add("", frame);
+        rl = rs.getReturnList();
+    } 
+    catch(std::exception& ex) {
+        exceptionMesg = copyMessageToR(ex.what());
+    } catch(...) {
+        exceptionMesg = copyMessageToR("unknown reason");
+    }
+    if(exceptionMesg != NULL)
+        Rf_error(exceptionMesg);
+    
+    return rl;
+}
+
+
 
