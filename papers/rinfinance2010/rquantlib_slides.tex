@@ -1,0 +1,97 @@
+
+%% add 'handout' option for handouts, and pgfpages for 2-on-1
+\documentclass[smaller,compress]{beamer}   
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{2 on 1}[letterpaper,border shrink=5mm]
+%\pgfpagesuselayout{4 on 1}[letterpaper,border shrink=5mm]
+%\pgfpagesuselayout{2 on 1}[a4,border shrink=5mm]
+
+
+\include{beamer_setup}  %% has all definitions etc
+
+
+\title[RQuantLib]{RQuantLib: Interfacing QuantLib from R}  %% better title welcome...
+\subtitle{\textsl{R / Finance 2010 Presentation}}
+\subject{R / Finance 2010 Presentation}
+\author[Eddelbuettel \and Nguyen]{Dirk Eddelbuettel\inst{1} \and Khanh Nguyen\inst{2}}
+\institute[Debian and UMASS]{
+  \inst{1}%
+  Debian Project
+  \and 
+  \inst{2}
+  UMASS at Boston
+}
+\date[R / Finance 2010]{R / Finance 2010 \\ April 18 and 19, 2010 \\ Chicago, IL, USA}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Introduction}
+\begin{frame}
+  \frametitle{Overview}
+  \framesubtitle{Presentation details}
+  \begin{itemize}
+  \item Brief overview of QuantLib
+    \begin{itemize}
+    \item History, about to release 1.0 after eight long years
+    \item Luigi's design document draft, mention rigorous design, unit
+      tests, boost, 'grown up C++'
+    \item Maybe mention different language bindings
+    \item Maybe mention liberal QL license; R / RQuantLib with GPL somewhat
+      tighter but in spirit of R community
+    \end{itemize}
+  \item RQuantLib maybe chronologically
+    \begin{itemize}
+    \item Equity options part
+    \item Simple calendaring
+    \item Mention the older fixed income / curve stuff without dwelling on it
+    \end{itemize}
+  \item Fixed Income / GSoC 2009
+    \begin{itemize}
+    \item Khanh ....
+    \item More Khanh ...
+    \end{itemize}
+  \item Total of somewhere between 20 and 30 pages
+  \item Finish with Outlook / Agenda / Areas not yet covered
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]  % fragile important when lstlisting used
+  \frametitle{We can do code}
+  \framesubtitle{Thanks to lstlisting}
+
+\lstset{language=C++,basicstyle=\tiny}
+\begin{lstlisting}
+#include <Rcpp.hpp>
+
+RcppExport SEXP dd_rcpp(SEXP v) {
+  SEXP  rl = R_NilValue;             // Use this when nothing is returned
+
+  RcppVector<int> vec(v);            // vec parameter viewed as vector of doubles
+  int n = vec.size(), i = 0;
+
+  for (int a = 0; a < 9; a++)
+    for (int b = 0; b < 9; b++)
+      for (int c = 0; c < 9; c++)
+        for (int d = 0; d < 9; d++)
+          vec(i++) = a*b - c*d;
+
+  RcppResultSet rs;                  // Build result set returned as list to R
+  rs.add("vec", vec);                // vec as named element with name 'vec'
+  rl = rs.getReturnList();           // Get the list to be returned to R.
+
+  return rl;
+}
+\end{lstlisting}
+
+
+\end{frame}
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

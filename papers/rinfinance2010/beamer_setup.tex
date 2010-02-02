@@ -1,0 +1,129 @@
+
+\mode<presentation>
+{
+  %\usetheme[secheader]{Madrid} % nice (once my coloroverrides are sorted out)
+  %\usetheme{AnnArbor}	% nice!	
+  %\usetheme{Malmoe}	% nice!	
+  \usetheme{Warsaw}	% nice!	
+
+  %\usetheme[secheader]{Boadilla} % ok
+  %\usecolortheme{whale}
+  %\usecolortheme{orchid}
+}
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection (or section)
+% edd: Does not work in handout mode, and we have too many section/subsections
+%\AtBeginSection[]{%
+%  \begin{frame}<beamer>%
+%    %\tiny
+%    \frametitle{Outline}%
+%    \tableofcontents[currentsection]%
+%  \end{frame}
+%}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment the following command: 
+%\beamerdefaultoverlayspecification{<+->}
+
+\newcommand{\MedSkip}{\medskip \par} % add \pause if desired 
+\newcommand{\SmallSkip}{\smallskip} % add \pause if desired 
+
+\usepackage[english]{babel}   	% or whatever
+\usepackage[latin1]{inputenc}	% or whatever
+\usepackage{times}
+\usepackage[T1]{fontenc}	% Or whatever. Note that the encoding and the 
+				% font should match. If T1 does not look
+                                % nice, try deleting the line with the fontenc.
+%\usepackage{highlight}
+
+\usepackage{listings}
+\lstset{ %
+  language=R,                   % choose the language of the code
+  basicstyle=\scriptsize,       % the size of the fonts that are used for the code
+  numbers=left,                 % where to put the line-numbers
+  numberstyle=\tiny,            % the size of the fonts that are used for the line-numbers
+  stepnumber=1,                 % the step between two line-numbers. If it's 1 each line will be numbered
+  numbersep=5pt,                % how far the line-numbers are from the code
+  backgroundcolor=\color{white},% choose the background color. You must add \usepackage{color}
+  showspaces=false,             % show spaces adding particular underscores
+  showstringspaces=false,       % underline spaces within strings
+  showtabs=false,               % show tabs within strings adding particular underscores
+  frame=single,                 % adds a frame around the code
+  tabsize=2,                    % sets default tabsize to 2 spaces
+  captionpos=b,                 % sets the caption-position to bottom
+  breaklines=true,              % sets automatic line breaking
+  breakatwhitespace=false,      % sets if automatic breaks should only happen at whitespace
+  escapeinside={\%*}{*)}        % if you want to add a comment within your code
+}
+
+\hypersetup{                  		% beamer colors taken from elsewhere
+  hyperindex,%				% works with the beetle colour scheme
+  colorlinks,%
+  linktocpage,%
+  plainpages=true,%
+  linkcolor=myOrange,%
+  citecolor=myDarkGrey,%
+  urlcolor=myDarkBlue,%
+  pdfstartview=Fit,%
+  pdfview={XYZ null null null}%
+}
+%\hypersetup{                  		% beamer colors taken from elsewhere
+%  hyperindex,%				% works with the beetle colour scheme
+%  colorlinks%
+%  linktocpage,%
+%  plainpages=false,%
+%  linkcolor=eddBlue,%
+%  citecolor=eddDarkGrey,%
+%  urlcolor=eddDarkBlue,%
+%  pdfstartview=Fit,%
+%  pdfview={XYZ null null null}%
+%}
+
+\RequirePackage{color}
+\definecolor{Red}{rgb}{0.7,0,0}
+\definecolor{myOrange}{rgb}{0.8,0.5,0.0}
+\definecolor{myBlue}{rgb}{0.0,0.0,0.4}
+\definecolor{myDarkBlue}{rgb}{0.1,0.1,0.4}
+\definecolor{myDarkGrey}{rgb}{0.15,0.15,0.15}
+% Doug's
+\definecolor{Sinput}{rgb}{0,0,0.56}
+\definecolor{Scode}{rgb}{0,0,0.56}
+\definecolor{Soutput}{rgb}{0.56,0,0}
+% 
+\definecolor{Cmdinput}{rgb}{0,0,0.44}
+\definecolor{Cmdoutput}{rgb}{0.44,0,0}
+\definecolor{Cppinput}{rgb}{0.15,0.15,0.15}
+
+%% based on Doug's, but mod'ed \R to use hyperref
+\RequirePackage{fancyvrb}
+\RequirePackage{xspace}
+\RequirePackage{paralist}
+\newenvironment{Schunk}{\par\begin{minipage}{\textwidth}}{\end{minipage}}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{formatcom={\color{Sinput}},fontsize=\small}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom={\color{Soutput}},fontsize=\footnotesize}
+\DefineVerbatimEnvironment{Scode}{Verbatim}{formatcom={\color{Scode}},fontsize=\small}
+\DefineVerbatimEnvironment{Cmdinput}{Verbatim}{formatcom={\color{Cmdinput}},fontsize=\small}
+\DefineVerbatimEnvironment{Cmdoutput}{Verbatim}{formatcom={\color{Cmdoutput}},fontsize=\footnotesize}
+\DefineVerbatimEnvironment{Cppinput}{Verbatim}{formatcom={\color{Cppinput}},fontsize=\small}
+
+% -- not \small 
+\newcommand{\smallcode}[1]{{\color{Sinput}\small\texttt{#1}}}
+\newcommand{\code}[1]{{\color{Sinput}\texttt{#1}}}
+\newcommand{\Emph}[1]{\emph{\color{Scode}#1}}   
+%\newcommand{\R}{\href{http://www.r-project.org}{\Emph{R}\xspace}}   %% ? sing \emph upsets beamer inside \href
+\newcommand{\R}{\href{http://www.r-project.org}{\textsf{R}\xspace}}
+\newcommand{\Rns}{\href{http://www.r-project.org}{\textsf{R}}}
+
+% two old defintions
+%\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\screenshot}[1]{\centerline{\includegraphics[height=7.8cm,transparent]{#1}}}  % 7.8in
+
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+% NB transparent in Adobe but not in kpdf
+%\pgfdeclareimage[height=0.6cm]{useR-logo}{figures/useR}
+%\logo{\pgfuseimage{useR-logo}}
+
