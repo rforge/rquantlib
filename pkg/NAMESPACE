@@ -36,32 +36,6 @@ export(
        "advance",
        "businessDaysBetween",
        "holidayList",
-       ##--MFcd.R
-       "mf.cdai",
-       "mf.cdprice",
-       "mf.cdyield",
-       ##--MFbf.R
-       "mf.convfactor",
-       ##--MFCBond.R
-       "mf.cbprice",
-       ##--MFcoupon.R
-       "mf.cfamounts",
-       "mf.cfdates",
-       ##--MFds.R
-       "mf.bkcall",
-       "mf.bkcaplet",
-       "mf.bkfloorlet",
-       "mf.bkput",
-       ##--MFtb.R      
-       "mf.tbilldisc2yield",
-       "mf.tbillprice",
-       "mf.tbillyield2disc",
-       "mf.tbillrepo",
-       "mf.tbillval01",   
-       "mf.tbillyield",  
-       ##--MFzero.R
-       "mf.zeroprice",
-       "mf.zeroyield",
        ##--dayCounter.R
        "dayCount",
        "yearFraction",
