@@ -277,50 +277,17 @@ FloatingRateBond.default <- function(bond,
     if (is.null(dateparams$refDate)) {dateparams$refDate=bond$issueDate-2}
     
     dateparams <- matchParams(dateparams)
-    if (class(curve)=="DiscountCurve"){
-        indexparams <- list(type=index$type, length=index$length, 
+    
+    indexparams <- list(type=index$type, length=index$length, 
                         inTermOf=index$inTermOf)
-        ibor <- index$term
-        val <- .Call("QL_FloatingWithRebuiltCurve",
+    ibor <- index$term
+    val <- .Call("QL_FloatingWithRebuiltCurve",
                  bond, gearings, spreads, caps, floors, indexparams,
                  c(ibor$table$date), ibor$table$zeroRates,
                  c(curve$table$date), curve$table$zeroRates, 
                  dateparams, 
                  PACKAGE="RQuantLib")
-    }   
-    else {
-         indexparams <- list(type=index$type, length=index$length, 
-                        inTermOf=index$inTermOf)
-         if ((length(curve)==2) && (length(index$term)==2)){
-             val <- .Call("QL_FloatBond1", 
-                     bond, gearings, spreads, caps, floors,
-                     indexparams, index$term, curve, dateparams,
-                     PACKAGE="RQuantLib")
-          }
-          if ((length(curve)==2) && (length(index$term)==3)){
-             ibor <- index$term
-             val <- .Call("QL_FloatBond2", 
-                     bond, gearings, spreads, caps, floors,
-                     indexparams, ibor[[1]], ibor[[2]],
-                     ibor[[3]], curve, dateparams,
-                     PACKAGE="RQuantLib")
-          }
-          if ((length(curve)==3) && (length(index$term)==2)){
-              val <- .Call("QL_FloatBond3", 
-                    bond, gearings, spreads, caps, floors, 
-                    indexparams, index$term, curve[[1]],curve[[2]], 
-                    curve[[3]], dateparams,
-                    PACKAGE="RQuantLib")      
-          }
-          if ((length(curve)==3) && (length(index$term)==3)){
-              ibor <- index$term
-              val <- .Call("QL_FloatBond4", 
-                    bond, gearings, spreads, caps, floors, 
-                    indexparams, ibor[[1]], ibor[[2]], ibor[[3]], 
-                    curve[[1]],curve[[2]], curve[[3]], dateparams,
-                    PACKAGE="RQuantLib")      
-          }
-    }
+    
     val$cashFlow <- as.data.frame(val$cashFlow)
     class(val) <- c("FloatingRateBond", "Bond")    
     val

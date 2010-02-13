@@ -114,21 +114,48 @@ params <- list(tradeDate=as.Date('2002-2-15'),
 discountCurve.flat <- DiscountCurve(params, list(flat=0.05))
 FixedRateBond(bond, coupon.rate, discountCurve.flat, dateparams)
 ## bond.cpp FloatingRateBond, following test-suite/bonds.cpp
+
 bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
              maturityDate=as.Date("2008-11-30"), redemption=100, 
              effectiveDate=as.Date("2004-11-30"))
-dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
+dateparams <- list(settlementDays=1, calendar="us",
+                   dayCounter = 'ActualActual', period=2, 
                    businessDayConvention = 1, terminationDateConvention=1,
                    dateGeneration=0, endOfMonth=0, fixingDays = 1)
+
 gearings <- c()
 spreads <- c()
 caps <- c()
 floors <- c()
-length2 <- list(todayDate=as.Date("2004-11-22"), riskFreeRate=0.025)
-curve <- length2
-termstructure <- length2
-iborindex <- list(type="USDLibor", length=6, 
+
+params <- list(tradeDate=as.Date('2002-2-15'),
+               settleDate=as.Date('2002-2-19'),
+               dt=.25,
+               interpWhat="discount",
+               interpHow="loglinear")
+
+tsQuotes <- list(d1w  =0.0382,
+                 d1m  =0.0372,
+                 fut1=96.2875,
+                 fut2=96.7875,
+                 fut3=96.9875,
+                 fut4=96.6875,
+                 fut5=96.4875,
+                 fut6=96.3875,
+                 fut7=96.2875,
+                 fut8=96.0875,
+                 s3y  =0.0398,
+                 s5y  =0.0443,
+                 s10y =0.05165,
+                 s15y =0.055175)
+
+
+## when both discount and libor curves are flat.
+
+discountCurve.flat <- DiscountCurve(params, list(flat=0.05))
+termstructure <- DiscountCurve(params, list(flat=0.03))
+iborIndex.params <- list(type="USDLibor", length=6, 
                   inTermOf="Month", term=termstructure)                      
-print(FloatingRateBond(bond, gearings, spreads, caps, floors, 
-                 iborindex, curve, dateparams))
+FloatingRateBond(bond, gearings, spreads, caps, floors, 
+                 iborIndex.params, discountCurve.flat, dateparams)
 

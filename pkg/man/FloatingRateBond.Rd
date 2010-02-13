@@ -124,21 +124,15 @@
 bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
              maturityDate=as.Date("2008-11-30"), redemption=100, 
              effectiveDate=as.Date("2004-11-30"))
-
-dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
+dateparams <- list(settlementDays=1, calendar="us",
+                   dayCounter = 'ActualActual', period=2, 
                    businessDayConvention = 1, terminationDateConvention=1,
                    dateGeneration=0, endOfMonth=0, fixingDays = 1)
 
 gearings <- c()
-
 spreads <- c()
-
 caps <- c()
-
 floors <- c()
-
-
-length2 <- list(todayDate=as.Date("2004-11-22"), riskFreeRate=0.025)
 
 params <- list(tradeDate=as.Date('2002-2-15'),
                settleDate=as.Date('2002-2-19'),
@@ -161,65 +155,28 @@ tsQuotes <- list(d1w  =0.0382,
                  s10y =0.05165,
                  s15y =0.055175)
 
-times <- seq(0,10,.1)
 
-length3 <- list(params, tsQuotes, times)
+## when both discount and libor curves are flat.
 
-
-# both curves are flat
-
-curve <- length2
-termstructure <- length2
-iborindex <- list(type="USDLibor", length=6, 
+discountCurve.flat <- DiscountCurve(params, list(flat=0.05))
+termstructure <- DiscountCurve(params, list(flat=0.03))
+iborIndex.params <- list(type="USDLibor", length=6, 
                   inTermOf="Month", term=termstructure)                      
 FloatingRateBond(bond, gearings, spreads, caps, floors, 
-                 iborindex, curve, dateparams)
+                 iborIndex.params, discountCurve.flat, dateparams)
 
 
-# one flat, another one is constructe
-
-curve <- length2
-termstructure <- length3
-iborindex <- list(type="USDLibor", length=6, 
+## discount curve is constructed from market quotes
+## and a flat libor curve
+discountCurve <- DiscountCurve(params, tsQuotes)
+termstructure <- DiscountCurve(params, list(flat=0.03))
+iborIndex.params <- list(type="USDLibor", length=6, 
                   inTermOf="Month", term = termstructure)                      
 FloatingRateBond(bond, gearings, spreads, caps, floors, 
-                 iborindex, curve, dateparams)
-
-
-curve <- length3
-termstructure <- length2
-iborindex <- list(type="USDLibor", length=6, 
-                  inTermOf="Month", term = termstructure)                      
-FloatingRateBond(bond, gearings, spreads, caps, floors, 
-                 iborindex, curve, dateparams)
-
-
-# both curves are constructed
-
-curve <- length3
-termstructure <- length3
-iborindex <- list(type="USDLibor", length=6, 
-                  inTermOf="Month", term = termstructure)                      
-FloatingRateBond(bond, gearings, spreads, caps, floors, 
-                 iborindex, curve, dateparams)
-
-
-curve2 <- DiscountCurve(params, tsQuotes, times)
-index2 <- DiscountCurve(params, tsQuotes, times)
-ibor <- list(type="USDLibor", length=6, 
-             inTermOf="Month", term = index2)
-dateparams <- list(settlementDays=1, calendar="us", dayCounter = "Actual360", 
-                   period="Semiannual", 
-                   businessDayConvention = "Following", 
-                   terminationDateConvention= "Following",
-                   dateGeneration= "Forward", 
-                   endOfMonth=0, fixingDays = 1)
-FloatingRateBond(bond, gearings, spreads, caps, floors,
-                  ibor, curve2, dateparams)
+                 iborIndex.params, discountCurve, dateparams)
 
 #example using default values
-FloatingRateBond(bond=bond, index=ibor, curve=curve2)
-
+FloatingRateBond(bond=bond, index=iborIndex.params, curve=discountCurve)
 
 }
 \keyword{misc}
