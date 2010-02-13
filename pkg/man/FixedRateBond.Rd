@@ -103,24 +103,29 @@
 
 
 \examples{
-
-bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
-             maturityDate=as.Date("2008-11-30"), redemption=100, 
+#Simple call with a flat curve
+bond <- list(faceAmount=100,
+             issueDate=as.Date("2004-11-30"),
+             maturityDate=as.Date("2008-11-30"),
+             redemption=100, 
              effectiveDate=as.Date("2004-11-30"))
-dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
+dateparams <- list(settlementDays=1,
+                   calendar="us", dayCounter = 'Thirty360', period=2, 
                    businessDayConvention = 4, terminationDateConvention=4,
                    dateGeneration=1, endOfMonth=1)
-curve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
-rates <- c(0.02875)
+coupon.rate <- c(0.02875)
                        
-FixedRateBond(bond, rates, curve, dateparams)
-
 params <- list(tradeDate=as.Date('2002-2-15'),
                settleDate=as.Date('2002-2-19'),
                dt=.25,
                interpWhat="discount",
                interpHow="loglinear")
 
+discountCurve.flat <- DiscountCurve(params, list(flat=0.05))
+FixedRateBond(bond, coupon.rate, discountCurve.flat, dateparams)
+
+
+#Same bond with a discount curve constructed from market quotes
 tsQuotes <- list(d1w  =0.0382,
                  d1m  =0.0372,
                  fut1=96.2875,
@@ -136,27 +141,20 @@ tsQuotes <- list(d1w  =0.0382,
                  s10y =0.05165,
                  s15y =0.055175)
 
-times <- seq(0,10,.1)
-curve <- list(params, tsQuotes, times)
-FixedRateBond(bond, rates, curve, dateparams)
-
-curve <- DiscountCurve(params, tsQuotes, times)
-dateparams <- list(settlementDays=1, calendar="us", dayCounter = "Thirty360", 
-                   period="Annual", businessDayConvention = "Preceding", 
-                   terminationDateConvention="Preceding",
-                   dateGeneration="Forward", endOfMonth=1)
-FixedRateBond(bond, rates, curve, dateparams)
+discountCurve <- DiscountCurve(params, tsQuotes)
+FixedRateBond(bond, coupon.rate, discountCurve, dateparams)
 
 
 #example with default dateparams
-FixedRateBond(bond, rates, curve)
+FixedRateBond(bond, coupon.rate, discountCurve)
 
 ##exampe with defaul bond parameter and dateparams
 bond <- list(issueDate=as.Date("2004-11-30"),
-maturityDate=as.Date("2008-11-30"))
-dateparams <- list(calendar="us", dayCounter = "ActualActual", 
+             maturityDate=as.Date("2008-11-30"))
+dateparams <- list(calendar="us",
+                   dayCounter = "ActualActual", 
                    period="Annual")
-FixedRateBond(bond, rates, curve, dateparams)
+FixedRateBond(bond, coupon.rate, discountCurve, dateparams)
 
 }
 \keyword{misc}

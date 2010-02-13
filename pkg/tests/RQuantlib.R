@@ -92,17 +92,27 @@ FixedRateBondYield(,99.282, 100000, as.Date("2004-11-30"), as.Date("2008-11-30")
 FixedRateBondPriceByYield(,0.0307, 100000, as.Date("2004-11-30"), as.Date("2008-11-30"), 3, , c(0.02875), , , , ,as.Date("2004-11-30"))
 
 ## bond.cpp
-bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
-             maturityDate=as.Date("2008-11-30"), redemption=100, 
+
+#Simple call with a flat curve
+bond <- list(faceAmount=100,
+             issueDate=as.Date("2004-11-30"),
+             maturityDate=as.Date("2008-11-30"),
+             redemption=100, 
              effectiveDate=as.Date("2004-11-30"))
-dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
+dateparams <- list(settlementDays=1,
+                   calendar="us", dayCounter = 'Thirty360', period=2, 
                    businessDayConvention = 4, terminationDateConvention=4,
                    dateGeneration=1, endOfMonth=1)
-curve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
-rates <- c(0.02875)
+coupon.rate <- c(0.02875)
                        
-print(FixedRateBond(bond, rates, curve, dateparams))
+params <- list(tradeDate=as.Date('2002-2-15'),
+               settleDate=as.Date('2002-2-19'),
+               dt=.25,
+               interpWhat="discount",
+               interpHow="loglinear")
 
+discountCurve.flat <- DiscountCurve(params, list(flat=0.05))
+FixedRateBond(bond, coupon.rate, discountCurve.flat, dateparams)
 ## bond.cpp FloatingRateBond, following test-suite/bonds.cpp
 bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
              maturityDate=as.Date("2008-11-30"), redemption=100, 

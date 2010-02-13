@@ -315,52 +315,9 @@ SEXP FixedBond(SEXP bondparam, SEXP ratesVec,
     return rl;
 }
 
-RcppExport SEXP QL_FixedRateBond1(SEXP bondparam, SEXP ratesVec,
-                                  SEXP discountCurve, SEXP dateparams){
-    SEXP rl = R_NilValue;
-    char *exceptionMesg = NULL;
-    try{
-        RcppParams curve(discountCurve);
-        Rate riskFreeRate = curve.getDoubleValue("riskFreeRate");
-        RcppDate today_Date = curve.getDateValue("todayDate");       
-        QuantLib::Date today(dateFromR(today_Date));
-        
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
-        Settings::instance().evaluationDate() = today;
-        Handle<YieldTermStructure> discountCurve(flatRate(today,rRate,Actual360()));
 
-        rl = FixedBond(bondparam, ratesVec, discountCurve, dateparams);
-    } catch(std::exception& ex) {
-        exceptionMesg = copyMessageToR(ex.what());
-    } catch(...) {
-        exceptionMesg = copyMessageToR("unknown reason");
-    }    
-    if(exceptionMesg != NULL)
-        Rf_error(exceptionMesg);
-    
-    return rl;
-}
 
-RcppExport SEXP QL_FixedRateBond2(SEXP bondparam, SEXP ratesVec, 
-                                  SEXP params, SEXP tsQuotes, 
-                                  SEXP times, SEXP dateparams){
-    SEXP rl = R_NilValue;
-    char *exceptionMesg = NULL;
-    try{
-        
-        Handle<YieldTermStructure> discountCurve(
-                                                 buildTermStructure(params, tsQuotes, times));
-        
-        rl = FixedBond(bondparam, ratesVec, discountCurve, dateparams);
-    } catch(std::exception& ex) {
-        exceptionMesg = copyMessageToR(ex.what());
-    } catch(...) {
-        exceptionMesg = copyMessageToR("unknown reason");
-    }    
-    if(exceptionMesg != NULL)
-        Rf_error(exceptionMesg);   
-    return rl;
-}
+
     
 
 RcppExport  SEXP QL_FixedRateBondYield(SEXP optionParameters, SEXP ratesVec) {

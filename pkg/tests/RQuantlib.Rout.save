@@ -182,38 +182,44 @@ attr(,"class")
 [1] "FixedRateBondPriceByYield"
 > 
 > ## bond.cpp
-> bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
-+              maturityDate=as.Date("2008-11-30"), redemption=100, 
+> 
+> #Simple call with a flat curve
+> bond <- list(faceAmount=100,
++              issueDate=as.Date("2004-11-30"),
++              maturityDate=as.Date("2008-11-30"),
++              redemption=100, 
 +              effectiveDate=as.Date("2004-11-30"))
-> dateparams <- list(settlementDays=1, calendar="us", dayCounter = 1, period=3, 
+> dateparams <- list(settlementDays=1,
++                    calendar="us", dayCounter = 'Thirty360', period=2, 
 +                    businessDayConvention = 4, terminationDateConvention=4,
 +                    dateGeneration=1, endOfMonth=1)
-> curve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
-> rates <- c(0.02875)
+> coupon.rate <- c(0.02875)
 >                        
-> print(FixedRateBond(bond, rates, curve, dateparams))
-Concise summary of valuation for FixedRateBond 
- Net present value :  99.10206 
-       clean price :  99.317 
-       dirty price :  99.317 
-    accrued coupon :  0 
-             yield :  0.030455 
-        cash flows : 
-       Date    Amount
- 2005-03-31   0.95308
- 2005-07-29   0.94521
- 2005-11-30   0.97671
- 2006-03-31   0.95308
- 2006-07-31   0.96096
- 2006-11-30   0.96096
- 2007-03-30   0.94521
- 2007-07-31   0.96884
- 2007-11-30   0.96096
- 2008-03-31   0.96096
- 2008-07-31   0.96096
- 2008-11-30   0.96096
- 2008-11-30 100.00000
+> params <- list(tradeDate=as.Date('2002-2-15'),
++                settleDate=as.Date('2002-2-19'),
++                dt=.25,
++                interpWhat="discount",
++                interpHow="loglinear")
 > 
+> discountCurve.flat <- DiscountCurve(params, list(flat=0.05))
+> FixedRateBond(bond, coupon.rate, discountCurve.flat, dateparams)
+Concise summary of valuation for FixedRateBond 
+ Net present value :  80.2129 
+       clean price :  92.167 
+       dirty price :  92.167 
+    accrued coupon :  0 
+             yield :  0.050517 
+        cash flows : 
+       Date   Amount
+ 2005-05-31   1.4375
+ 2005-11-30   1.4375
+ 2006-05-31   1.4375
+ 2006-11-30   1.4375
+ 2007-05-31   1.4375
+ 2007-11-30   1.4375
+ 2008-05-30   1.4375
+ 2008-11-30   1.4375
+ 2008-11-30 100.0000
 > ## bond.cpp FloatingRateBond, following test-suite/bonds.cpp
 > bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
 +              maturityDate=as.Date("2008-11-30"), redemption=100, 

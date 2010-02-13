@@ -152,26 +152,12 @@ FixedRateBond.default <- function(bond,
     if (is.null(dateparams$fixingDays)){dateparams$fixingDays=2}
     
     dateparams <- matchParams(dateparams)
-    if (class(discountCurve)=="DiscountCurve"){
-         val <- .Call("QL_FixedRateWithRebuiltCurve",
-                   bond, rates, c(discountCurve$table$date), 
-                  discountCurve$table$zeroRates, dateparams,
-                  PACKAGE="RQuantLib")         
-    }
-    else {
-         if (length(discountCurve)==2){
-             val <- .Call("QL_FixedRateBond1", 
-                     bond, rates, discountCurve, dateparams,
-                     PACKAGE="RQuantLib")
-         }
-         if (length(discountCurve)==3){
-             val <- .Call("QL_FixedRateBond2", 
-                    bond, rates, discountCurve[[1]], 
-                    discountCurve[[2]], discountCurve[[3]],
-                    dateparams,
-                    PACKAGE="RQuantLib")      
-         }
-    }
+    
+    val <- .Call("QL_FixedRateWithRebuiltCurve",
+                 bond, rates, c(discountCurve$table$date), 
+                 discountCurve$table$zeroRates, dateparams,
+                 PACKAGE="RQuantLib")  
+
     val$cashFlow <- as.data.frame(val$cashFlow)
     class(val) <- c("FixedRateBond", "Bond")    
     val
