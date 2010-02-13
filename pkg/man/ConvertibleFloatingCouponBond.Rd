@@ -103,11 +103,10 @@ params <- list(tradeDate=Sys.Date()-2,
                dt=.25,
                interpWhat="discount",
                interpHow="loglinear")
-times <- seq(0,10,.1)
 
 
-dividendYield <- DiscountCurve(params, list(flat=0.02), times)
-riskFreeRate <- DiscountCurve(params, list(flat=0.05), times)
+dividendYield <- DiscountCurve(params, list(flat=0.02))
+riskFreeRate <- DiscountCurve(params, list(flat=0.05))
 
 dividendSchedule <- data.frame(Type=character(0), Amount=numeric(0),
                             Rate = numeric(0), Date = as.Date(character(0)))
@@ -118,46 +117,48 @@ process <- list(underlying=50, divYield = dividendYield,
                 rff = riskFreeRate, volatility=0.15)
 
 today <- Sys.Date()
-bondparams <- list(exercise="am", faceAmount=100, divSch = dividendSchedule, 
-                   callSch = callabilitySchedule, redemption=100, 
-                   creditSpread=0.005, conversionRatio = 0.0000000001, 
+bondparams <- list(exercise="am", faceAmount=100,
+                   divSch = dividendSchedule, 
+                   callSch = callabilitySchedule,
+                   redemption=100,
+                   creditSpread=0.005,
+                   conversionRatio = 0.0000000001, 
                    issueDate=as.Date(today+2), 
                    maturityDate=as.Date(today+3650))
 dateparams <- list(settlementDays=3, 
-                   dayCounter="Actual360", 
-                   period = "Once", calendar = "us", 
-                   businessDayConvention="Following"
-                   )
+                   dayCounter="ActualActual", 
+                   period = "Semiannual", calendar = "us", 
+                   businessDayConvention="Following")
 
 lengths <- c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30)
 coupons <- c( 0.0200, 0.0225, 0.0250, 0.0275, 0.0300,
               0.0325, 0.0350, 0.0375, 0.0400, 0.0425,
               0.0450, 0.0475, 0.0500, 0.0525, 0.0550 )
+marketQuotes <- rep(100, length(lengths))
 curvedateparams <- list(settlementDays=0, period="Annual", 
-                   dayCounter="SimpleDayCounter", 
+                   dayCounter="ActualActual", 
                   businessDayConvention ="Unadjusted")
 curveparams <- list(method="ExponentialSplinesFitting", 
                     origDate = Sys.Date())
-curve <- FittedBondCurve(curveparams, lengths, coupons, curvedateparams)
+curve <- FittedBondCurve(curveparams, lengths, coupons, marketQuotes, curvedateparams)
 iborindex <- list(type="USDLibor", length=6, 
                   inTermOf="Month", term=curve)   
 spreads <- c()
-ConvertibleFloatingCouponBond(bondparams, iborindex,spreads, process, dateparams)
+#ConvertibleFloatingCouponBond(bondparams, iborindex, spreads, process, dateparams)
 
 
 #example using default values
-ConvertibleFloatingCouponBond(bondparams, iborindex,spreads, process)
+#ConvertibleFloatingCouponBond(bondparams, iborindex,spreads, process)
 
 dateparams <- list(settlementDays=3,                    
-                   period = "Once", 
-                   businessDayConvention="Unadjusted"
-                   )
+                   period = "Semiannual", 
+                   businessDayConvention="Unadjusted")
 
 bondparams <- list(                  
                    creditSpread=0.005, conversionRatio = 0.0000000001, 
                    issueDate=as.Date(today+2), 
                    maturityDate=as.Date(today+3650))
-ConvertibleFloatingCouponBond(bondparams, iborindex,
-spreads, process, dateparams)
+#ConvertibleFloatingCouponBond(bondparams, iborindex,
+#spreads, process, dateparams)
 
 }

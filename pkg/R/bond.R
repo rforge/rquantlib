@@ -27,7 +27,9 @@ ZeroCouponBond <- function(bond, discountCurve, dateparams ) {
 
 ZeroCouponBond.default <- function(bond,
                                    discountCurve,
-                                   dateparams=list(settlementDays=1,
+                                   dateparams=list(
+                                     refDate=bond$issueDate,
+                                     settlementDays=1,
                                      calendar='us',
                                      businessDayConvention='Following')) {
     val <- 0 
@@ -38,29 +40,16 @@ ZeroCouponBond.default <- function(bond,
     if (is.null(dateparams$settlementDays)) {dateparams$settlementDays=1}
     if (is.null(dateparams$calendar)) {dateparams$calendar='us'}
     if (is.null(dateparams$businessDayConvention)) {dateparams$businessDayConvention='Following'}    
-    
+    if (is.null(dateparams$refDate)) {dateparams$refDate=bond$issueDate}
     dateparams <- matchParams(dateparams)
 
-    if (class(discountCurve)=="DiscountCurve"){
-        val <- .Call("QL_ZeroBondWithRebuiltCurve",
-                  bond, c(discountCurve$table$date), 
-                  discountCurve$table$zeroRates, dateparams,
-                  PACKAGE="RQuantLib")
-    }
-    else{
-        if (length(discountCurve)==2){
-            val <- .Call("QL_ZBond1", 
-                     bond, discountCurve, dateparams,
-                     PACKAGE="RQuantLib")
-        }
-        if (length(discountCurve)==3){
-             val <- .Call("QL_ZBond2", 
-                    bond, discountCurve[[1]], 
-                    discountCurve[[2]], discountCurve[[3]],
-                    dateparams,
-                    PACKAGE="RQuantLib")      
-        }
-    }
+    
+    val <- .Call("QL_ZeroBondWithRebuiltCurve",
+                 bond, c(discountCurve$table$date), 
+                 discountCurve$table$zeroRates, dateparams,
+                 PACKAGE="RQuantLib")
+    
+
     val$cashFlow <- as.data.frame(val$cashFlow)
     class(val) <- c("ZeroCouponBond", "Bond")    
     val
@@ -130,6 +119,7 @@ FixedRateBond.default <- function(bond,
                                   rates,
                                   discountCurve,
                                   dateparams=list(
+                                    
                                     settlementDays=1,
                                     calendar='us',
                                     businessDayConvention='Following',
@@ -267,6 +257,7 @@ FloatingRateBond.default <- function(bond,
                                      index,
                                      curve,
                                      dateparams=list(
+                                       refDate=bond$issueDate-2,
                                        settlementDays=1,
                                        calendar='us',
                                        businessDayConvention='Following',
@@ -297,6 +288,7 @@ FloatingRateBond.default <- function(bond,
     if (is.null(dateparams$dateGeneration)){dateparams$dateGeneration='Backward'}        
     if (is.null(dateparams$endOfMonth)){dateparams$endOfMonth=0}        
     if (is.null(dateparams$fixingDays)){dateparams$fixingDays=2}
+    if (is.null(dateparams$refDate)) {dateparams$refDate=bond$issueDate-2}
     
     dateparams <- matchParams(dateparams)
     if (class(curve)=="DiscountCurve"){
@@ -581,15 +573,23 @@ CallableBond.default <- function(bondparams, hullWhite,
     val   
 }
 
-FittedBondCurve <- function(curveparams, lengths, coupons, dateparams){
+FittedBondCurve <- function(curveparams,
+                            lengths,
+                            coupons,
+                            marketQuotes,
+                            dateparams){
     UseMethod("FittedBondCurve")
 }
 
-FittedBondCurve.default <- function(curveparams, lengths, coupons, dateparams){
+FittedBondCurve.default <- function(curveparams,
+                                    lengths,
+                                    coupons,
+                                    marketQuotes,
+                                    dateparams){
     val <- 0
     dateparams <- matchParams(dateparams)
     val <- .Call("QL_FittedBondCurve", curveparams,
-                 lengths, coupons, dateparams, PACKAGE="RQuantLib")
+                 lengths, coupons, marketQuotes, dateparams, PACKAGE="RQuantLib")
 
     class(val) <- c("DiscountCurve")
     val$table <- as.data.frame(val$table)

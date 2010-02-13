@@ -90,22 +90,23 @@
 
 
 \examples{
-# simple call with unnamed parameters
-bond <- list(faceAmount=100, issueDate=as.Date("2004-11-30"),
+# Simple call with all parameter and a flat curve
+bond <- list(faceAmount=100,issueDate=as.Date("2004-11-30"),
              maturityDate=as.Date("2008-11-30"), redemption=100 )
 
-dateparams <-list(settlementDays=1, calendar="us", businessDayConvention=4)
+dateparams <-list(settlementDays=1, calendar="us", businessDayConvention='Unadjusted')
 
-discountCurve <- list(todayDate=as.Date("2004-11-04"), riskFreeRate=0.03)
 
-ZeroCouponBond(bond, discountCurve, dateparams)
+discountCurve.param <- list(tradeDate=as.Date('2002-2-15'),
+                           settleDate=as.Date('2002-2-15'),
+                           dt=0.25,
+                           interpWhat='discount', interpHow='loglinear')
+discountCurve.flat <- DiscountCurve(discountCurve.param, list(flat=0.05))
 
-params <- list(tradeDate=as.Date('2002-2-15'),
-               settleDate=as.Date('2002-2-19'),
-               dt=.25,
-               interpWhat="discount",
-               interpHow="loglinear")
+ZeroCouponBond(bond, discountCurve.flat, dateparams)
 
+
+# The same bond with a discount curve constructed from market quotes
 tsQuotes <- list(d1w  =0.0382,
                  d1m  =0.0372,
                  fut1=96.2875,
@@ -120,34 +121,17 @@ tsQuotes <- list(d1w  =0.0382,
                  s5y  =0.0443,
                  s10y =0.05165,
                  s15y =0.055175)
-
-times <- seq(0,10,.1)
-discountCurve <- list(params, tsQuotes, times)
-
-# depreciated
+discountCurve <- DiscountCurve(discountCurve.param, tsQuotes)
 ZeroCouponBond(bond, discountCurve, dateparams)
 
-# construct a curve
-curves <- DiscountCurve(params, tsQuotes, times)
-ZeroCouponBond(bond, curves, dateparams)
-
-#construct a flat curve
-flatquote <- list(flat=0.04)
-flatCurve <- DiscountCurve(params, flatquote, times)
-dateparams <-list(settlementDays=1, calendar="us", 
-                  businessDayConvention="Following")
-
-ZeroCouponBond(bond, flatCurve, dateparams)
 
 #examples with default arguments
-curve <- DiscountCurve(params, tsQuotes)
-ZeroCouponBond(bond, curve, dateparams)
-ZeroCouponBond(bond, curve)
+ZeroCouponBond(bond, discountCurve)
 
 bond <- list(issueDate=as.Date("2004-11-30"),
-maturityDate=as.Date("2008-11-30"))
+             maturityDate=as.Date("2008-11-30"))
 dateparams <-list(settlementDays=1)
-ZeroCouponBond(bond, curve, dateparams)
+ZeroCouponBond(bond, discountCurve, dateparams)
 
 }
 \keyword{misc}

@@ -140,8 +140,8 @@ SEXP ZeroBond(SEXP bondparam,
         double settlementDays = misc.getDoubleValue("settlementDays");
         std::string cal = misc.getStringValue("calendar");
         double businessDayConvention = misc.getDoubleValue("businessDayConvention");
-      
-
+        QuantLib::Date refDate(dateFromR(misc.getDateValue("refDate")));      
+        Settings::instance().evaluationDate() = refDate;                               
         
         /*
           test-suite/bonds.cpp
@@ -208,50 +208,8 @@ SEXP ZeroBond(SEXP bondparam,
     return rl;
 }
 
-RcppExport SEXP QL_ZBond1(SEXP bondparam, SEXP discountCurve, SEXP dateparams){
-    SEXP rl = R_NilValue;
-    char *exceptionMesg = NULL;
-    try{
-        RcppParams curve(discountCurve);
-        Rate riskFreeRate = curve.getDoubleValue("riskFreeRate");
-        RcppDate today_Date = curve.getDateValue("todayDate");       
-        QuantLib::Date today(dateFromR(today_Date));
 
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(riskFreeRate));
-        Settings::instance().evaluationDate() = today;
-        Handle<YieldTermStructure> discountCurve(flatRate(today,rRate,Actual360()));
 
-        rl = ZeroBond(bondparam, discountCurve, dateparams);
-    } catch(std::exception& ex) {
-        exceptionMesg = copyMessageToR(ex.what());
-    } catch(...) {
-        exceptionMesg = copyMessageToR("unknown reason");
-    }    
-    if(exceptionMesg != NULL)
-        Rf_error(exceptionMesg);
-    
-    return rl;
-}
-RcppExport SEXP QL_ZBond2(SEXP bondparam, SEXP params, 
-                          SEXP tsQuotes, SEXP times,
-                          SEXP dateparams){
-    SEXP rl = R_NilValue;
-    char *exceptionMesg = NULL;
-    try{
-        
-        Handle<YieldTermStructure> discountCurve(
-                                 buildTermStructure(params, tsQuotes, times));
-      
-        rl = ZeroBond(bondparam, discountCurve, dateparams);
-    } catch(std::exception& ex) {
-        exceptionMesg = copyMessageToR(ex.what());
-    } catch(...) {
-        exceptionMesg = copyMessageToR("unknown reason");
-    }    
-    if(exceptionMesg != NULL)
-        Rf_error(exceptionMesg);   
-    return rl;
-}
 
 
 
@@ -282,6 +240,8 @@ SEXP FixedBond(SEXP bondparam, SEXP ratesVec,
         double terminationDateConvention = misc.getDoubleValue("terminationDateConvention");
         double dateGeneration = misc.getDoubleValue("dateGeneration");
         double endOfMonthRule = misc.getDoubleValue("endOfMonth");
+
+
 
         //extract coupon rates vector
         RcppVector<double> RcppVec(ratesVec); 
@@ -573,6 +533,7 @@ SEXP FloatingBond(SEXP bondparam, SEXP gearingsVec, SEXP spreadsVec,
         double endOfMonthRule = misc.getDoubleValue("endOfMonth");
         double fixingDays = misc.getDoubleValue("fixingDays");
 
+        
 
         //build schedule
         BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
@@ -809,7 +770,8 @@ RcppExport SEXP QL_FloatingWithRebuiltCurve(SEXP bond, SEXP gearings,
    SEXP rl=R_NilValue;
    char* exceptionMesg=NULL;
    try {
-       
+
+               
        Handle<YieldTermStructure> ibor_curve(rebuildCurveFromZeroRates(iborDateSexp,
                                                                    iborzeroSexp));       
        Handle<YieldTermStructure> curve(rebuildCurveFromZeroRates(dateSexp,
@@ -854,8 +816,8 @@ RcppExport SEXP QL_FixedRateWithRebuiltCurve(SEXP bondparam, SEXP ratesVec,
 }
 
 RcppExport SEXP QL_ZeroBondWithRebuiltCurve(SEXP bond,
-                                       SEXP dateSexp, SEXP zeroSexp,
-                                       SEXP dateparams){
+                                            SEXP dateSexp, SEXP zeroSexp,
+                                            SEXP dateparams){
     SEXP rl=R_NilValue;
     char* exceptionMesg=NULL;
     try{
@@ -1755,17 +1717,21 @@ RcppExport SEXP QL_CMSBond(SEXP bondparams, SEXP iborIndex, SEXP swapIndexParam,
 }
 */
 RcppExport SEXP QL_FittedBondCurve(SEXP curveparams, SEXP lengthVec,
-                                   SEXP couponVec,
+                                   SEXP couponVec,SEXP marketVec,
                                    SEXP dateparams){
     SEXP rl=R_NilValue;
     char* exceptionMesg=NULL;
     try {
 
-        //extract length and coupon vector
+
+        //extract length, coupon and market prices vector
         RcppVector<int> RcppVec(lengthVec); 
         std::vector<int> lengths(RcppVec.stlVector());
         RcppVector<double> RcppVec1(couponVec);
         std::vector<double> coupons(RcppVec1.stlVector());
+        RcppVector<double> RcppVec2(marketVec);
+        std::vector<double> marketQuotes(RcppVec2.stlVector());
+
 
         RcppParams misc(dateparams);      
         double settlementDays = misc.getDoubleValue("settlementDays");
@@ -1777,18 +1743,13 @@ RcppExport SEXP QL_FittedBondCurve(SEXP curveparams, SEXP lengthVec,
         std::string method = curvepam.getStringValue("method");
         RcppDate oDate = curvepam.getDateValue("origDate");
         QuantLib::Date origDate(dateFromR(oDate));
-
+        Settings::instance().evaluationDate() = origDate;
 
         const Size numberOfBonds = lengths.size();
-        Real cleanPrice[numberOfBonds];
-        
-        for (Size i=0; i<=numberOfBonds; i++) {
-            cleanPrice[i]=100.0;
-        }
 
         std::vector< boost::shared_ptr<SimpleQuote> > quote;
-        for (Size i=0; i<numberOfBonds; i++) {
-            boost::shared_ptr<SimpleQuote> cp(new SimpleQuote(cleanPrice[i]));
+        for (Size i=0; i<numberOfBonds; i++) {            
+            boost::shared_ptr<SimpleQuote> cp(new SimpleQuote(marketQuotes[i]));
             quote.push_back(cp);
         }
 
@@ -1797,20 +1758,20 @@ RcppExport SEXP QL_FittedBondCurve(SEXP curveparams, SEXP lengthVec,
             quoteHandle[i].linkTo(quote[i]);
         }
 
-        Calendar calendar = NullCalendar();
+        Calendar calendar =  UnitedStates(UnitedStates::GovernmentBond);
         BusinessDayConvention bdc = getBusinessDayConvention(businessDayConvention);
         DayCounter dc = getDayCounter(dayCounter);
         Frequency freq = getFrequency(frequency);
         Real redemption = 100;
 
         std::vector<boost::shared_ptr<FixedRateBondHelper> > instrumentsA;
-
+        
         for (Size j=0; j<lengths.size(); j++) {
 
             Date dated = origDate;
             Date issue = origDate;
             Date maturity = calendar.advance(issue, lengths[j], Years);
-
+            
             Schedule schedule(dated, maturity, Period(freq), calendar,
                               bdc, bdc,
                               DateGeneration::Backward, false);
@@ -1876,7 +1837,7 @@ RcppExport SEXP QL_FittedBondCurve(SEXP curveparams, SEXP lengthVec,
             curve = ts3;
         }
         
-
+        
 
 	// Return discount, forward rate, and zero coupon curves
         int numCol = 3;
@@ -1887,21 +1848,24 @@ RcppExport SEXP QL_FittedBondCurve(SEXP curveparams, SEXP lengthVec,
 
 
         RcppFrame frame(colNames);
-        Date current = origDate;
-        int n = curve->maxDate() - origDate;
+        Date current = curve->referenceDate();;
+        int n = curve->maxDate() - curve->referenceDate();
+        std::cout << n << std::endl;
         for (int i = 0; i<n;i++){
-        std::vector<ColDatum> row(numCol);
+            std::vector<ColDatum> row(numCol);
             Date d = current; 
             row[0].setDateValue(RcppDate(d.month(),
                                          d.dayOfMonth(),
                                          d.year()));
             
-            double zrate = curve->zeroRate(current, ActualActual(),
-                                            Continuous);
+            double zrate = curve->zeroRate(current, 
+                                           ActualActual(),
+                                           Continuous);
             row[1].setDoubleValue(zrate);                        
-
+            
             double discount = curve->discount(current);
             row[2].setDoubleValue(discount);
+
             frame.addRow(row);
             current++;
         }
