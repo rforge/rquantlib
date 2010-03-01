@@ -93,7 +93,7 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Quick overview}
 	\begin{itemize}
-		\item Fixed Income functions are added during the summer of 2009 as part of the Google Summer of 	Code program.
+		\item Fixed Income functions are added during the summer of 2009 as part of the Google Summer of 	Code program. \pause
 		\item The functions aim to support two primary tasks: pricing and curve fitting. 		
 	\end{itemize}
 \end{frame}
@@ -102,13 +102,13 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Primary tasks: Curve fitting}
 	\begin{itemize}
-		\item Curve fitting
+		\item Curve fitting functions
 			\begin{itemize}
 				\item Curve fitting functions return a DiscountCurve object that contains a two column dates/zeroRates data frame.
 				\item The returned DiscountCurve object are used as inputs for pricing functions. 
 				\item Currently, there are two curve fitting functions
 					\begin{itemize}
-						\item DiscountCurve - constructs the spot term structure of interest rates based on input market data including the settltment date, deposit rates, future prices, FRA rates or swap rates in various combination.
+						\item DiscountCurve - constructs the spot term structure of interest rates based on input market data including the settltment date, deposit rates, future prices, FRA rates or swap rates in various combination. \pause
 						\item FittedBondCurve - fits a term structure to a set of bonds using three different fitting methods (ExponentialSplinesFitting, SimplePolynomialFitting, NelsonSiegelFitting).
 					\end{itemize}
 			\end{itemize}
@@ -117,9 +117,10 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Primary tasks: Pricing}
+	\framesubtitle{Primary tasks: Bond pricing}
 	\begin{itemize}
-		\item Pricing
+		\item Bond pricing functions return clean price, dirty price, NPV and cash flow of a bond
+		\item Currently, the following bonds are supported
 			\begin{itemize}
 				\item Zero Coupon Bond
 				\item Fixed Rate Bond
@@ -196,8 +197,6 @@ plot(z)
 \begin{frame}[fragile]
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Bond pricing}	
-\begin{columns}[c] % the "c" option specifies center vertical alignment
-\column{.5\textwidth} % column designated by a command
 			\lstset{language=R,basicstyle=\tiny}
 				\begin{lstlisting}
 fixingDays <- 3
@@ -222,20 +221,11 @@ bondDsctTsr <- FittedBondCurve(curveparams,
                                marketQuotes,
                                dateparams)
 \end{lstlisting}
-\column{.5\textwidth}
-
-\lstset{language=C++,basicstyle=\tiny}
-	\begin{lstlisting}
-	
-	\end{lstlisting}
-\end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Bond pricing}	
-\begin{columns}[c] % the "c" option specifies center vertical alignment
-\column{.5\textwidth} % column designated by a command
 			\lstset{language=R,basicstyle=\tiny}
 				\begin{lstlisting}
 #begin to set up swap term structure
@@ -257,35 +247,32 @@ market.quotes <- list(d1w=0.043375,
                       s15y=0.0433)
 depoSwpTsr <- DiscountCurve(swp.tsr.params, market.quotes)
 \end{lstlisting}
-\column{.5\textwidth}
-
-\end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Bond pricing}	
-\begin{columns}[c] % the "c" option specifies center vertical alignment
-\column{.5\textwidth} % column designated by a command
 			\lstset{language=R,basicstyle=\tiny}
 				\begin{lstlisting}
 #Zero-Coupon Bond
 zc.bond.param <- list(maturityDate=as.Date('2013-08-15'), issueDate=as.Date('2003-08-15'), redemption=116.92)
+
 zc.bond.dateparam <- list(refDate=todaysDate, settlementDays=settlementDays, businessDayConvention='Following')
+
 ZeroCouponBond(zc.bond.param, bondDsctTsr, zc.bond.dateparam)
 
 #Fixed-Coupon Bond
 fixed.bond.param <- list(maturityDate=as.Date('2017-05-15'), issueDate=as.Date('2007-05-15'),redemption=100, effectiveDate=as.Date('2007-05-15'))
-fixed.bond.dateparam <- list(settlementDays=settlementDays,                            dayCounter='ActualActual', period='Semiannual',                           businessDayConvention='Unadjusted', terminationDateConvention='Unadjusted', dateGeneration='Backward', endOfMonth=0)
+
+fixed.bond.dateparam <- list(settlementDays=settlementDays, dayCounter='ActualActual', period='Semiannual', businessDayConvention='Unadjusted', terminationDateConvention='Unadjusted', dateGeneration='Backward', endOfMonth=0)
+
 fixed.bond.coupon <- c(0.045)
+
 FixedRateBond(fixed.bond.param,
               fixed.bond.coupon,
               bondDsctTsr,
               fixed.bond.dateparam)
 \end{lstlisting}
-\column{.5\textwidth}
-
-\end{columns}
 \end{frame}
 
 
