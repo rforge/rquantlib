@@ -10,17 +10,22 @@
 \pagecolor{bgcolor}
 \noindent
 \ttfamily
-\hlstd{lengths\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{2}\hlstd{}\hlsym{,}\hlstd{}\hlnum{4}\hlstd{}\hlsym{,}\hlstd{}\hlnum{6}\hlstd{}\hlsym{,}\hlstd{}\hlnum{8}\hlstd{}\hlsym{,}\hlstd{}\hlnum{10}\hlstd{}\hlsym{,}\hlstd{}\hlnum{12}\hlstd{}\hlsym{,}\hlstd{}\hlnum{14}\hlstd{}\hlsym{,}\hlstd{}\hlnum{16}\hlstd{}\hlsym{,}\hlstd{}\hlnum{18}\hlstd{}\hlsym{,}\hlstd{}\hlnum{20}\hlstd{}\hlsym{,}\hlstd{}\hlnum{22}\hlstd{}\hlsym{,}\hlstd{}\hlnum{24}\hlstd{}\hlsym{,}\hlstd{}\hlnum{26}\hlstd{}\hlsym{,}\hlstd{}\hlnum{28}\hlstd{}\hlsym{,}\hlstd{}\hlnum{30}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{coupons\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0.0200}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0225}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0250}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0275}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0300}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.0325}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0350}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0375}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0400}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0425}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.0450}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0475}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0500}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0525}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0550\ }\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{lengths\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{2}\hlstd{}\hlsym{,}\hlstd{}\hlnum{4}\hlstd{}\hlsym{,}\hlstd{}\hlnum{6}\hlstd{}\hlsym{,}\hlstd{}\hlnum{8}\hlstd{}\hlsym{,}\hlstd{}\hlnum{10}\hlstd{}\hlsym{,}\hlstd{}\hlnum{12}\hlstd{}\hlsym{,}\hlstd{}\hlnum{14}\hlstd{}\hlsym{,}\hlstd{}\hlnum{16}\hlstd{}\hlsym{,}\hlstd{}\hlnum{18}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{20}\hlstd{}\hlsym{,}\hlstd{}\hlnum{22}\hlstd{}\hlsym{,}\hlstd{}\hlnum{24}\hlstd{}\hlsym{,}\hlstd{}\hlnum{26}\hlstd{}\hlsym{,}\hlstd{}\hlnum{28}\hlstd{}\hlsym{,}\hlstd{}\hlnum{30}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{coupons\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0.0200}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0225}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0250}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0275}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.0300}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0325}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0350}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0375}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.0400}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0425}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0450}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0475}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.0500}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0525}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0550\ }\hlstd{}\hlsym{)}\hspace*{\fill}\\
 \hlstd{marketQuotes\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rep}\hlstd{}\hlsym{(}\hlstd{}\hlnum{100}\hlstd{}\hlsym{,\ }\hlstd{}\hlkwc{length}\hlstd{}\hlsym{(}\hlstd{lengths}\hlsym{))}\hspace*{\fill}\\
-\hlstd{dateparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{settlementDays}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,\ }\hlstd{period}\hlsym{=}\hlstd{}\hlstr{"Annual"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dayCounter}\hlsym{=}\hlstd{}\hlstr{"ActualActual"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{businessDayConvention\ }\hlsym{=}\hlstd{}\hlstr{"Unadjusted"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{dateparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{settlementDays}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{period}\hlsym{=}\hlstd{}\hlstr{"Annual"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dayCounter}\hlsym{=}\hlstd{}\hlstr{"ActualActual"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{businessDayConvention}\hlsym{=}\hlstd{}\hlstr{"Unadjusted"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
 \hlstd{curveparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{method}\hlsym{=}\hlstd{}\hlstr{"ExponentialSplinesFitting"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{origDate\ }\hlsym{=\ }\hlstd{}\hlkwc{Sys.Date}\hlstd{}\hlsym{())}\hspace*{\fill}\\
-\hlstd{}\hlkwc{curve\ }\hlstd{}\hlsym{$<${-}\ }\hlstd{FittedBondCurve}\hlsym{(}\hlstd{curveparams}\hlsym{,\ }\hlstd{lengths}\hlsym{,\ }\hlstd{coupons}\hlsym{,\ }\hlstd{marketQuotes}\hlsym{,\ }\hlstd{dateparams}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{origDate\ }\hlsym{=\ }\hlstd{}\hlkwc{Sys.Date}\hlstd{}\hlsym{())}\hspace*{\fill}\\
+\hlstd{}\hlkwc{curve\ }\hlstd{}\hlsym{$<${-}\ }\hlstd{FittedBondCurve}\hlsym{(}\hlstd{curveparams}\hlsym{,\ }\hlstd{lengths}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{coupons}\hlsym{,\ }\hlstd{marketQuotes}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dateparams}\hlsym{)}\hspace*{\fill}\\
 \hlstd{}\hlkwc{library}\hlstd{}\hlsym{(}\hlstd{zoo}\hlsym{)}\hspace*{\fill}\\
 \hlstd{z\ }\hlsym{$<${-}\ }\hlstd{zoo}\hlsym{(}\hlstd{}\hlkwc{curve}\hlstd{\$}\hlkwc{table}\hlstd{\$zeroRates}\hlsym{,\ }\hlstd{order.by}\hlsym{=}\hlstd{}\hlkwc{curve}\hlstd{\$}\hlkwc{table}\hlstd{\$}\hlkwc{date}\hlstd{}\hlsym{)}\hspace*{\fill}\\
 \hlstd{}\hlkwc{plot}\hlstd{}\hlsym{(}\hlstd{z}\hlsym{)}\hlstd{}\hspace*{\fill}\\
