@@ -163,6 +163,12 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 \normalfont
 \end{frame}
 
+\begin{frame}
+\begin{center}
+\resizebox{75mm}{!}{\includegraphics{discountCurve.png}}
+\end{center}
+\end{frame}
+
 %\begin{frame}[fragile]
 %	\frametitle{Fixed Income in RQuantLib}
 %	\framesubtitle{Examples: Curve fitting}
@@ -199,6 +205,7 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Curve fitting}
+
 \pagecolor{bgcolor}
 \noindent
 \ttfamily
@@ -218,12 +225,18 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 \hlstd{}\hlkwc{curve\ }\hlstd{}\hlsym{$<${-}\ }\hlstd{FittedBondCurve}\hlsym{(}\hlstd{curveparams}\hlsym{,\ }\hlstd{lengths}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{coupons}\hlsym{,\ }\hlstd{marketQuotes}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dateparams}\hlsym{)}\hspace*{\fill}\\
-\hlstd{}\hlkwc{library}\hlstd{}\hlsym{(}\hlstd{zoo}\hlsym{)}\hspace*{\fill}\\
-\hlstd{z\ }\hlsym{$<${-}\ }\hlstd{zoo}\hlsym{(}\hlstd{}\hlkwc{curve}\hlstd{\$}\hlkwc{table}\hlstd{\$zeroRates}\hlsym{,\ }\hlstd{order.by}\hlsym{=}\hlstd{}\hlkwc{curve}\hlstd{\$}\hlkwc{table}\hlstd{\$}\hlkwc{date}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{}\hlkwc{plot}\hlstd{}\hlsym{(}\hlstd{z}\hlsym{)}\hlstd{}\hspace*{\fill}\\
 \mbox{}
 \normalfont
+\end{frame}
 
+\begin{frame}
+\hlstd{}\hlkwc{library}\hlstd{}\hlsym{(}\hlstd{zoo}\hlsym{)}\hspace*{\fill}\\
+\hlstd{z\ }\hlsym{$<${-}\ }\hlstd{zoo}\hlsym{(}\hlstd{}\hlkwc{curve}\hlstd{\$}\hlkwc{table}\hlstd{\$zeroRates}\hlsym{,\ }\hlstd{order.by}\hlsym{=}\hlstd{}\hlkwc{curve}\hlstd{\$}\hlkwc{table}\hlstd{\$}\hlkwc{date}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlkwc{plot}\hlstd{}\hlsym{(}\hlstd{z, xlab='Date', ylab='Zero Rates')}
+\normalfont
+\begin{center}
+\resizebox{75mm}{!}{\includegraphics{fittedBondCurve.png}}
+\end{center}
 \end{frame}
 
 
@@ -252,6 +265,437 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 %
 %\end{itemize}
 %\end{frame}
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Bond pricing}	
+\pagecolor{bgcolor}
+\tiny
+\noindent
+\ttfamily
+\hlstd{}\hlslc{//\ the\ only\ header\ you\ need\ to\ use\ QuantLib}\hspace*{\fill}\\
+\hlstd{}\hldir{\#include\ $<$ql/quantlib.hpp$>$}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\hldir{\#include\ $<$boost/timer.hpp$>$}\hspace*{\fill}\\
+\hlstd{}\hldir{\#include\ $<$iostream$>$}\hspace*{\fill}\\
+\hlstd{}\hldir{\#include\ $<$iomanip$>$}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\hlkwa{using\ namespace\ }\hlstd{QuantLib}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\hldir{\#if\ defined(QL\textunderscore ENABLE\textunderscore SESSIONS)}\hspace*{\fill}\\
+\hlstd{}\hlkwa{namespace\ }\hlstd{QuantLib\ }\hlsym{\{}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+Integer\ }\hlkwd{sessionId}\hlstd{}\hlsym{()\ \{\ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlsym{;\ \}}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\hlsym{\}}\hspace*{\fill}\\
+\hlstd{}\hldir{\#endif}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\hspace*{\fill}\\
+\hlkwb{int\ }\hlstd{}\hlkwd{main}\hlstd{}\hlsym{(}\hlstd{}\hlkwb{int}\hlstd{}\hlsym{,\ }\hlstd{}\hlkwb{char}\hlstd{}\hlsym{{*}\ {[}{]})\ \{}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ }\hlstd{}\hlkwa{try\ }\hlstd{}\hlsym{\{}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{timer\ timer}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{endl}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlcom{/{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}}\hlstd{\ \ }\hlcom{MARKET\ DATA}\hlstd{\ \ }\hlcom{{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}/}\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Calendar\ calendar\ }\hlsym{=\ }\hlstd{}\hlkwd{TARGET}\hlstd{}\hlsym{();}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Date\ }\hlkwd{settlementDate}\hlstd{}\hlsym{(}\hlstd{}\hlnum{18}\hlstd{}\hlsym{,\ }\hlstd{September}\hlsym{,\ }\hlstd{}\hlnum{2008}\hlstd{}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ must\ be\ a\ business\ day}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{settlementDate\ }\hlsym{=\ }\hlstd{calendar}\hlsym{.}\hlstd{}\hlkwd{adjust}\hlstd{}\hlsym{(}\hlstd{settlementDate}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Integer\ fixingDays\ }\hlsym{=\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Natural\ settlementDays\ }\hlsym{=\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Date\ todaysDate\ }\hlsym{=\ }\hlstd{calendar}\hlsym{.}\hlstd{}\hlkwd{advance}\hlstd{}\hlsym{(}\hlstd{settlementDate}\hlsym{,\ {-}}\hlstd{fixingDays}\hlsym{,\ }\hlstd{Days}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ nothing\ to\ do\ with\ Date::todaysDate}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Settings}\hlsym{::}\hlstd{}\hlkwd{instance}\hlstd{}\hlsym{().}\hlstd{}\hlkwd{evaluationDate}\hlstd{}\hlsym{()\ =\ }\hlstd{todaysDate}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{}\hlstr{"Today:\ "}\hlstd{\ }\hlsym{$<$$<$\ }\hlstd{todaysDate}\hlsym{.}\hlstd{}\hlkwd{weekday}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlsym{$<$$<$\ }\hlstd{}\hlstr{",\ "}\hlstd{\ }\hlsym{$<$$<$\ }\hlstd{todaysDate\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{endl}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{}\hlstr{"Settlement\ date:\ "}\hlstd{\ }\hlsym{$<$$<$\ }\hlstd{settlementDate}\hlsym{.}\hlstd{}\hlkwd{weekday}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlsym{$<$$<$\ }\hlstd{}\hlstr{",\ "}\hlstd{\ }\hlsym{$<$$<$\ }\hlstd{settlementDate\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{endl}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Building\ of\ the\ bonds\ discounting\ yield\ curve}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlcom{/{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}}\hlstd{\ \ }\hlcom{RATE\ HELPERS\ {*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}/}\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ RateHelpers\ are\ built\ from\ the\ above\ quotes\ together\ with}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ other\ instrument\ dependant\ infos.}\hlstd{\ \ }\hlslc{Quotes\ are\ passed\ in}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ relinkable\ handles\ which\ could\ be\ relinked\ to\ some\ other}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ data\ source\ later.}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Common\ data}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{DayCounter\ zcBondsDayCounter\ }\hlsym{=\ }\hlstd{}\hlkwd{Actual365Fixed}\hlstd{}\hlsym{();}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{zc3m}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DepositRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{zc3mRate}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{{*}}\hlstd{Months}\hlsym{,\ }\hlstd{fixingDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{true}\hlstd{}\hlsym{,\ }\hlstd{zcBondsDayCounter}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{zc6m}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DepositRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{zc6mRate}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{6}\hlstd{}\hlsym{{*}}\hlstd{Months}\hlsym{,\ }\hlstd{fixingDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{true}\hlstd{}\hlsym{,\ }\hlstd{zcBondsDayCounter}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{zc1y}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DepositRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{zc1yRate}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{1}\hlstd{}\hlsym{{*}}\hlstd{Years}\hlsym{,\ }\hlstd{fixingDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{true}\hlstd{}\hlsym{,\ }\hlstd{zcBondsDayCounter}\hlsym{));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ setup\ bonds}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Real\ redemption\ }\hlsym{=\ }\hlstd{}\hlnum{100.0}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwb{const\ }\hlstd{Size\ numberOfBonds\ }\hlsym{=\ }\hlstd{}\hlnum{5}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Date\ issueDates}\hlsym{{[}{]}\ =\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlsym{\};}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Date\ maturities}\hlsym{{[}{]}\ =\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{.}\hlstd{}\hlkwd{advance}\hlstd{}\hlsym{(}\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{5}\hlstd{}\hlsym{,\ }\hlstd{Years}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{.}\hlstd{}\hlkwd{advance}\hlstd{}\hlsym{(}\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{6}\hlstd{}\hlsym{,\ }\hlstd{Years}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{.}\hlstd{}\hlkwd{advance}\hlstd{}\hlsym{(}\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{7}\hlstd{}\hlsym{,\ }\hlstd{Years}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{.}\hlstd{}\hlkwd{advance}\hlstd{}\hlsym{(}\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{16}\hlstd{}\hlsym{,\ }\hlstd{Years}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{.}\hlstd{}\hlkwd{advance}\hlstd{}\hlsym{(}\hlstd{todaysDate\ }\hlsym{+\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{48}\hlstd{}\hlsym{,\ }\hlstd{Years}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlsym{\};}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Real\ couponRates}\hlsym{{[}{]}\ =\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.02375}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.04625}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.03125}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.04000}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.04500}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlsym{\};}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{Real\ marketQuotes}\hlsym{{[}{]}\ =\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{100.390625}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{106.21875}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{100.59375}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{101.6875}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{102.140625}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlsym{\};}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{vector}\hlsym{$<$\ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{SimpleQuote}\hlsym{$>$\ $>$\ }\hlstd{quote}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{for\ }\hlstd{}\hlsym{(}\hlstd{Size\ i}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{;\ }\hlstd{i}\hlsym{$<$}\hlstd{numberOfBonds}\hlsym{;\ }\hlstd{i}\hlsym{++)\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{SimpleQuote}\hlsym{$>$\ }\hlstd{}\hlkwd{cp}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{marketQuotes}\hlsym{{[}}\hlstd{i}\hlsym{{]}));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{quote}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{cp}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlsym{\}}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{RelinkableHandle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{quoteHandle}\hlsym{{[}}\hlstd{numberOfBonds}\hlsym{{]};}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{for\ }\hlstd{}\hlsym{(}\hlstd{Size\ i}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{;\ }\hlstd{i}\hlsym{$<$}\hlstd{numberOfBonds}\hlsym{;\ }\hlstd{i}\hlsym{++)\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{quoteHandle}\hlsym{{[}}\hlstd{i}\hlsym{{]}.}\hlstd{}\hlkwd{linkTo}\hlstd{}\hlsym{(}\hlstd{quote}\hlsym{{[}}\hlstd{i}\hlsym{{]});}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlsym{\}}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Definition\ of\ the\ rate\ helpers}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{vector}\hlsym{$<$}\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{FixedRateBondHelper}\hlsym{$>$\ $>$\ }\hlstd{bondsHelpers}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{for\ }\hlstd{}\hlsym{(}\hlstd{Size\ i}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{;\ }\hlstd{i}\hlsym{$<$}\hlstd{numberOfBonds}\hlsym{;\ }\hlstd{i}\hlsym{++)\ \{}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Schedule\ }\hlkwd{schedule}\hlstd{}\hlsym{(}\hlstd{issueDates}\hlsym{{[}}\hlstd{i}\hlsym{{]},\ }\hlstd{maturities}\hlsym{{[}}\hlstd{i}\hlsym{{]},\ }\hlstd{}\hlkwd{Period}\hlstd{}\hlsym{(}\hlstd{Semiannual}\hlsym{),\ }\hlstd{}\hlkwd{UnitedStates}\hlstd{}\hlsym{(}\hlstd{UnitedStates}\hlsym{::}\hlstd{GovernmentBond}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Unadjusted}\hlsym{,\ }\hlstd{Unadjusted}\hlsym{,\ }\hlstd{DateGeneration}\hlsym{::}\hlstd{Backward}\hlsym{,\ }\hlstd{}\hlkwa{false}\hlstd{}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{FixedRateBondHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{bondHelper}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{FixedRateBondHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{quoteHandle}\hlsym{{[}}\hlstd{i}\hlsym{{]},}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settlementDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{100.0}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{schedule}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{vector}\hlsym{$<$}\hlstd{Rate}\hlsym{$>$(}\hlstd{}\hlnum{1}\hlstd{}\hlsym{,}\hlstd{couponRates}\hlsym{{[}}\hlstd{i}\hlsym{{]}),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{ActualActual}\hlstd{}\hlsym{(}\hlstd{ActualActual}\hlsym{::}\hlstd{Bond}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Unadjusted}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{redemption}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{issueDates}\hlsym{{[}}\hlstd{i}\hlsym{{]}));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}
+\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{bondsHelpers}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{bondHelper}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlsym{\}}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlcom{/{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}}\hlstd{\ \ }\hlcom{CURVE\ BUILDING\ {*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}/}\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Any\ DayCounter\ would\ be\ fine.}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ ActualActual::ISDA\ ensures\ that\ 30\ years\ is\ 30.0}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{DayCounter\ termStructureDayCounter\ }\hlsym{=}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{ActualActual}\hlstd{}\hlsym{(}\hlstd{ActualActual}\hlsym{::}\hlstd{ISDA}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwb{double\ }\hlstd{tolerance\ }\hlsym{=\ }\hlstd{}\hlnum{1.0e{-}15}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ A\ depo{-}bond\ curve}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{vector}\hlsym{$<$}\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ $>$\ }\hlstd{bondInstruments}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Adding\ the\ Fixed\ rate\ bonds\ to\ the\ curve\ for\ the\ long\ end}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{for\ }\hlstd{}\hlsym{(}\hlstd{Size\ i}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{;\ }\hlstd{i}\hlsym{$<$}\hlstd{numberOfBonds}\hlsym{;\ }\hlstd{i}\hlsym{++)\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{bondInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{bondsHelpers}\hlsym{{[}}\hlstd{i}\hlsym{{]});}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{\}}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{ExponentialSplinesFitting\ }\hlkwd{exponentialSplines}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{true}\hlstd{}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{YieldTermStructure}\hlsym{$>$\ }\hlstd{}\hlkwd{bondDiscountingTermStructure}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{FittedBondDiscountCurve}\hlstd{}\hlsym{(}\hlstd{settlementDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{bondsHelpers}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{termStructureDayCounter}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{exponentialSplines}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{tolerance}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{5000}\hlstd{}\hlsym{));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Building\ of\ the\ Libor\ forecasting\ curve}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ deposits}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ d1wQuote}\hlsym{=}\hlstd{}\hlnum{0.043375}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ d1mQuote}\hlsym{=}\hlstd{}\hlnum{0.031875}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ d3mQuote}\hlsym{=}\hlstd{}\hlnum{0.0320375}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ d6mQuote}\hlsym{=}\hlstd{}\hlnum{0.03385}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ d9mQuote}\hlsym{=}\hlstd{}\hlnum{0.0338125}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ d1yQuote}\hlsym{=}\hlstd{}\hlnum{0.0335125}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ swaps}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ s2yQuote}\hlsym{=}\hlstd{}\hlnum{0.0295}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ s3yQuote}\hlsym{=}\hlstd{}\hlnum{0.0323}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ s5yQuote}\hlsym{=}\hlstd{}\hlnum{0.0359}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ s10yQuote}\hlsym{=}\hlstd{}\hlnum{0.0412}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Rate\ s15yQuote}\hlsym{=}\hlstd{}\hlnum{0.0433}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlcom{/{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}}\hlstd{\ \ \ \ }\hlcom{QUOTES}\hlstd{\ \ \ \ }\hlcom{{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}/}\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ SimpleQuote\ stores\ a\ value\ which\ can\ be\ manually\ changed;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ other\ Quote\ subclasses\ could\ read\ the\ value\ from\ a\ database}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ or\ some\ kind\ of\ data\ feed.}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ deposits}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{d1wRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{d1wQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{d1mRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{d1mQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{d3mRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{d3mQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{d6mRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{d6mQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{d9mRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{d9mQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{d1yRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{d1yQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ swaps}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{s2yRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{s2yQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{s3yRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{s3yQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{s5yRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{s5yQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{s10yRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{s10yQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$\ }\hlstd{}\hlkwd{s15yRate}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SimpleQuote}\hlstd{}\hlsym{(}\hlstd{s15yQuote}\hlsym{));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlcom{/{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}}\hlstd{\ \ }\hlcom{RATE\ HELPERS\ {*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}/}\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ RateHelpers\ are\ built\ from\ the\ above\ quotes\ together\ with}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ other\ instrument\ dependant\ infos.}\hlstd{\ \ }\hlslc{Quotes\ are\ passed\ in}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ relinkable\ handles\ which\ could\ be\ relinked\ to\ some\ other}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ data\ source\ later.}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ deposits}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{DayCounter\ depositDayCounter\ }\hlsym{=\ }\hlstd{}\hlkwd{Actual360}\hlstd{}\hlsym{();}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{d1w}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DepositRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{d1wRate}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{1}\hlstd{}\hlsym{{*}}\hlstd{Weeks}\hlsym{,\ }\hlstd{fixingDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{true}\hlstd{}\hlsym{,\ }\hlstd{depositDayCounter}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{d1m}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DepositRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{d1mRate}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{1}\hlstd{}\hlsym{{*}}\hlstd{Months}\hlsym{,\ }\hlstd{fixingDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{true}\hlstd{}\hlsym{,\ }\hlstd{depositDayCounter}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{d3m}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DepositRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{d3mRate}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{{*}}\hlstd{Months}\hlsym{,\ }\hlstd{fixingDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{true}\hlstd{}\hlsym{,\ }\hlstd{depositDayCounter}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{d6m}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DepositRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{d6mRate}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{6}\hlstd{}\hlsym{{*}}\hlstd{Months}\hlsym{,\ }\hlstd{fixingDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{true}\hlstd{}\hlsym{,\ }\hlstd{depositDayCounter}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{d9m}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DepositRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{d9mRate}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{9}\hlstd{}\hlsym{{*}}\hlstd{Months}\hlsym{,\ }\hlstd{fixingDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{true}\hlstd{}\hlsym{,\ }\hlstd{depositDayCounter}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{d1y}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DepositRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{d1yRate}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{1}\hlstd{}\hlsym{{*}}\hlstd{Years}\hlsym{,\ }\hlstd{fixingDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{true}\hlstd{}\hlsym{,\ }\hlstd{depositDayCounter}\hlsym{));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ setup\ swaps}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Frequency\ swFixedLegFrequency\ }\hlsym{=\ }\hlstd{Annual}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{BusinessDayConvention\ swFixedLegConvention\ }\hlsym{=\ }\hlstd{Unadjusted}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{DayCounter\ swFixedLegDayCounter\ }\hlsym{=\ }\hlstd{}\hlkwd{Thirty360}\hlstd{}\hlsym{(}\hlstd{Thirty360}\hlsym{::}\hlstd{European}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{IborIndex}\hlsym{$>$\ }\hlstd{}\hlkwd{swFloatingLegIndex}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{Euribor6M}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwb{const\ }\hlstd{Period\ }\hlkwd{forwardStart}\hlstd{}\hlsym{(}\hlstd{}\hlnum{1}\hlstd{}\hlsym{{*}}\hlstd{Days}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{s2y}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SwapRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{s2yRate}\hlsym{),\ }\hlstd{}\hlnum{2}\hlstd{}\hlsym{{*}}\hlstd{Years}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{swFixedLegFrequency}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFixedLegConvention}\hlsym{,\ }\hlstd{swFixedLegDayCounter}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFloatingLegIndex}\hlsym{,\ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(),}\hlstd{forwardStart}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{s3y}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SwapRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{s3yRate}\hlsym{),\ }\hlstd{}\hlnum{3}\hlstd{}\hlsym{{*}}\hlstd{Years}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{swFixedLegFrequency}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFixedLegConvention}\hlsym{,\ }\hlstd{swFixedLegDayCounter}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFloatingLegIndex}\hlsym{,\ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(),}\hlstd{forwardStart}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{s5y}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SwapRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{s5yRate}\hlsym{),\ }\hlstd{}\hlnum{5}\hlstd{}\hlsym{{*}}\hlstd{Years}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{swFixedLegFrequency}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFixedLegConvention}\hlsym{,\ }\hlstd{swFixedLegDayCounter}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFloatingLegIndex}\hlsym{,\ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(),}\hlstd{forwardStart}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{s10y}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SwapRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{s10yRate}\hlsym{),\ }\hlstd{}\hlnum{10}\hlstd{}\hlsym{{*}}\hlstd{Years}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{swFixedLegFrequency}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFixedLegConvention}\hlsym{,\ }\hlstd{swFixedLegDayCounter}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFloatingLegIndex}\hlsym{,\ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(),}\hlstd{forwardStart}\hlsym{));}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ }\hlstd{}\hlkwd{s15y}\hlstd{}\hlsym{(}\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{SwapRateHelper}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(}\hlstd{s15yRate}\hlsym{),\ }\hlstd{}\hlnum{15}\hlstd{}\hlsym{{*}}\hlstd{Years}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{calendar}\hlsym{,\ }\hlstd{swFixedLegFrequency}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFixedLegConvention}\hlsym{,\ }\hlstd{swFixedLegDayCounter}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{swFloatingLegIndex}\hlsym{,\ }\hlstd{Handle}\hlsym{$<$}\hlstd{Quote}\hlsym{$>$(),}\hlstd{forwardStart}\hlsym{));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlcom{/{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}}\hlstd{\ \ }\hlcom{CURVE\ BUILDING\ {*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}/}\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Any\ DayCounter\ would\ be\ fine.}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ ActualActual::ISDA\ ensures\ that\ 30\ years\ is\ 30.0}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ A\ depo{-}swap\ curve}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{vector}\hlsym{$<$}\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{RateHelper}\hlsym{$>$\ $>$\ }\hlstd{depoSwapInstruments}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{d1w}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{d1m}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{d3m}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{d6m}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{d9m}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{d1y}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{s2y}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{s3y}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{s5y}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{s10y}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{depoSwapInstruments}\hlsym{.}\hlstd{}\hlkwd{push\textunderscore back}\hlstd{}\hlsym{(}\hlstd{s15y}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{YieldTermStructure}\hlsym{$>$\ }\hlstd{}\hlkwd{depoSwapTermStructure}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{new\ }\hlstd{PiecewiseYieldCurve}\hlsym{$<$}\hlstd{Discount}\hlsym{,}\hlstd{LogLinear}\hlsym{$>$(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settlementDate}\hlsym{,\ }\hlstd{depoSwapInstruments}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{termStructureDayCounter}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{tolerance}\hlsym{));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Term\ structures\ that\ will\ be\ used\ for\ pricing:}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ the\ one\ used\ for\ discounting\ cash\ flows}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{RelinkableHandle}\hlsym{$<$}\hlstd{YieldTermStructure}\hlsym{$>$\ }\hlstd{discountingTermStructure}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ the\ one\ used\ for\ forward\ rate\ forecasting}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{RelinkableHandle}\hlsym{$<$}\hlstd{YieldTermStructure}\hlsym{$>$\ }\hlstd{forecastingTermStructure}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlcom{/{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}\ BONDS\ TO\ BE\ PRICED\ {*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}/}\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Common\ data}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Real\ faceAmount\ }\hlsym{=\ }\hlstd{}\hlnum{100}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Pricing\ engine}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{boost}\hlsym{::}\hlstd{shared\textunderscore ptr}\hlsym{$<$}\hlstd{PricingEngine}\hlsym{$>$\ }\hlstd{}\hlkwd{bondEngine}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{new\ }\hlstd{}\hlkwd{DiscountingBondEngine}\hlstd{}\hlsym{(}\hlstd{discountingTermStructure}\hlsym{));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Zero\ coupon\ bond}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{ZeroCouponBond\ }\hlkwd{zeroCouponBond}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settlementDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{UnitedStates}\hlstd{}\hlsym{(}\hlstd{UnitedStates}\hlsym{::}\hlstd{GovernmentBond}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{faceAmount}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{Date}\hlstd{}\hlsym{(}\hlstd{}\hlnum{15}\hlstd{}\hlsym{,}\hlstd{August}\hlsym{,}\hlstd{}\hlnum{2013}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Following}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{Real}\hlstd{}\hlsym{(}\hlstd{}\hlnum{116.92}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{Date}\hlstd{}\hlsym{(}\hlstd{}\hlnum{15}\hlstd{}\hlsym{,}\hlstd{August}\hlsym{,}\hlstd{}\hlnum{2003}\hlstd{}\hlsym{));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{zeroCouponBond}\hlsym{.}\hlstd{}\hlkwd{setPricingEngine}\hlstd{}\hlsym{(}\hlstd{bondEngine}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Fixed\ 4.5\%\ US\ Treasury\ Note}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Schedule\ }\hlkwd{fixedBondSchedule}\hlstd{}\hlsym{(}\hlstd{}\hlkwd{Date}\hlstd{}\hlsym{(}\hlstd{}\hlnum{15}\hlstd{}\hlsym{,\ }\hlstd{May}\hlsym{,\ }\hlstd{}\hlnum{2007}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{Date}\hlstd{}\hlsym{(}\hlstd{}\hlnum{15}\hlstd{}\hlsym{,}\hlstd{May}\hlsym{,}\hlstd{}\hlnum{2017}\hlstd{}\hlsym{),\ }\hlstd{}\hlkwd{Period}\hlstd{}\hlsym{(}\hlstd{Semiannual}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{UnitedStates}\hlstd{}\hlsym{(}\hlstd{UnitedStates}\hlsym{::}\hlstd{GovernmentBond}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Unadjusted}\hlsym{,\ }\hlstd{Unadjusted}\hlsym{,\ }\hlstd{DateGeneration}\hlsym{::}\hlstd{Backward}\hlsym{,\ }\hlstd{}\hlkwa{false}\hlstd{}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{FixedRateBond\ }\hlkwd{fixedRateBond}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settlementDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{faceAmount}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{fixedBondSchedule}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{vector}\hlsym{$<$}\hlstd{Rate}\hlsym{$>$(}\hlstd{}\hlnum{1}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.045}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwd{ActualActual}\hlstd{}\hlsym{(}\hlstd{ActualActual}\hlsym{::}\hlstd{Bond}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{ModifiedFollowing}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{100.0}\hlstd{}\hlsym{,\ }\hlstd{}\hlkwd{Date}\hlstd{}\hlsym{(}\hlstd{}\hlnum{15}\hlstd{}\hlsym{,\ }\hlstd{May}\hlsym{,\ }\hlstd{}\hlnum{2007}\hlstd{}\hlsym{));}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{fixedRateBond}\hlsym{.}\hlstd{}\hlkwd{setPricingEngine}\hlstd{}\hlsym{(}\hlstd{bondEngine}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ Yield\ curve\ bootstrapping}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{forecastingTermStructure}\hlsym{.}\hlstd{}\hlkwd{linkTo}\hlstd{}\hlsym{(}\hlstd{depoSwapTermStructure}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{discountingTermStructure}\hlsym{.}\hlstd{}\hlkwd{linkTo}\hlstd{}\hlsym{(}\hlstd{bondDiscountingTermStructure}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlcom{/{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}\ BOND\ PRICING\ {*}}\hspace*{\fill}\\
+\hlcom{}\hlstd{\ \ \ \ \ \ \ \ \ \ }\hlcom{{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}{*}/}\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{endl}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlslc{//\ write\ column\ headings}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Size\ widths}\hlsym{{[}{]}\ =\ \{\ }\hlstd{}\hlnum{18}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{10}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{10}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{10\ }\hlstd{}\hlsym{\};}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{}\hlkwd{setw}\hlstd{}\hlsym{(}\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{0}\hlstd{}\hlsym{{]})\ $<$$<$}\hlstd{\ \ }\hlsym{}\hlstd{}\hlstr{"}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstr{"}\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{}\hlkwd{setw}\hlstd{}\hlsym{(}\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{1}\hlstd{}\hlsym{{]})\ $<$$<$\ }\hlstd{}\hlstr{"ZC"}\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{}\hlkwd{setw}\hlstd{}\hlsym{(}\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{2}\hlstd{}\hlsym{{]})\ $<$$<$\ }\hlstd{}\hlstr{"Fixed"}\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{endl}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{string\ separator\ }\hlsym{=\ }\hlstd{}\hlstr{"\ \textbar \ "}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{Size\ width\ }\hlsym{=\ }\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{0}\hlstd{}\hlsym{{]}}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{+\ }\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{1}\hlstd{}\hlsym{{]}}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{+\ }\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{2}\hlstd{}\hlsym{{]}}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{+\ }\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{3}\hlstd{}\hlsym{{]};}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{string\ }\hlkwd{rule}\hlstd{}\hlsym{(}\hlstd{width}\hlsym{,\ }\hlstd{}\hlstr{'{-}'}\hlstd{}\hlsym{),\ }\hlstd{}\hlkwd{dblrule}\hlstd{}\hlsym{(}\hlstd{width}\hlsym{,\ }\hlstd{}\hlstr{'='}\hlstd{}\hlsym{);}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{string\ }\hlkwd{tab}\hlstd{}\hlsym{(}\hlstd{}\hlnum{8}\hlstd{}\hlsym{,\ }\hlstd{}\hlstr{'\ '}\hlstd{}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{rule\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{endl}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{fixed}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{}\hlkwd{setprecision}\hlstd{}\hlsym{(}\hlstd{}\hlnum{2}\hlstd{}\hlsym{);}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{}\hlkwd{setw}\hlstd{}\hlsym{(}\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{0}\hlstd{}\hlsym{{]})\ $<$$<$\ }\hlstd{}\hlstr{"Net\ present\ value"}\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{}\hlkwd{setw}\hlstd{}\hlsym{(}\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{1}\hlstd{}\hlsym{{]})\ $<$$<$\ }\hlstd{zeroCouponBond}\hlsym{.}\hlstd{}\hlkwd{NPV}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{}\hlkwd{setw}\hlstd{}\hlsym{(}\hlstd{widths}\hlsym{{[}}\hlstd{}\hlnum{2}\hlstd{}\hlsym{{]})\ $<$$<$\ }\hlstd{fixedRateBond}\hlsym{.}\hlstd{}\hlkwd{NPV}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{endl}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{0}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{\hspace*{\fill}\\
+}\hlstd{\ \ \ \ }\hlstd{}\hlsym{\}\ }\hlstd{}\hlkwa{catch\ }\hlstd{}\hlsym{(}\hlstd{std}\hlsym{::}\hlstd{exception}\hlsym{\&\ }\hlstd{e}\hlsym{)\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{e}\hlsym{.}\hlstd{}\hlkwd{what}\hlstd{}\hlsym{()\ $<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{endl}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{1}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlsym{\}\ }\hlstd{}\hlkwa{catch\ }\hlstd{}\hlsym{(...)\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{std}\hlsym{::}\hlstd{cout\ }\hlsym{$<$$<$\ }\hlstd{}\hlstr{"unknown\ error"}\hlstd{\ }\hlsym{$<$$<$\ }\hlstd{std}\hlsym{::}\hlstd{endl}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ }\hlstd{}\hlkwa{return\ }\hlstd{}\hlnum{1}\hlstd{}\hlsym{;}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ }\hlstd{}\hlsym{\}}\hspace*{\fill}\\
+\hlstd{}\hlsym{\}}\hlstd{}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+
+\end{frame}
 
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
