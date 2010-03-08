@@ -1084,7 +1084,7 @@ RcppExport SEXP QL_ConvertibleFixedBond(SEXP bondparams, SEXP coupon, SEXP proce
         double businessDayConvention = misc.getDoubleValue("businessDayConvention");
        
         QuantLib::Date todayDate(dateFromR(iDate));
-        
+	Settings::instance().evaluationDate() = todayDate;
         Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
         if (cal == "us"){
             calendar = UnitedStates(UnitedStates::GovernmentBond);
@@ -1100,7 +1100,6 @@ RcppExport SEXP QL_ConvertibleFixedBond(SEXP bondparams, SEXP coupon, SEXP proce
 
         RelinkableHandle<Quote> underlying;
         RelinkableHandle<BlackVolTermStructure> volatility;
-        boost::shared_ptr<BlackScholesMertonProcess> blackProcess;
 
         Handle<YieldTermStructure> dividendYield(rebuildCurveFromZeroRates(
                                                                            dividendYieldDateSexp,
@@ -1116,9 +1115,15 @@ RcppExport SEXP QL_ConvertibleFixedBond(SEXP bondparams, SEXP coupon, SEXP proce
         boost::shared_ptr<SimpleQuote> vol(new SimpleQuote( volatilityQuote ));
         volatility.linkTo(flatVol(todayDate, vol, dc));
 
+	boost::shared_ptr<BlackScholesMertonProcess> blackProcess;
         blackProcess = boost::shared_ptr<BlackScholesMertonProcess>(
-                    new BlackScholesMertonProcess(underlying, dividendYield,
-                                                  rff, volatility));
+								    new BlackScholesMertonProcess(underlying, dividendYield,
+												  rff, volatility));
+	//	boost::shared_ptr<BlackScholesProcess> blackProcess;
+        //ackProcess = boost::shared_ptr<BlackScholesProcess>(
+	//					      new BlackScholesProcess(underlying, 
+	//								      rff, volatility));
+
 
         RelinkableHandle<Quote> creditSpread;
         creditSpread.linkTo(
