@@ -98,9 +98,8 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Quick overview}
 	\begin{itemize}
-		\item Fixed Income functions are added during the summer of 2009 as part of the Google Summer of 	Code program. \pause
-		\item  RQuantLib offeres strong support for fixed income pricing whereas several other packages (e.g. termstrc, YieldCurve, fBonds) focus on modelling term structure.
-		\pause
+		\item Fixed Income functions are added during the summer of 2009 as part of the Google Summer of 	Code program. 
+		\item  RQuantLib offeres strong support for fixed income pricing whereas several other packages (e.g. termstrc, YieldCurve, fBonds) focus on modelling term structure.		
 		\item The functions aim to support two primary tasks: pricing and curve fitting. 		
 	\end{itemize}
 \end{frame}
@@ -115,7 +114,7 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 				\item The returned DiscountCurve object are used as inputs for pricing functions. 
 				\item Currently, there are two curve fitting functions
 					\begin{itemize}
-						\item DiscountCurve - constructs the spot term structure of interest rates based on input market data including the settltment date, deposit rates, future prices, FRA rates or swap rates in various combination. \pause
+						\item DiscountCurve - constructs the spot term structure of interest rates based on input market data including the settltment date, deposit rates, future prices, FRA rates or swap rates in various combination.
 						\item FittedBondCurve - fits a term structure to a set of bonds using three different fitting methods (ExponentialSplinesFitting, SimplePolynomialFitting, NelsonSiegelFitting).
 					\end{itemize}
 			\end{itemize}
@@ -164,38 +163,38 @@ RcppExport SEXP dd_rcpp(SEXP v) {
 \normalfont
 \end{frame}
 
-\begin{frame}[fragile]
-	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Examples: Curve fitting}
-	\begin{itemize}
-		\item DiscountCurve example:		
-
-			\lstset{language=R,basicstyle=\tiny}
-				\begin{lstlisting}		
-params <- list(tradeDate=as.Date('2004-09-20'),
-               settleDate=as.Date('2004-09-22'),
-               interpWhat="discount",
-               interpHow="loglinear")
-tsQuotes <- list(d1w = 0.0382,
-                 d1m = 0.0372,
-                 d3m = 0.0363,
-                 d6m = 0.0353,
-                 d9m = 0.0348,
-                 d1y = 0.0345,
-                 fut2=96.7875,
-                 fut3=96.9875,
-                 fut4=96.6875,
-                 fut5=96.4875,
-                 fut7=96.2875,
-                 s2y = 0.037125,
-                 s3y = 0.0398,
-                 s5y = 0.0443,
-                 s10y = 0.05165,
-                 s15y = 0.055175)
-curves <- DiscountCurve(params, tsQuotes)		
-\end{lstlisting}
-\end{itemize}
-\end{frame}
+%\begin{frame}[fragile]
+%	\frametitle{Fixed Income in RQuantLib}
+%	\framesubtitle{Examples: Curve fitting}
+%	\begin{itemize}
+%		\item DiscountCurve example:		
+%
+%			\lstset{language=R,basicstyle=\tiny}
+%				\begin{lstlisting}		
+%params <- list(tradeDate=as.Date('2004-09-20'),
+%               settleDate=as.Date('2004-09-22'),
+%               interpWhat="discount",
+%               interpHow="loglinear")
+%tsQuotes <- list(d1w = 0.0382,
+%                 d1m = 0.0372,
+%                 d3m = 0.0363,
+%                 d6m = 0.0353,
+%                 d9m = 0.0348,
+%                 d1y = 0.0345,
+%                 fut2=96.7875,
+%                 fut3=96.9875,
+%                 fut4=96.6875,
+%                 fut5=96.4875,
+%                 fut7=96.2875,
+%                 s2y = 0.037125,
+%                 s3y = 0.0398,
+%                 s5y = 0.0443,
+%                 s10y = 0.05165,
+%                 s15y = 0.055175)
+%curves <- DiscountCurve(params, tsQuotes)		
+%\end{lstlisting}
+%\end{itemize}
+%\end{frame}
 
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
@@ -228,31 +227,31 @@ curves <- DiscountCurve(params, tsQuotes)
 \end{frame}
 
 
-\begin{frame}[fragile]
-	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Examples: Curve fitting}
-	\begin{itemize}
-		\item FittedBondCurve example:
-			\lstset{language=R,basicstyle=\tiny}
-				\begin{lstlisting}
-lengths <- c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30)
-coupons <- c(0.0200, 0.0225, 0.0250, 0.0275, 0.0300,
-         	 0.0325, 0.0350, 0.0375, 0.0400, 0.0425,
-             0.0450, 0.0475, 0.0500, 0.0525, 0.0550 )
-marketQuotes <- rep(100, length(lengths))
-dateparams <- list(settlementDays=0, period="Annual", 
-                             dayCounter="ActualActual", 
-                             businessDayConvention ="Unadjusted")
-curveparams <- list(method="ExponentialSplinesFitting", 
-                                origDate = Sys.Date())
-curve <- FittedBondCurve(curveparams, lengths, coupons, marketQuotes, dateparams)
-library(zoo)
-z <- zoo(curve$table$zeroRates, order.by=curve$table$date)
-plot(z)
-				\end{lstlisting}		
-
-\end{itemize}
-\end{frame}
+%\begin{frame}[fragile]
+%	\frametitle{Fixed Income in RQuantLib}
+%	\framesubtitle{Examples: Curve fitting}
+%	\begin{itemize}
+%		\item FittedBondCurve example:
+%			\lstset{language=R,basicstyle=\tiny}
+%				\begin{lstlisting}
+%lengths <- c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30)
+%coupons <- c(0.0200, 0.0225, 0.0250, 0.0275, 0.0300,
+%         	 0.0325, 0.0350, 0.0375, 0.0400, 0.0425,
+%             0.0450, 0.0475, 0.0500, 0.0525, 0.0550 )
+%marketQuotes <- rep(100, length(lengths))
+%dateparams <- list(settlementDays=0, period="Annual", 
+%                             dayCounter="ActualActual", 
+%                             businessDayConvention ="Unadjusted")
+%curveparams <- list(method="ExponentialSplinesFitting", 
+%                                origDate = Sys.Date())
+%curve <- FittedBondCurve(curveparams, lengths, coupons, marketQuotes, dateparams)
+%library(zoo)
+%z <- zoo(curve$table$zeroRates, order.by=curve$table$date)
+%plot(z)
+%				\end{lstlisting}		
+%
+%\end{itemize}
+%\end{frame}
 
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
@@ -281,34 +280,35 @@ plot(z)
 \mbox{}
 \normalfont
 \end{frame}
-\begin{frame}[fragile]
-	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Examples: Bond pricing}	
-			\lstset{language=R,basicstyle=\tiny}
-				\begin{lstlisting}
-fixingDays <- 3
-settlementDays <- 3
 
-settlementDate <- as.Date('2008-09-18')
-todaysDate <- settlementDate - fixingDays
-
-#begin to set up bond discounting term structure
-lengths <- c(5, 6, 7, 16, 48)
-coupons <- c(0.02375, 0.04625, 0.03125, 0.04000, 0.04500)
-marketQuotes <- c(100.390625, 106.21875, 100.59375, 101.6875, 102.140625)
-dateparams <- list(settlementDays=settlementDays,
-                   period=2, 
-                   dayCounter="ActualActual", 
-                   businessDayConvention ="Unadjusted")
-curveparams <- list(method="ExponentialSplinesFitting", 
-                    origDate=todaysDate)
-bondDsctTsr <- FittedBondCurve(curveparams,
-                               lengths,
-                               coupons,
-                               marketQuotes,
-                               dateparams)
-\end{lstlisting}
-\end{frame}
+%\begin{frame}[fragile]
+%	\frametitle{Fixed Income in RQuantLib}
+%	\framesubtitle{Examples: Bond pricing}	
+%			\lstset{language=R,basicstyle=\tiny}
+%				\begin{lstlisting}
+%fixingDays <- 3
+%settlementDays <- 3
+%
+%settlementDate <- as.Date('2008-09-18')
+%todaysDate <- settlementDate - fixingDays
+%
+%#begin to set up bond discounting term structure
+%lengths <- c(5, 6, 7, 16, 48)
+%coupons <- c(0.02375, 0.04625, 0.03125, 0.04000, 0.04500)
+%marketQuotes <- c(100.390625, 106.21875, 100.59375, 101.6875, 102.140625)
+%dateparams <- list(settlementDays=settlementDays,
+%                   period=2, 
+%                   dayCounter="ActualActual", 
+%                   businessDayConvention ="Unadjusted")
+%curveparams <- list(method="ExponentialSplinesFitting", 
+%                    origDate=todaysDate)
+%bondDsctTsr <- FittedBondCurve(curveparams,
+%                               lengths,
+%                               coupons,
+%                               marketQuotes,
+%                               dateparams)
+%\end{lstlisting}
+%\end{frame}
 
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
@@ -333,31 +333,31 @@ bondDsctTsr <- FittedBondCurve(curveparams,
 \normalfont
 \end{frame}
 
-\begin{frame}[fragile]
-	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Examples: Bond pricing}	
-			\lstset{language=R,basicstyle=\tiny}
-				\begin{lstlisting}
-#begin to set up swap term structure
-swp.tsr.params <- list(tradeDate=todaysDate,
-                        settleDate=todaysDate+2,
-                        dt=0.25,
-                        interpWhat="discount",
-                        interpHow="loglinear")
-market.quotes <- list(d1w=0.043375,
-                      d1m=0.031875,
-                      d3m=0.0320375,
-                      d6m=0.03385,
-                      d9m=0.0338125,
-                      d1y=0.0335125,                      
-                      s2y=0.0295,
-                      s3y=0.0323,
-                      s5y=0.0359,
-                      s10y=0.0412,
-                      s15y=0.0433)
-depoSwpTsr <- DiscountCurve(swp.tsr.params, market.quotes)
-\end{lstlisting}
-\end{frame}
+%\begin{frame}[fragile]
+%	\frametitle{Fixed Income in RQuantLib}
+%	\framesubtitle{Examples: Bond pricing}	
+%			\lstset{language=R,basicstyle=\tiny}
+%				\begin{lstlisting}
+%#begin to set up swap term structure
+%swp.tsr.params <- list(tradeDate=todaysDate,
+%                        settleDate=todaysDate+2,
+%                        dt=0.25,
+%                        interpWhat="discount",
+%                        interpHow="loglinear")
+%market.quotes <- list(d1w=0.043375,
+%                      d1m=0.031875,
+%                      d3m=0.0320375,
+%                      d6m=0.03385,
+%                      d9m=0.0338125,
+%                      d1y=0.0335125,                      
+%                      s2y=0.0295,
+%                      s3y=0.0323,
+%                      s5y=0.0359,
+%                      s10y=0.0412,
+%                      s15y=0.0433)
+%depoSwpTsr <- DiscountCurve(swp.tsr.params, market.quotes)
+%\end{lstlisting}
+%\end{frame}
 
 
 \begin{frame}[fragile]
@@ -408,38 +408,38 @@ depoSwpTsr <- DiscountCurve(swp.tsr.params, market.quotes)
 \normalfont
 \end{frame}
 
-\begin{frame}[fragile]
-	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Examples: Bond pricing}	
-			\lstset{language=R,basicstyle=\tiny}
-				\begin{lstlisting}
-#Zero-Coupon Bond
-zc.bond.param <- list(maturityDate=as.Date('2013-08-15'), issueDate=as.Date('2003-08-15'), redemption=116.92)
-
-zc.bond.dateparam <- list(refDate=todaysDate, settlementDays=settlementDays, businessDayConvention='Following')
-
-ZeroCouponBond(zc.bond.param, bondDsctTsr, zc.bond.dateparam)
-
-#Fixed-Coupon Bond
-fixed.bond.param <- list(maturityDate=as.Date('2017-05-15'), issueDate=as.Date('2007-05-15'),redemption=100, effectiveDate=as.Date('2007-05-15'))
-
-fixed.bond.dateparam <- list(settlementDays=settlementDays, dayCounter='ActualActual', period='Semiannual', businessDayConvention='Unadjusted', terminationDateConvention='Unadjusted', dateGeneration='Backward', endOfMonth=0)
-
-fixed.bond.coupon <- c(0.045)
-
-FixedRateBond(fixed.bond.param,
-              fixed.bond.coupon,
-              bondDsctTsr,
-              fixed.bond.dateparam)
-\end{lstlisting}
-\end{frame}
+%\begin{frame}[fragile]
+%	\frametitle{Fixed Income in RQuantLib}
+%	\framesubtitle{Examples: Bond pricing}	
+%			\lstset{language=R,basicstyle=\tiny}
+%				\begin{lstlisting}
+%#Zero-Coupon Bond
+%zc.bond.param <- list(maturityDate=as.Date('2013-08-15'), issueDate=as.Date('2003-08-15'), redemption=116.92)
+%
+%zc.bond.dateparam <- list(refDate=todaysDate, settlementDays=settlementDays, businessDayConvention='Following')
+%
+%ZeroCouponBond(zc.bond.param, bondDsctTsr, zc.bond.dateparam)
+%
+%#Fixed-Coupon Bond
+%fixed.bond.param <- list(maturityDate=as.Date('2017-05-15'), issueDate=as.Date('2007-05-15'),redemption=100, effectiveDate=as.Date('2007-05-15'))
+%
+%fixed.bond.dateparam <- list(settlementDays=settlementDays, dayCounter='ActualActual', period='Semiannual', businessDayConvention='Unadjusted', terminationDateConvention='Unadjusted', dateGeneration='Backward', endOfMonth=0)
+%
+%fixed.bond.coupon <- c(0.045)
+%
+%FixedRateBond(fixed.bond.param,
+%              fixed.bond.coupon,
+%              bondDsctTsr,
+%              fixed.bond.dateparam)
+%\end{lstlisting}
+%\end{frame}
 
 \begin{frame}[fragile]
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Perform a spread effect analysis of a 4\%-coupon convertible bond callable at 110 at the end of the second year, maturing at par in 5 years, with yield to maturity of 5\% and spread (of YTM versus 5-year treasury) of 0, 50, 100, and 150 basis points. The underlying stock pays no dividend.}	
 
-\lstset{language=Matlab,basicstyle=\tiny, flexiblecolumns=true}
-	\begin{lstlisting}[multicolumns=2]
+\lstset{language=Matlab,basicstyle=\tiny}
+	\begin{lstlisting}
 RiskFreeRate = 0.05;
 Sigma        = 0.3;
 ConvRatio    = 1;
@@ -458,7 +458,6 @@ CallType     = 1;
 TreeType     = 1;   
 % Nested loop accross prices and static spread dimensions
 % to compute convertible prices.
-
 for j = 0:0.005:0.015;
 StaticSpread = j;
       for i = 0:10:100
@@ -474,8 +473,15 @@ StaticSpread = j;
            stock(i/10+1,j*200+1)     =  Price;
         end    
 end
-    
-    plot(stock, convprice);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \begin{columns}
+ \column{1.5in}
+\lstset{language=Matlab,basicstyle=\tiny}
+	\begin{lstlisting}
+   plot(stock, convprice);
     legend({'+0 bp'; '+50 bp'; '+100 bp'; '+150 bp'});
     title ('Effect of Spread using Trinomial tree - 200 steps')
     xlabel('Stock Price');
@@ -484,11 +490,13 @@ end
          '110 Call-on-clean after two years.' sprintf('\n'), ...
          'Maturing at par in five years.'],'fontweight','Bold')
  	\end{lstlisting}
-\end{frame}
-\begin{frame}
+ 	
+  \column{2.8in}
 \begin{center}
 \resizebox{75mm}{!}{\includegraphics{cbspread.png}}
 \end{center}
+
+\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -565,10 +573,7 @@ ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{()}\hspace*{\fill
 \hlstd{}\hlstd{\ \ }\hlstd{z\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rep}\hlstd{}\hlsym{(}\hlstd{s}\hlsym{,\ }\hlstd{}\hlnum{11}\hlstd{}\hlsym{)}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ }\hlstd{ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rbind}\hlstd{}\hlsym{(}\hlstd{ret}\hlsym{,\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Stock}\hlsym{=}\hlstd{x}\hlsym{,}\hlstd{ConvPrice}\hlsym{=}\hlstd{y}\hlsym{,}\hlstd{z}\hlsym{))}\hspace*{\fill}\\
 \hlstd{}\hlsym{\}}\hspace*{\fill}\\
-\hlstd{}\hlkwc{library}\hlstd{}\hlsym{(}\hlstd{ggplot2}\hlsym{)}\hspace*{\fill}\\
-\hlstd{p\ }\hlsym{$<${-}\ }\hlstd{ggplot}\hlsym{(}\hlstd{ret}\hlsym{,\ }\hlstd{aes}\hlsym{(}\hlstd{Stock}\hlsym{,}\hlstd{ConvPrice}\hlsym{,\ }\hlstd{colour}\hlsym{=}\hlstd{}\hlkwc{factor}\hlstd{}\hlsym{(}\hlstd{z}\hlsym{)))}\hspace*{\fill}\\
-\hlstd{p\ }\hlsym{+\ }\hlstd{geom\textunderscore line}\hlsym{()\ +\ }\hlstd{scale\textunderscore colour\textunderscore discrete}\hlsym{(}\hlstd{}\hlstr{"Spread"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{}\hlsym{+\ }\hlstd{opts}\hlsym{(}\hlstd{}\hlkwc{title}\hlstd{}\hlsym{=}\hlstd{}\hlstr{'Effect\ of\ spread\ on\ a\ convertible\ bond'}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+
 \hlstd{}\hspace*{\fill}\\
 \hspace*{\fill}\\
 \hspace*{\fill}\\
@@ -577,6 +582,16 @@ ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{()}\hspace*{\fill
 \end{frame}
 
 \begin{frame}
+\vskip10pt
+\scriptsize
+\pagecolor{bgcolor}
+\noindent
+\ttfamily
+\hlstd{}\hlkwc{>library}\hlstd{}\hlsym{(}\hlstd{ggplot2}\hlsym{)}\hspace*{\fill}\\
+\hlstd{>p\ }\hlsym{$<${-}\ }\hlstd{ggplot}\hlsym{(}\hlstd{ret}\hlsym{,\ }\hlstd{aes}\hlsym{(}\hlstd{Stock}\hlsym{,}\hlstd{ConvPrice}\hlsym{,\ }\hlstd{colour}\hlsym{=}\hlstd{}\hlkwc{factor}\hlstd{}\hlsym{(}\hlstd{z}\hlsym{)))}\hspace*{\fill}\\
+\hlstd{>p\ }\hlsym{+\ }\hlstd{geom\textunderscore line}\hlsym{()\ +\ }\hlstd{scale\textunderscore colour\textunderscore discrete}\hlsym{(}\hlstd{}\hlstr{"Spread"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlsym{+\ }\hlstd{opts}\hlsym{(}\hlstd{}\hlkwc{title}\hlstd{}\hlsym{=}\hlstd{}\hlstr{'Effect\ of\ spread\ on\ a\ convertible\ bond'}
+\normalfont
 \begin{center}
 \resizebox{75mm}{!}{\includegraphics{matlab_cbond.png}}
 \end{center}
