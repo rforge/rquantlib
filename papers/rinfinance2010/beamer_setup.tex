@@ -14,13 +14,13 @@
 % Delete this, if you do not want the table of contents to pop up at
 % the beginning of each subsection (or section)
 % edd: Does not work in handout mode, and we have too many section/subsections
-%\AtBeginSection[]{%
-%  \begin{frame}<beamer>%
-%    %\tiny
-%    \frametitle{Outline}%
-%    \tableofcontents[currentsection]%
-%  \end{frame}
-%}
+\AtBeginSection[]{%
+  \begin{frame}<beamer>%
+    %\tiny
+    \frametitle{Outline}%
+    \tableofcontents[currentsection]
+  \end{frame}
+}
 
 
 % If you wish to uncover everything in a step-wise fashion, uncomment the following command: 
@@ -114,6 +114,8 @@
 %\newcommand{\R}{\href{http://www.r-project.org}{\Emph{R}\xspace}}   %% ? sing \emph upsets beamer inside \href
 \newcommand{\R}{\href{http://www.r-project.org}{\textsf{R}\xspace}}
 \newcommand{\Rns}{\href{http://www.r-project.org}{\textsf{R}}}
+
+\newcommand{\QL}{\href{http://www.QuantLib.org}{\textsf{QuantLib}\xspace}}
 
 % two old defintions
 %\newcommand{\code}[1]{\texttt{#1}}
