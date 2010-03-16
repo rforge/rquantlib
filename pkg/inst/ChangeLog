@@ -1,5 +1,9 @@
-2010-03-15  Khanh Nguyen  <knguyen@cs.umb.edu>
-	* R/GUIs.R: first GUI version
+2010-03-15  Khanh Nguyen  <knguyen@knguyen-laptop>
+
+	* R/GUIs.R: first GUI verion
+	* man/GUI.Rd: added.
+	* NAMESPACE: add export GUI functions
+
 2010-02-02  Khanh Nguyen  <knguyen@cs.umb.edu>
 
 	* Remove Matlab module
