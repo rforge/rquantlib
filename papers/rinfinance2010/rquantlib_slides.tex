@@ -1,5 +1,6 @@
 %% add 'handout' option for handouts, and pgfpages for 2-on-1
-\documentclass[smaller,compress, 9pt]{beamer}   
+%\documentclass[smaller,compress]{beamer}   
+\documentclass[compress]{beamer}   
 %\usepackage{pgfpages}
 %\pgfpagesuselayout{2 on 1}[letterpaper,border shrink=5mm]
 %\pgfpagesuselayout{4 on 1}[letterpaper,border shrink=5mm]
@@ -8,7 +9,7 @@
 \usepackage{alltt}
 \usepackage[latin1]{inputenc}
 
-\input {highlight.sty}
+\input{highlight.sty}
 
 
 \include{beamer_setup}  %% has all definitions etc
@@ -33,11 +34,13 @@
   \titlepage
 \end{frame}
 
-\section{Introduction}
+\iffalse
+\section{Introduction (draft, just an idea)}
 \begin{frame}
   \frametitle{Overview}
   \framesubtitle{Presentation details}
   \begin{itemize}
+\small
   \item Brief overview of QuantLib
     \begin{itemize}
     \item History, about to release 1.0 after eight long years
@@ -60,6 +63,108 @@
     \end{itemize}
   \item Total of somewhere between 20 and 30 pages
   \item Finish with Outlook / Agenda / Areas not yet covered
+  \end{itemize}
+\end{frame}
+\fi
+
+\section{QuantLib}
+\subsection{Overview}
+\begin{frame}
+  \frametitle{A brief introduction to QuantLib}
+  \framesubtitle{WORK IN PROGRESS...}
+  \begin{itemize}
+  \item \QL was started in 2001 (see below)
+  \item \QL is hosted on Sourceforge.Net
+  \item It is a free software project under a very liberal license allowing
+    for inclusion in commercial projects.
+  \item \QL is sponsored by the Italian consultancy StatPro 
+    which (AFAIK) derives consulting income from it.
+  \item \QL has seen almost a decade of contributions from maybe two dozen
+    people, however the project is primarily the work of Ferdinando
+    Ametrano and Luigi Ballabio.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{QuantLib architecture}
+  \framesubtitle{WORK IN PROGRESS...}
+  \begin{itemize}
+  \item \QL is written in C++ and \textsl{very} well designed.
+  \item Luigo Ballabio has draft chapters of a book on the design of \QL.
+  \item \QL makes extensive use of Swig and bindings for OCaml, Java, Perl,
+    Python, Ruby, C\#, ... exist
+  \item Eric Ehlers has written extension that provide support for XL
+    integration which seem popular.
+  \end{itemize}
+\end{frame}
+
+\subsection{TImeline}
+\begin{frame}
+  \frametitle{QuantLib releases}
+  \framesubtitle{WORK IN PROGRESS... this does not look that good yet}
+
+  \begin{columns}
+    \begin{column}{1.25in}
+      \scriptsize
+      \begin{tabular}{lrl}
+        % \toprule
+        Version & Date &\\ 
+        % \midrule
+        1.0   & 24 Feb 2010 & \\
+        0.9.9 & 11 Nov 2009 & \\
+        0.9.7 & 18 Nov 2008 & \\
+        0.9.6 & 06 Aug 2008 & \\
+        0.9.5 & 30 Jul 2008 & \\
+        0.9.0 & 24 Dec 2007 & \\
+        0.8.1 & 04 Jun 2007 & \\
+        0.8.0 & 30 May 2007 & \\
+        0.4.0 & 20 Feb 2007 & \\
+        0.3.4 & 06 Nov 2006 & \\
+        0.3.13& 31 Jul 2006 & \\
+        0.3.12& 27 Mar 2006 & \\
+        0.3.11& 20 Oct 2005 & \\
+        \phantom{X} & & 
+      \end{tabular}
+    \end{column}
+
+    \begin{column}{0.25in}
+      \phantom{XX}  % empty, not shown
+    \end{column}
+
+    \begin{column}{2.75in}
+      \scriptsize
+      \begin{tabular}{lrl}
+        % \toprule
+        Version & Date &\\ 
+        % \midrule
+        0.3.10& 14 Jul 2005 & \\
+        0.3.9 & 02 May 2005 & \\
+        0.3.8 & 22 Dec 2004 & \\
+        0.3.7 & 23 Jul 2004 & first release using Boost \\
+        0.3.6 & 15 Apr 2004 & \\
+        0.3.5 & 31 Mar 2004 & \\
+        0.3.4 & 12 Nov 2003 & \\
+        0.3.3 & 03 Sep 2003 & \\
+        0.3.1 & 04 Feb 2003 & \\
+        0.3.0 & 06 May 2002 & \\
+        0.2.1 & 03 Dec 2001 & (first RQuantLib Feb 2002) \\
+        0.2.0 & 18 Sep 2001 & \\
+        0.1.9 & 31 May 2001 & initial Debian package \\
+        0.1.1 & 21 Nov 2000 & \\
+      \end{tabular}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{RQuantLib}
+\subsection{Overview}
+\begin{frame}
+  \frametitle{Overview}
+  \begin{itemize}
+  \item Initially: Standard Equity Options, both vanilla and exotics
+  \item First (external) contribution: Curves and Swaption
+  \item Second external contribution (as Google Summer of Code): Fixed Income
+    Functionality
   \end{itemize}
 \end{frame}
 
@@ -90,7 +195,9 @@
 %  return rl;
 %}
 %\end{lstlisting}
+%\end{frame}
 
+\section{Fixed Income}
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Quick overview}
@@ -171,7 +278,7 @@ Building a discount curve from the market data. This data is taken from codes sh
 \hlstd{}\hlkwc{plot}\hlstd{}\hlsym{(}\hlstd{curves)}
 \normalfont
 \begin{center}
-\resizebox{75mm}{!}{\includegraphics{discountCurve.png}}
+\resizebox{75mm}{!}{\includegraphics{figures/discountCurve.png}}
 \end{center}
 \end{frame}
 
@@ -249,7 +356,7 @@ Fitting a curve to a set of bonds. The data is taken from codes shipped with Qua
 \hlstd{}\hlkwc{plot}\hlstd{}\hlsym{(}\hlstd{z, xlab='Date', ylab='Zero Rates')}
 \normalfont
 \begin{center}
-\resizebox{75mm}{!}{\includegraphics{fittedBondCurve.png}}
+\resizebox{75mm}{!}{\includegraphics{figures/fittedBondCurve.png}}
 \end{center}
 \end{frame}
 
@@ -944,7 +1051,7 @@ end
  	
   \column{2.8in}
 \begin{center}
-\resizebox{75mm}{!}{\includegraphics{cbspread.png}}
+\resizebox{75mm}{!}{\includegraphics{figures/cbspread.png}}
 \end{center}
 
 \end{columns}
@@ -1046,9 +1153,8 @@ ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{()}\hspace*{\fill
 \hlstd{}\hlsym{+\ }\hlstd{opts}\hlsym{(}\hlstd{}\hlkwc{title}\hlstd{}\hlsym{=}\hlstd{}\hlstr{'Effect\ of\ spread\ on\ a\ convertible\ bond'}
 \normalfont
 \begin{center}
-\resizebox{75mm}{!}{\includegraphics{matlab_cbond.png}}
+\resizebox{75mm}{!}{\includegraphics{figures/matlab_cbond.png}}
 \end{center}
-
 \end{frame}
 
 \begin{frame}
@@ -1056,7 +1162,7 @@ ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{()}\hspace*{\fill
 	\framesubtitle{Graphical User Interface}		
 RQuantLib also comes with an user interface via the 'traitr' package by professor John Verzani.
 \begin{center}
-	\resizebox{90mm}{!}{\includegraphics{fbGUI.png}}
+	\resizebox{90mm}{!}{\includegraphics{figures/fbGUI.png}}
 \end{center}
 \end{frame}
 
@@ -1064,7 +1170,7 @@ RQuantLib also comes with an user interface via the 'traitr' package by professo
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Graphical User Interface}	
 \begin{center}
-	\resizebox{110mm}{!}{\includegraphics{dcGUI.png}}
+	\resizebox{110mm}{!}{\includegraphics{figures/dcGUI.png}}
 \end{center}
 \end{frame}
 
@@ -1073,7 +1179,7 @@ RQuantLib also comes with an user interface via the 'traitr' package by professo
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Graphical User Interface}		
 \begin{center}
-	\resizebox{90mm}{!}{\includegraphics{bondGUI.png}}
+	\resizebox{90mm}{!}{\includegraphics{figures/bondGUI.png}}
 \end{center}
 \end{frame}
 
