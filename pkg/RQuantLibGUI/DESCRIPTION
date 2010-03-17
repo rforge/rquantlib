@@ -1,0 +1,12 @@
+Package: RQuantLibGUI
+Title: A GUI for the RQuantLib interface to the QuantLib library
+Version: 0.1.0
+Date: $Date$
+Maintainer: Khanh Nguyen <knguyen@cs.umb.edu>
+Author: Khanh Nguyen <knguyen@cs.umb.edu> and Dirk Eddelbuettel <edd@debian.org> 
+Description: The RQuantLibGUI provide a graphical user interface to the 
+ RQuantLib package, which itself provides an interface from R to QuantLib.
+Depends: R (>= 2.7.0), RQuantLib (>= 0.3.2), traitr, gWidgets, RGtk2, zoo
+License: GPL (>= 2)
+URL: http://quantlib.org http://dirk.eddelbuettel.com/code/rquantlib.html
+Packaged: Wed Jan  2 21:33:23 2008; edd
