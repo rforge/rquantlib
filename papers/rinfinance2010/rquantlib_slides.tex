@@ -6,6 +6,7 @@
 %\pgfpagesuselayout{4 on 1}[letterpaper,border shrink=5mm]
 %\pgfpagesuselayout{2 on 1}[a4,border shrink=5mm]
 
+\usepackage{color}
 \include{includes/beamer_setup}  %% has all definitions etc
 
 \title[RQuantLib]{RQuantLib: Interfacing QuantLib from R}  %% better title welcome...
@@ -18,7 +19,7 @@
   \and 
   \inst{2}
   UMASS at Boston
-}
+} 
 \date[R / Finance 2010]{R / Finance 2010 \\ April 18 and 19, 2010 \\ Chicago, IL, USA}
 
 \begin{document}
@@ -191,15 +192,63 @@
 %\end{frame}
 
 \section{Fixed Income}
+\subsection{Overview and development}
+{
+\setbeamercolor{normal text}{bg=black,fg=white}
+\begin{frame}[plain]
+	\frametitle{Fixed Income Development}
+	\textcolor{white}{RQuantLib before GSOC 2009...}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide1.png}}
+	\end{center}
+\end{frame}
+\begin{frame}[plain]
+	\frametitle{Fixed Income Development}
+	\textcolor{white}{GSOC started. April 2009..}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide2.png}}
+	\end{center}
+\end{frame}
+\begin{frame}[plain]
+	\frametitle{Fixed Income Development}
+	\textcolor{white}{}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide3.png}}
+	\end{center}
+\end{frame}
+\begin{frame}[plain]
+	\frametitle{Fixed Income Development}
+	\textcolor{white}{}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide4.png}}
+	\end{center}
+\end{frame}
+\begin{frame}[plain]
+	\frametitle{Fixed Income Development}
+	\textcolor{white}{Putting Curve Fitting and Bond Pricing together..}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide5.png}}
+	\end{center}
+\end{frame}
+\begin{frame}[plain]
+	\frametitle{Fixed Income Development}
+	\textcolor{white}{}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide6.png}}
+	\end{center}
+\end{frame}
+}
+
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Quick overview}
+	In summary,
 	\begin{itemize}
-		\item Fixed Income functions are added during the summer of 2009 as part of the Google Summer of 	Code program. 
+		\item Fixed Income functions are added during the summer of 2009 as part of the Google Summer of Code program. 
 		\item  RQuantLib offeres strong support for fixed income pricing whereas several other packages (e.g. termstrc, YieldCurve, fBonds) focus on modelling term structure.		
 		\item The functions aim to support two primary tasks: pricing and curve fitting. 		
 	\end{itemize}
 \end{frame}
+
 
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
@@ -237,6 +286,7 @@
 	\end{itemize}
 \end{frame}
 
+\subsection{Examples}
 \begin{frame}[shrink]
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Curve fitting with DiscountCurve function}
