@@ -67,29 +67,39 @@
 \begin{frame}
   \frametitle{A brief introduction to QuantLib}
   \framesubtitle{WORK IN PROGRESS...}
-  \begin{itemize}
-  \item \QL was started in 2001 (see below)
-  \item \QL is hosted on Sourceforge.Net
-  \item It is a free software project under a very liberal license allowing
-    for inclusion in commercial projects.
-  \item \QL is sponsored by the Italian consultancy StatPro 
-    which (AFAIK) derives consulting income from it.
-  \item \QL has seen almost a decade of contributions from maybe two dozen
-    people, however the project is primarily the work of Ferdinando
-    Ametrano and Luigi Ballabio.
-  \end{itemize}
+  \begin{columns}
+    \begin{column}{1.5in}
+      \includegraphics[width=1.5in]{figures/ql-svn.pdf}
+    \end{column}
+    
+    \begin{column}{3in}
+      \begin{itemize}
+      \item \QL was started in 2001 and is hosted on Sourceforge.Net
+      \item \QL is primarily the work of Ferdinando
+        Ametrano and Luigi Ballabio, with a supporting cast of other
+        contributors. 
+      \item \QL is a free software project under a very liberal license allowing
+        for inclusion in commercial projects.
+      \item \QL is sponsored by the Italian consultancy StatPro which derives
+        consulting income from it. 
+      \end{itemize}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
   \frametitle{QuantLib architecture}
   \framesubtitle{WORK IN PROGRESS...}
   \begin{itemize}
-  \item \QL is written in C++ and \textsl{very} well designed.
-  \item Luigo Ballabio has draft chapters of a book on the design of \QL.
+  \item \QL is written in C++ and fairly rigourously designed.
+  \item Luigi Ballabio has draft chapters on the \Ql design and
+    implementation at \url{http://sites.google.com/site/luigiballabio/qlbook}.
   \item \QL makes extensive use of Swig and bindings for OCaml, Java, Perl,
-    Python, Ruby, C\#, ... exist
-  \item Eric Ehlers has written extension that provide support for XL
-    integration which seem popular.
+    Python, Ruby, C\#, ... exist.
+  \item Several \textsl{manual} (non-SWIG) extension such as \pkg{RQuantLib}
+    exist as well.
+  \item Eric Ehlers has written an object-handler extension that provides support for spreadsheet
+    integration.
   \end{itemize}
 \end{frame}
 
@@ -135,7 +145,7 @@
         0.3.10& 14 Jul 2005 & \\
         0.3.9 & 02 May 2005 & \\
         0.3.8 & 22 Dec 2004 & \\
-        0.3.7 & 23 Jul 2004 & first release using Boost \\
+        0.3.7 & 23 Jul 2004 & 1st \QL with Boost \\
         0.3.6 & 15 Apr 2004 & \\
         0.3.5 & 31 Mar 2004 & \\
         0.3.4 & 12 Nov 2003 & \\
@@ -144,7 +154,7 @@
         0.3.0 & 06 May 2002 & \\
         0.2.1 & 03 Dec 2001 & (first RQuantLib Feb 2002) \\
         0.2.0 & 18 Sep 2001 & \\
-        0.1.9 & 31 May 2001 & initial Debian package \\
+        0.1.9 & 31 May 2001 & 1st \QL Debian package \\
         0.1.1 & 21 Nov 2000 & \\
       \end{tabular}
     \end{column}
@@ -254,7 +264,7 @@
 	\frametitle{Fixed Income Development}
 	\begin{center}\huge In summary\end{center}
 	\begin{center}
-		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide9.PNG}}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide9.png}}
 	\end{center}
 
 \end{frame}
