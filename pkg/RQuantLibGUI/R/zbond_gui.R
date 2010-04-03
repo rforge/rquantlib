@@ -178,52 +178,91 @@ fittedBondBuilder <- function(){
 
 }
 
+
 #Main GUI for bond pricing
+zeroBond <- function(.){
+  lst <- .$to_R()
+  
+  bond <- list(faceAmount=lst$faceAmount,
+               issueDate=as.Date(lst$issueDate),                              
+               maturityDate=as.Date(lst$maturityDate),
+               redemption=lst$redemption)
+  dateparams <-list(settlementDays=lst$settlementDays,
+                    calendar=lst$calendar,
+                    businessDayConvention=lst$businessDayConvention)
+  discountCurve <- get(lst$discountCurveObj)
+  ZeroCouponBond(bond, discountCurve, dateparams)    
+}
+
+fixedBond <- function(.){
+  lst <- .$to_R()
+  
+  bond <- list(faceAmount=lst$fixedBond.faceAmount,
+               issueDate=as.Date(lst$fixedBond.issueDate),
+               maturityDate=as.Date(lst$fixedBond.maturityDate),
+               redemption=lst$fixedBond.redemption)
+  dateparams <-list(settlementDays=lst$settlementDays,
+                    calendar=lst$calendar,
+                    businessDayConvention=lst$businessDayConvention,
+                    dayCounter=lst$dayCounter,
+                    period=lst$period,
+                    terminationDateConvention=lst$terminationDateConvention,
+                    dateGeneration=lst$dateGeneration)
+  coupon.rate <- c(lst$fixedBond.rates)
+  discountCurve <- get(lst$discountCurveObj)
+  FixedRateBond(bond, coupon.rate, discountCurve, dateparams)
+}
+floatBond <- function(.){
+}
 bondGUI <- function(){
-    dlg <- aDialog(items=list(
-                                        #date params
+
+  
+  dlg <- aDialog(items=list(
+                   #date params
                    settlementDays=numericItem(1),
                    calendar=choiceItem("us",values=c("us", "uk")),
                    businessDayConvention=choiceItem("Following",
-                   values=c("Following", "Unadjusted", "ModifiedFollowing", "Preceding",
-                   "ModifiedPreceding")),
+                     values=c("Following", "Unadjusted", "ModifiedFollowing", "Preceding",
+                       "ModifiedPreceding")),
                    terminationDateConvention=choiceItem("Following",
-                   values=c("Following", "Unadjusted", "ModifiedFollowing", "Preceding",
-                   "ModifiedPreceding")),
-
+                     values=c("Following", "Unadjusted", "ModifiedFollowing", "Preceding",
+                       "ModifiedPreceding")),
+                   
                    dayCounter=choiceItem("Thirty360",
-                   values=c("Actual360","Actual360FixEd","ActualActual",
-                   "ActualBusiness252","OneDayCounter",
-                   "SimpleDayCounter","Thirty360" )),
-
+                     values=c("Actual360","Actual360FixEd","ActualActual",
+                       "ActualBusiness252","OneDayCounter",
+                       "SimpleDayCounter","Thirty360" )),
+                   
                    period=choiceItem("Semiannual",
-                   values=c("NoFrequency", "Once", "Annual",
-                   "Semiannual", "EveryFourthMonth",
-                   "Quarterly", "BiMonthtly",
-                   "Monthly", "EveryFourthWeek",
-                   "BiWeekly", "Weekly", "Daily"
-                   )),
+                     values=c("NoFrequency", "Once", "Annual",
+                       "Semiannual", "EveryFourthMonth",
+                       "Quarterly", "BiMonthtly",
+                       "Monthly", "EveryFourthWeek",
+                       "BiWeekly", "Weekly", "Daily"
+                       )),
                    dateGeneration=choiceItem("Backward",
-                   values=c("Backward", "Forward",
-                   "Zero","ThirdWednesday",
-                   "Twentieth","TwentiethIMM")),
-
-                                        #zero bond params
-                   issueDate=dateItem(),
-                   maturityDate=dateItem(),
-                   faceAmount=numericItem(100),
-                   redemption=numericItem(100),
+                     values=c("Backward", "Forward",
+                       "Zero","ThirdWednesday",
+                       "Twentieth","TwentiethIMM")),
+                 
+                   #zero bond params
+                   issueDate=dateItem(label="Issue Date"),
+                   maturityDate=dateItem(label="Maturity Date"),
+                   faceAmount=numericItem(100, label="Face Amount"),
+                   redemption=numericItem(100, label="Redemption"),
                    discountCurveObj=stringItem(show_label=FALSE),
 
 
-                                        #fixed rate bond params
-                   fixedBond.issueDate=dateItem(Sys.Date()),
-                   fixedBond.maturityDate=dateItem(Sys.Date()),
-                   fixedBond.faceAmount=numericItem(100),
-                   fixedBond.redemption=numericItem(100),
-                   fixedBond.rates=numericItem(),
-
-                                        #output values
+                   #fixed rate bond params
+                   fixedBond.issueDate=dateItem(Sys.Date(),
+                     label="Issue Date"),
+                   fixedBond.maturityDate=dateItem(Sys.Date(),
+                     label="Maturity Date"),
+                   fixedBond.faceAmount=numericItem(100, label="Face Amount"),
+                   fixedBond.redemption=numericItem(100, label="Redemption"),                   
+                   fixedBond.rates=numericItem("", label="Rates"),
+                   
+                   #output values
                    NPV=numericItem("", label='NPV'),
                    cleanPrice=numericItem("", label='Clean price'),
                    dirtyPrice=numericItem("", label='Dirty price'),
@@ -231,95 +270,85 @@ bondGUI <- function(){
                    cf=graphicDeviceItem()
                    ),
 
-                   title="RQuantLib common bonds pricing GUI",
-                   buttons=c("OK", "Build curve", "FittedBondCurve"),
+                 title="RQuantLib common bonds pricing GUI",
+                 buttons=c("OK", "Build curve", "FittedBondCurve"),
 
-                   OK_handler=function(.){
-                       lst <- .$to_R()
+                 OK_handler=function(.){
+                   lst <- .$to_R()
 
+                   #get the ID of selected tab
+                   view <- .$gui_layout
+                   nb <- view$children[[1]]$children[[1]]$container                   
 
-                       bond <- list(faceAmount=lst$faceAmount,
-                                    issueDate=as.Date(lst$issueDate),
-                                    maturityDate=as.Date(lst$maturityDate),
-                                    redemption=lst$redemption)
-                       dateparams <-list(settlementDays=lst$settlementDays,
-                                         calendar=lst$calendar,
-                                         businessDayConvention=lst$businessDayConvention)
-                       discountCurve <- get(lst$discountCurveObj)
-                       ret <- ZeroCouponBond(bond, discountCurve, dateparams)
-                       .$set_NPV(ret$NPV)
-                       .$set_cleanPrice(ret$cleanPrice)
-                       .$set_dirtyPrice(ret$dirtyPrice)
-                       .$set_yield(ret$yield)
-                       plot(x=ret$cashFlow$Date, y=ret$cashFlow$Amount,
-                            xlab='Date', ylab='Amount')
-                   },
-
-                   Buildcurve_handler=function(.){
-                       discountBuilder()
-                   },
-
-                   FittedBondCurve_handler=function(.){
-                       fittedBondBuilder()
+                   ret <- 0
+                   if (svalue(nb)==1) {
+                     ret <- zeroBond(.)
                    }
-                   )
-    view <- aGroup(aContainer(
+                   else if (svalue(nb)==2) {
+                     ret <- fixedBond(.)
+                   }
+                   else if (svalue(nb)==3) {
+                     ret <- floatBond(.)
+                   }                   
+                   
+                   .$set_NPV(ret$NPV)
+                   .$set_cleanPrice(ret$cleanPrice)
+                   .$set_dirtyPrice(ret$dirtyPrice)
+                   .$set_yield(ret$yield)
+                   plot(x=ret$cashFlow$Date, y=ret$cashFlow$Amount,
+                        xlab='Date', ylab='Amount')
+                 },
+                 
+                 Buildcurve_handler=function(.){
+                   discountBuilder()
+                 },
+                 
+                 FittedBondCurve_handler=function(.){
+                   fittedBondBuilder()
+                 }
+                 )
+  view  <- aGroup(aContainer(
+                              aNotebook(
+                                        aNotebookPage(
+                                                      aFrame(aContainer("issueDate",
+                                                                        "maturityDate",
+                                                                        "faceAmount",
+                                                                        "redemption"),
+                                                             label="Zero Bond Parameters"
+                                                             ),
+                                                      label="Zero Coupon Bond"),
+                                        aNotebookPage(
+                                                      aFrame(aContainer("fixedBond.issueDate",
+                                                                        "fixedBond.maturityDate",
+                                                                        "fixedBond.rates",
+                                                                        "fixedBond.faceAmount",
+                                                                        "fixedBond.redemption"),
+                                                             label="Fixed Rate Bond Parameters"
+                                                             ),
+                                                      label="Fixed Rate Bond"),
+                                        aNotebookPage(
+                                                      label="Floating Rate Bond")
+                                        ),
                               aFrame(aContainer("settlementDays", "calendar",
                                                 "dayCounter", "period",
                                                 "businessDayConvention",
                                                 "terminationDateConvention",
-                                                "dateGeneration"),
-                                     label="DateParameters"),
-                              aFrame(aContainer("issueDate", "maturityDate", "faceAmount", "redemption"),
-                                     label="BondParam"),
-                              aFrame(aContainer("discountCurveObj"),label="Discount Curve")),
+                                                "dateGeneration"
+                                                ),
+                                     label="DateParameters"
+                                     ),
+                              aFrame(aContainer("discountCurveObj"),
+                                     label="Discount Curve"
+                                     )                              
+                              ),
                    aContainer(aFrame(aContainer("NPV","cleanPrice",
-                                                "dirtyPrice","yield","cf"),label="Result")),
+                                                "dirtyPrice","yield","cf"),
+                                     label="Result"
+                                     )
+                              ),                   
                    horizontal=TRUE
-                   )
-
-    view2  <- aGroup(aContainer(
-                                aNotebook(
-                                          aNotebookPage(
-                                                        aFrame(aContainer("issueDate",
-                                                                          "maturityDate",
-                                                                          "faceAmount",
-                                                                          "redemption"),
-                                                               label="Zero Bond Parameters"
-                                                               ),
-                                                        label="Zero Coupon Bond"),
-                                          aNotebookPage(
-                                                        aFrame(aContainer("fixedBond.issueDate",
-                                                                          "fixedBond.maturityDate",
-                                                                          "fixedBond.rates",
-                                                                          "fixedBond.faceAmount",
-                                                                          "fixedBond.redemption"),
-                                                               label="Fixed Rate Bond Parameters"
-                                                               ),
-                                                        label="Fixed Rate Bond"),
-                                          aNotebookPage(
-                                                        label="Floating Rate Bond")
-                                          ),
-                                aFrame(aContainer("settlementDays", "calendar",
-                                                  "dayCounter", "period",
-                                                  "businessDayConvention",
-                                                  "terminationDateConvention",
-                                                  "dateGeneration"
-                                                  ),
-                                       label="DateParameters"
-                                       ),
-                                aFrame(aContainer("discountCurveObj"),
-                                       label="Discount Curve"
-                                       )
-                                ),
-                     aContainer(aFrame(aContainer("NPV","cleanPrice",
-                                                  "dirtyPrice","yield","cf"),
-                                       label="Result"
-                                       )
-                                ),
-                     horizontal=TRUE
-                     )
-
-    dlg$make_gui(gui_layout=view2)
+               )
+  
+  dlg$make_gui(gui_layout=view)
 }
 
