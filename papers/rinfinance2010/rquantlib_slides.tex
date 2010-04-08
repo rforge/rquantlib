@@ -1,3 +1,4 @@
+
 %% add 'handout' option for handouts, and pgfpages for 2-on-1
 %\documentclass[smaller,compress]{beamer}   
 \documentclass[compress]{beamer}   
@@ -29,57 +30,55 @@
   \titlepage
 \end{frame}
 
-\iffalse
-\section{Introduction (draft, just an idea)}
-\begin{frame}
-  \frametitle{Overview}
-  \framesubtitle{Presentation details}
-  \begin{itemize}
-\small
-  \item Brief overview of QuantLib
-    \begin{itemize}
-    \item History, about to release 1.0 after eight long years
-    \item Luigi's design document draft, mention rigorous design, unit
-      tests, boost, 'grown up C++'
-    \item Maybe mention different language bindings
-    \item Maybe mention liberal QL license; R / RQuantLib with GPL somewhat
-      tighter but in spirit of R community
-    \end{itemize}
-  \item RQuantLib maybe chronologically
-    \begin{itemize}
-    \item Equity options part
-    \item Simple calendaring
-    \item Mention the older fixed income / curve stuff without dwelling on it
-    \end{itemize}
-  \item Fixed Income / GSoC 2009
-    \begin{itemize}
-    \item Khanh ....
-    \item More Khanh ...
-    \end{itemize}
-  \item Total of somewhere between 20 and 30 pages
-  \item Finish with Outlook / Agenda / Areas not yet covered
-  \end{itemize}
-\end{frame}
-\fi
+% \section{Introduction (draft, just an idea)}
+% \begin{frame}
+%   \frametitle{Overview}
+%   \framesubtitle{Presentation details}
+%   \begin{itemize}
+% \small
+%   \item Brief overview of QuantLib
+%     \begin{itemize}
+%     \item History, about to release 1.0 after eight long years
+%     \item Luigi's design document draft, mention rigorous design, unit
+%       tests, boost, 'grown up C++'
+%     \item Maybe mention different language bindings
+%     \item Maybe mention liberal QL license; R / RQuantLib with GPL somewhat
+%       tighter but in spirit of R community
+%     \end{itemize}
+%   \item RQuantLib maybe chronologically
+%     \begin{itemize}
+%     \item Equity options part
+%     \item Simple calendaring
+%     \item Mention the older fixed income / curve stuff without dwelling on it
+%     \end{itemize}
+%   \item Fixed Income / GSoC 2009
+%     \begin{itemize}
+%     \item Khanh ....
+%     \item More Khanh ...
+%     \end{itemize}
+%   \item Total of somewhere between 20 and 30 pages
+%   \item Finish with Outlook / Agenda / Areas not yet covered
+%   \end{itemize}
+% \end{frame}
 
 \section{QuantLib}
 \subsection{Overview}
 \begin{frame}
   \frametitle{A brief introduction to QuantLib}
-  \framesubtitle{WORK IN PROGRESS...}
+  \framesubtitle{What is it, and who wrote is behind it?}
   \begin{columns}
     \begin{column}{1.5in}
       \includegraphics[width=1.5in]{figures/ql-svn.pdf}
     \end{column}
     
-    \begin{column}{3in}
+    \begin{column}{3.1in}
       \begin{itemize}
-      \item \QL was started in 2001 and is hosted on Sourceforge.Net
-      \item \QL is primarily the work of Ferdinando
-        Ametrano and Luigi Ballabio, with a supporting cast of other
-        contributors. 
+      \item \QL is a C++ library for financial quantitative analysts and developers.
+      \item \QL was started in 2000 and is hosted on Sourceforge.Net
       \item \QL is a free software project under a very liberal license allowing
         for inclusion in commercial projects.
+      \item \QL is primarily the work of Ferdinando Ametrano and Luigi Ballabio.
+        %with a supporting cast of other contributors. 
       \item \QL is sponsored by the Italian consultancy StatPro which derives
         consulting income from it. 
       \end{itemize}
@@ -87,26 +86,11 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}
-  \frametitle{QuantLib architecture}
-  \framesubtitle{WORK IN PROGRESS...}
-  \begin{itemize}
-  \item \QL is written in C++ and fairly rigourously designed.
-  \item Luigi Ballabio has draft chapters on the \QL design and
-    implementation at \url{http://sites.google.com/site/luigiballabio/qlbook}.
-  \item \QL makes extensive use of Swig and bindings for OCaml, Java, Perl,
-    Python, Ruby, C\#, ... exist.
-  \item Several \textsl{manual} (non-SWIG) extension such as \pkg{RQuantLib}
-    exist as well.
-  \item Eric Ehlers has written an object-handler extension that provides support for spreadsheet
-    integration.
-  \end{itemize}
-\end{frame}
 
-\subsection{TImeline}
+\subsection{Timeline}
 \begin{frame}
   \frametitle{QuantLib releases}
-  \framesubtitle{WORK IN PROGRESS... this does not look that good yet}
+  \framesubtitle{Showing the growth of QuantLib over time}
 
   \begin{columns}
     % \begin{column}{1.25in}
@@ -165,56 +149,133 @@
     
     \begin{column}{2in}
       \begin{itemize}
-      \item Initial release 0.1.1 in Nov 2000
-      \item 1st Debian pkg in May 2001
-      \item Boost since Jul 2004
-      \item 1.0.0 in Feb 2010
+      \item The initial release was 0.1.1 in Nov 2000
+      \item The first Debian package was prepared in May 2001
+      \item Boost has been a requirement since July 2004
+      \item The long awaited 1.0.0 release appeared in Feb 2010
       \end{itemize}
     \end{column}
-
   \end{columns}
+\end{frame}
+
+\subsection{Architecture}
+\begin{frame}
+  \frametitle{QuantLib Architecture}
+  \framesubtitle{How is it put togetherm and how do I use it?}
+  \begin{itemize}
+  \item \QL is written in C++ and fairly rigourously designed. 
+  \item Luigi Ballabio has draft chapters on the \QL design and
+    implementation at \url{http://sites.google.com/site/luigiballabio/qlbook}.
+  \item \QL use the Boost testing framework and employs hundreds
+    of detailed unit tests. 
+  \item \QL makes extensive use of Swig and bindings for Java, Perl, 
+    Python, Ruby, C\#, Guile ... exist. 
+  \item QuantLibAddin exports a procedural interface to a number of platforms
+    including Excel and Oo Calc.
+  \item Several \textsl{manual} (non-SWIG) extension such as \pkg{RQuantLib}
+    exist as well.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Key Modules}
+  \framesubtitle{A rough guide, slight re-arranged from the QuantLib documentation}
+  \begin{itemize}
+  \item Currencies and FX rates
+  \item Date and time calculations (Calendars, Day Counters)
+  \item Pricing engines (Asian, Barrier, Basket, Cap/Floor, Cliquet, Forward, Quanto,
+    Swaption, Vanilla)
+  \item Finite-differences framework
+  \item Fixed-Income (Short-rate modelling, Term structures)
+  \item Financial instruments
+  \item Math tools (Lattice method, Monte Carlo Framework, Stochastic Process)
+  \item Utilities (Numeric types, Design patterns, Output manipulators)
+  \item QuantLib macros (Numeric limits, Debugging)
+  \end{itemize}
+\end{frame}
+
+\subsection{Examples}
+\begin{frame}[fragile]
+  \frametitle{Options: Fifteen solutions and three different exercises}
+\tiny
+  \begin{verbatim}
+$ EquityOption
+
+Option type = Put
+Maturity = May 17th, 1999
+Underlying price = 36
+Strike = 40
+Risk-free interest rate = 6.000000 %
+Dividend yield = 0.000000 %
+Volatility = 20.000000 %
+
+
+Method                             European      Bermudan      American
+Black-Scholes                      3.844308      N/A           N/A
+Barone-Adesi/Whaley                N/A           N/A           4.459628
+Bjerksund/Stensland                N/A           N/A           4.453064
+Integral                           3.844309      N/A           N/A
+Finite differences                 3.844342      4.360807      4.486118
+Binomial Jarrow-Rudd               3.844132      4.361174      4.486552
+Binomial Cox-Ross-Rubinstein       3.843504      4.360861      4.486415
+Additive equiprobabilities         3.836911      4.354455      4.480097
+Binomial Trigeorgis                3.843557      4.360909      4.486461
+Binomial Tian                      3.844171      4.361176      4.486413
+Binomial Leisen-Reimer             3.844308      4.360713      4.486076
+Binomial Joshi                     3.844308      4.360713      4.486076
+MC (crude)                         3.834522      N/A           N/A
+QMC (Sobol)                        3.844613      N/A           N/A
+MC (Longstaff Schwartz)            N/A           N/A           4.481675
+
+Run completed in 5 s
+
+  \end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Errors from discrete hedging (Derman and Kamal)}
+{ \tiny
+  \begin{verbatim}
+$ DiscreteHedging
+
+Option value: 2.51207
+
+         |          |      P&L |      P&L | Derman&Kamal |      P&L |      P&L
+ samples |   trades |     mean | std.dev. |      formula | skewness | kurtosis
+------------------------------------------------------------------------------
+   50000 |       21 |   -0.001 |     0.43 |         0.44 |    -0.33 |     1.56
+   50000 |       84 |    0.000 |     0.22 |         0.22 |    -0.20 |     1.68
+
+Run completed in 16 s
+  \end{verbatim}
+}
+
+Other examples include \texttt{SwapValuation}, \texttt{Repo},
+\texttt{Replication}, \texttt{FRA}, \texttt{FittedBondCurve}, \texttt{Bonds},
+\texttt{BermudanSwaption}, \texttt{CDS}, \texttt{ConvertibleBonds},
+\texttt{CallableBonds} and \texttt{MarketModels}
+
 \end{frame}
 
 \section{RQuantLib}
 \subsection{Overview}
+\subsection{Key components}
 \begin{frame}
   \frametitle{Overview}
   \begin{itemize}
-  \item Initially: Standard Equity Options, both vanilla and exotics
-  \item First (external) contribution: Curves and Swaption
+  \item Initial implementation: Standard equity option pricing:
+    \begin{itemize}
+      \item pricers and greeks for European and American options
+      \item first set of exotics using barrier and binaries
+      \item also implied volatility calculations where available
+    \end{itemize}
+  \item First external contribution: Curves and Swaption pricing.
   \item Second external contribution (as Google Summer of Code): Fixed Income
-    Functionality
+    Functionality (more on this below)
+  \item Other small extensions on date and holiday calculations.
   \end{itemize}
 \end{frame}
 
-%\begin{frame}[fragile]  % fragile important when lstlisting used
-%  \frametitle{We can do code}
-%  \framesubtitle{Thanks to lstlisting}
-%
-%\lstset{language=C++,basicstyle=\tiny}
-%\begin{lstlisting}
-%#include <Rcpp.hpp>
-%
-%RcppExport SEXP dd_rcpp(SEXP v) {
-%  SEXP  rl = R_NilValue;             // Use this when nothing is returned
-%
-%  RcppVector<int> vec(v);            // vec parameter viewed as vector of doubles
-%  int n = vec.size(), i = 0;
-%
-%  for (int a = 0; a < 9; a++)
-%    for (int b = 0; b < 9; b++)
-%      for (int c = 0; c < 9; c++)
-%        for (int d = 0; d < 9; d++)
-%          vec(i++) = a*b - c*d;
-%
-%  RcppResultSet rs;                  // Build result set returned as list to R
-%  rs.add("vec", vec);                // vec as named element with name 'vec'
-%  rl = rs.getReturnList();           // Get the list to be returned to R.
-%
-%  return rl;
-%}
-%\end{lstlisting}
-%\end{frame}
 
 \section{Fixed Income}
 \subsection{Overview and development}
@@ -737,7 +798,6 @@ RQuantLib also comes with an user interface via the 'traitr' package by professo
 	\resizebox{90mm}{!}{\includegraphics{figures/bondGUI.png}}
 \end{center}
 \end{frame}
-
 
 
 \end{document}
