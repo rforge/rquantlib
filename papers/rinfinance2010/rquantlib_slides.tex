@@ -525,17 +525,34 @@ Fitting a curve to a set of bonds. The data is taken from codes shipped with Qua
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Bond pricing}	
-In this example, we construct a bond discounting term structure and a swap term structure then use them to price a zero coupon bond and a fixed rate bond. 
+We construct a bond discounting term structure and then use it to price a zero coupon bond and a fixed rate bond. 
+\newline
+\newline
+All the input data and dates are taken from the bond pricing example shipped with QuantLib.
+\newline
 \vskip5pt
 \pagecolor{bgcolor}
 \noindent
 \scriptsize
 \ttfamily
+\hlslc{\#we\ start\ with\ date\ parameters}\hspace*{\fill}\\
 \hlstd{fixingDays\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{3}\hspace*{\fill}\\
 \hlstd{settlementDays\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{3}\hspace*{\fill}\\
 \hlstd{settlementDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2008{-}09{-}18'}\hlstd{}\hlsym{)}\hspace*{\fill}\\
 \hlstd{todaysDate\ }\hlsym{$<${-}\ }\hlstd{settlementDate\ }\hlsym{{-}\ }\hlstd{fixingDays}\hspace*{\fill}\\
-\hlslc{\#begin\ to\ set\ up\ bond\ discounting\ term\ structure}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Bond pricing}	
+\vskip5pt
+\pagecolor{bgcolor}
+\noindent
+\scriptsize
+\ttfamily
+\hlslc{\#set\ up\ bond\ discounting\ term\ structure}\hspace*{\fill}\\
 \hlstd{lengths\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{5}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{6}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{7}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{16}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{48}\hlstd{}\hlsym{)}\hspace*{\fill}\\
 \hlstd{coupons\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0.02375}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.04625}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.03125}\hlstd{}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.04000}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.04500}\hlstd{}\hlsym{)}\hspace*{\fill}\\
@@ -553,31 +570,6 @@ In this example, we construct a bond discounting term structure and a swap term 
 \normalfont
 \end{frame}
 
-\begin{frame}
-	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Examples: Bond pricing}
-\pagecolor{bgcolor}
-\noindent
-\scriptsize
-\ttfamily
-\hlstd{}\hlslc{\#begin\ to\ set\ up\ swap\ term\ structure}\hspace*{\fill}\\
-\hlstd{swp.tsr.params\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{tradeDate}\hlsym{=}\hlstd{todaysDate}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settleDate}\hlsym{=}\hlstd{todaysDate}\hlsym{+}\hlstd{}\hlnum{2}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwc{dt}\hlstd{}\hlsym{=}\hlstd{}\hlnum{0.25}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{interpWhat}\hlsym{=}\hlstd{}\hlstr{"discount"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{interpHow}\hlsym{=}\hlstd{}\hlstr{"loglinear"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{market.quotes\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{d1w}\hlsym{=}\hlstd{}\hlnum{0.043375}\hlstd{}\hlsym{,\ }\hlstd{d1m}\hlsym{=}\hlstd{}\hlnum{0.031875}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{d3m}\hlsym{=}\hlstd{}\hlnum{0.0320375}\hlstd{}\hlsym{,\ }\hlstd{d6m}\hlsym{=}\hlstd{}\hlnum{0.03385}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{d9m}\hlsym{=}\hlstd{}\hlnum{0.0338125}\hlstd{}\hlsym{,\ }\hlstd{d1y}\hlsym{=}\hlstd{}\hlnum{0.0335125}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{s2y}\hlsym{=}\hlstd{}\hlnum{0.0295}\hlstd{}\hlsym{,\ }\hlstd{s3y}\hlsym{=}\hlstd{}\hlnum{0.0323}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{s5y}\hlsym{=}\hlstd{}\hlnum{0.0359}\hlstd{}\hlsym{,\ }\hlstd{s10y}\hlsym{=}\hlstd{}\hlnum{0.0412}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{s15y}\hlsym{=}\hlstd{}\hlnum{0.0433}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{depoSwpTsr\ }\hlsym{$<${-}\ }\hlstd{DiscountCurve}\hlsym{(}\hlstd{swp.tsr.params}\hlsym{,\ }\hlstd{market.quotes}\hlsym{)}\hlstd{}\hspace*{\fill}\\
-\mbox{}
-\normalfont
-\end{frame}
-
-
 \begin{frame}[fragile]
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Bond pricing}	
@@ -585,7 +577,7 @@ In this example, we construct a bond discounting term structure and a swap term 
 \noindent
 \scriptsize
 \ttfamily
-\hlstd{}\hlslc{\#Zero{-}Coupon\ Bond}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#Set\ up\ a\ Zero{-}Coupon\ Bond}\hspace*{\fill}\\
 \hlstd{zc.bond.param\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{maturityDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2013{-}08{-}15'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{issueDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2003{-}08{-}15'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
@@ -594,6 +586,7 @@ In this example, we construct a bond discounting term structure and a swap term 
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{refDate}\hlsym{=}\hlstd{todaysDate}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settlementDays}\hlsym{=}\hlstd{settlementDays}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{businessDayConvention}\hlsym{=}\hlstd{}\hlstr{'Following'}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#Call\ the\ pricing\ function}\hspace*{\fill}\\
 \hlstd{ZeroCouponBond}\hlsym{(}\hlstd{zc.bond.param}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{bondDsctTsr}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{zc.bond.dateparam}\hlsym{)}\hlstd{}\hspace*{\fill}\\
@@ -608,7 +601,7 @@ In this example, we construct a bond discounting term structure and a swap term 
 \noindent
 \scriptsize
 \ttfamily
-\hlstd{}\hlslc{\#Fixed{-}Coupon\ Bond}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#Set\ up\ a\ Fixed{-}Coupon\ Bond}\hspace*{\fill}\\
 \hlstd{fixed.bond.param\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{maturityDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2017{-}05{-}15'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{issueDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2007{-}05{-}15'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
@@ -623,6 +616,7 @@ In this example, we construct a bond discounting term structure and a swap term 
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dateGeneration}\hlsym{=}\hlstd{}\hlstr{'Backward'}\hlstd{}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{endOfMonth}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{)}\hspace*{\fill}\\
 \hlstd{fixed.bond.coupon\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0.045}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#Call\ the\ pricing\ function}\hspace*{\fill}\\
 \hlstd{FixedRateBond}\hlsym{(}\hlstd{fixed.bond.param}\hlsym{,\ }\hlstd{fixed.bond.coupon}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{bondDsctTsr}\hlsym{,\ }\hlstd{fixed.bond.dateparam}\hlsym{)}\hlstd{}\hspace*{\fill}\\
 \mbox{}
@@ -685,40 +679,34 @@ end
 Doing it in R using RQuantLib....
 \vskip5pt
 \tiny
+
 \pagecolor{bgcolor}
 \noindent
 \ttfamily
-\hlstd{params\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{tradeDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2002{-}01{-}02'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settleDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2002{-}01{-}02'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlkwc{dt}\hlstd{}\hlsym{=}\hlstd{}\hlnum{.25}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{interpWhat}\hlsym{=}\hlstd{}\hlstr{"discount"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{interpHow}\hlsym{=}\hlstd{}\hlstr{"loglinear"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{times\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{seq}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,}\hlstd{}\hlnum{10}\hlstd{}\hlsym{,}\hlstd{}\hlnum{.1}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{\hspace*{\fill}\\
-RiskFreeRate\ }\hlsym{$<${-}\ }\hlstd{DiscountCurve}\hlsym{(}\hlstd{params}\hlsym{,\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{flat}\hlsym{=}\hlstd{}\hlnum{0.05}\hlstd{}\hlsym{),}\hlstd{times}\hlsym{)}\hspace*{\fill}\\
-\hlstd{Sigma\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{0.3}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#set\ up\ a\ flat\ risk\ free\ curve}\hspace*{\fill}\\
+\hlstd{params\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{tradeDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2002{-}01{-}02"}\hlstd{}\hlsym{),\ }\hlstd{settleDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2002{-}01{-}02"}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{interpWhat}\hlsym{=}\hlstd{}\hlstr{"discount"}\hlstd{}\hlsym{,\ }\hlstd{interpHow}\hlsym{=}\hlstd{}\hlstr{"loglinear"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{RiskFreeRate\ }\hlsym{$<${-}\ }\hlstd{DiscountCurve}\hlsym{(}\hlstd{params}\hlsym{,\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{flat}\hlsym{=}\hlstd{}\hlnum{0.05}\hlstd{}\hlsym{),}\hlstd{times}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#parameters\ of\ the\ convertible\ bond}\hspace*{\fill}\\
 \hlstd{ConvRatio\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{1}\hspace*{\fill}\\
-\hlstd{issueDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2002{-}01{-}02'}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{settleDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2002{-}01{-}02'}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{maturityDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2007{-}01{-}02'}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{issueDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2002{-}01{-}02"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{settleDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2002{-}01{-}02"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{maturityDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2007{-}01{-}02"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
 \hlstd{dividendYield\ }\hlsym{$<${-}\ }\hlstd{DiscountCurve}\hlsym{(}\hlstd{params}\hlsym{,\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{flat}\hlsym{=}\hlstd{}\hlnum{0.01}\hlstd{}\hlsym{),}\hlstd{times}\hlsym{)}\hspace*{\fill}\\
-\hlstd{dividendSchedule\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Type}\hlsym{=}\hlstd{}\hlkwc{character}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{),}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Amount}\hlsym{=}\hlstd{}\hlkwc{numeric}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{),}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Rate}\hlsym{=}\hlstd{}\hlkwc{numeric}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{),}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Date}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlkwc{character}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{)))}\hspace*{\fill}\\
-\hlstd{callabilitySchedule\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Price}\hlsym{=}\hlstd{}\hlnum{110}\hlstd{}\hlsym{,\ }\hlstd{Type}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Date}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2004{-}01{-}02'}\hlstd{}\hlsym{))}\hspace*{\fill}\\
-\hlstd{process\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{underlying}\hlsym{=}\hlstd{}\hlnum{40}\hlstd{}\hlsym{,\ }\hlstd{divYield}\hlsym{=}\hlstd{dividendYield}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{rff}\hlsym{=}\hlstd{RiskFreeRate}\hlsym{,\ }\hlstd{volatility}\hlsym{=}\hlstd{Sigma}\hlsym{)}\hspace*{\fill}\\
-\hlstd{\hspace*{\fill}\\
-bondparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{exercise}\hlsym{=}\hlstd{}\hlstr{"eu"}\hlstd{}\hlsym{,\ }\hlstd{faceAmount}\hlsym{=}\hlstd{}\hlnum{100}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{dividendSchedule\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Type}\hlsym{=}\hlstd{}\hlkwc{character}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{),\ }\hlstd{Amount}\hlsym{=}\hlstd{}\hlkwc{numeric}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Rate}\hlsym{=}\hlstd{}\hlkwc{numeric}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{),\ }\hlstd{Date}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlkwc{character}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{)))}\hspace*{\fill}\\
+\hlstd{callabilitySchedule\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Price}\hlsym{=}\hlstd{}\hlnum{110}\hlstd{}\hlsym{,\ }\hlstd{Type}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,\ }\hlstd{Date}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2004{-}01{-}02"}\hlstd{}\hlsym{))}\hspace*{\fill}\\
+\hlstd{coupon\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{0.04}\hspace*{\fill}\\
+\hlstd{dateparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{settlementDays}\hlsym{=}\hlstd{}\hlnum{3}\hlstd{}\hlsym{,\ }\hlstd{period}\hlsym{=}\hlstd{}\hlstr{"Semiannual"}\hlstd{}\hlsym{,\ }\hlstd{todayDate}\hlsym{=}\hlstd{issueDate}\hlsym{)}\hspace*{\fill}\\
+\hlstd{bondparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{exercise}\hlsym{=}\hlstd{}\hlstr{"eu"}\hlstd{}\hlsym{,\ }\hlstd{faceAmount}\hlsym{=}\hlstd{}\hlnum{100}\hlstd{}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{divSch}\hlsym{=}\hlstd{dividendSchedule}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{callSch}\hlsym{=}\hlstd{callabilitySchedule}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{redemption}\hlsym{=}\hlstd{}\hlnum{100}\hlstd{}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{creditSpread}\hlsym{=}\hlstd{}\hlnum{0.005}\hlstd{}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{conversionRatio}\hlsym{=}\hlstd{ConvRatio}\hlsym{,}\hspace*{\fill}\\
 \hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{issueDate}\hlsym{=}\hlstd{issueDate}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{maturityDate}\hlsym{=}\hlstd{maturityDate}\hlsym{)}\hlstd{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{maturityDate}\hlsym{=}\hlstd{maturityDate}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
 \mbox{}
 \normalfont
 \end{frame}
@@ -729,38 +717,32 @@ bondparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{exercis
 \noindent
 \tiny
 \ttfamily
-\hlstd{\hspace*{\fill}\\
-dateparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{settlementDays}\hlsym{=}\hlstd{}\hlnum{3}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dayCounter}\hlsym{=}\hlstd{}\hlstr{"Thirty360"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{period}\hlsym{=}\hlstd{}\hlstr{"Semiannual"}\hlstd{}\hlsym{,\ }\hlstd{calendar}\hlsym{=}\hlstd{}\hlstr{"us"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{businessDayConvention}\hlsym{=}\hlstd{}\hlstr{"Following"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{todayDate}\hlsym{=}\hlstd{issueDate}\hlsym{)}\hspace*{\fill}\\
-\hlstd{coupon\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{0.04}\hspace*{\fill}\\
-\hlstd{\hspace*{\fill}\\
-ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlslc{\#arguments\ to\ construct\ a\ BlackScholes\ process\ and\ set\ up\ the\ binomial\ pricing\ process}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#engine\ for\ this\ bond.}\hspace*{\fill}\\
+\hlstd{Sigma\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{0.3}\hspace*{\fill}\\
+\hlstd{process\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{underlying}\hlsym{=}\hlstd{}\hlnum{40}\hlstd{}\hlsym{,\ }\hlstd{divYield}\hlsym{=}\hlstd{dividendYield}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{rff}\hlsym{=}\hlstd{RiskFreeRate}\hlsym{,\ }\hlstd{volatility}\hlsym{=}\hlstd{Sigma}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#loop\ through\ underlying\ price\ and\ spread\ to\ produce\ similar\ analysis\ to\ Matlab}\hspace*{\fill}\\
+\hlstd{ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{()}\hspace*{\fill}\\
 \hlstd{}\hlkwa{for\ }\hlstd{}\hlsym{(}\hlstd{s\ }\hlkwa{in\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.005}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.010}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.015}\hlstd{}\hlsym{))\{}\hspace*{\fill}\\
-\hlstd{\hspace*{\fill}\\
-}\hlstd{\ \ }\hlstd{x\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{()}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ }\hlstd{y\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{()}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ }\hlstd{i\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{1}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ }\hlstd{}\hlkwa{for\ }\hlstd{}\hlsym{(}\hlstd{p\ }\hlkwa{in\ }\hlstd{}\hlkwc{seq}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{100}\hlstd{}\hlsym{,\ }\hlstd{}\hlkwc{by\ }\hlstd{}\hlsym{=\ }\hlstd{}\hlnum{10}\hlstd{}\hlsym{))\ \{}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ }\hlstd{process\$underlying\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{40}\hlstd{}\hlsym{+}\hlstd{p\hspace*{\fill}\\
-}\hlstd{\ \ \ \ }\hlstd{bondparams\$creditSpread\ }\hlsym{$<${-}\ }\hlstd{s\hspace*{\fill}\\
-}\hlstd{\ \ \ \ }\hlstd{}\hlkwc{t\ }\hlstd{}\hlsym{$<${-}\ }\hlstd{ConvertibleFixedCouponBond}\hlsym{(}\hlstd{bondparams}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{coupon}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{process}\hlsym{,}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dateparams}\hlsym{)}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ }\hlstd{x}\hlsym{{[}}\hlstd{i}\hlsym{{]}\ $<${-}\ }\hlstd{p\ }\hlsym{+\ }\hlstd{}\hlnum{40}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ \ \ }\hlstd{y}\hlsym{{[}}\hlstd{i}\hlsym{{]}\ $<${-}\ }\hlstd{}\hlkwc{t}\hlstd{\$cleanPrice\hspace*{\fill}\\
-}\hlstd{\ \ \ \ }\hlstd{i\ }\hlsym{$<${-}\ }\hlstd{i\ }\hlsym{+\ }\hlstd{}\hlnum{1}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ }\hlstd{}\hlsym{\}}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ }\hlstd{z\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rep}\hlstd{}\hlsym{(}\hlstd{s}\hlsym{,\ }\hlstd{}\hlnum{11}\hlstd{}\hlsym{)}\hspace*{\fill}\\
-\hlstd{}\hlstd{\ \ }\hlstd{ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rbind}\hlstd{}\hlsym{(}\hlstd{ret}\hlsym{,\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Stock}\hlsym{=}\hlstd{x}\hlsym{,}\hlstd{ConvPrice}\hlsym{=}\hlstd{y}\hlsym{,}\hlstd{z}\hlsym{))}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{x\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{y\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{i\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{1}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{}\hlkwa{for\ }\hlstd{}\hlsym{(}\hlstd{p\ }\hlkwa{in\ }\hlstd{}\hlkwc{seq}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{100}\hlstd{}\hlsym{,\ }\hlstd{}\hlkwc{by\ }\hlstd{}\hlsym{=\ }\hlstd{}\hlnum{10}\hlstd{}\hlsym{))\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ }\hlstd{process\$underlying\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{40}\hlstd{}\hlsym{+}\hlstd{p\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ }\hlstd{bondparams\$creditSpread\ }\hlsym{$<${-}\ }\hlstd{s\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ }\hlstd{}\hlkwc{t\ }\hlstd{}\hlsym{$<${-}\ }\hlstd{ConvertibleFixedCouponBond}\hlsym{(}\hlstd{bondparams}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{coupon}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{process}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dateparams}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ }\hlstd{x}\hlsym{{[}}\hlstd{i}\hlsym{{]}\ $<${-}\ }\hlstd{p\ }\hlsym{+\ }\hlstd{}\hlnum{40}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ }\hlstd{y}\hlsym{{[}}\hlstd{i}\hlsym{{]}\ $<${-}\ }\hlstd{}\hlkwc{t}\hlstd{\$cleanPrice\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ }\hlstd{i\ }\hlsym{$<${-}\ }\hlstd{i\ }\hlsym{+\ }\hlstd{}\hlnum{1}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{}\hlsym{\}}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{z\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rep}\hlstd{}\hlsym{(}\hlstd{s}\hlsym{,\ }\hlstd{}\hlnum{11}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rbind}\hlstd{}\hlsym{(}\hlstd{ret}\hlsym{,\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Stock}\hlsym{=}\hlstd{x}\hlsym{,}\hlstd{ConvPrice}\hlsym{=}\hlstd{y}\hlsym{,}\hlstd{z}\hlsym{))}\hspace*{\fill}\\
 \hlstd{}\hlsym{\}}\hspace*{\fill}\\
-
 \hlstd{}\hspace*{\fill}\\
-\hspace*{\fill}\\
-\hspace*{\fill}\\
 \mbox{}
 \normalfont
 \end{frame}
@@ -771,6 +753,7 @@ ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{()}\hspace*{\fill
 \pagecolor{bgcolor}
 \noindent
 \ttfamily
+\hlslc{\#plot\ the\ result}\hspace*{\fill}\\
 \hlstd{}\hlkwc{>library}\hlstd{}\hlsym{(}\hlstd{ggplot2}\hlsym{)}\hspace*{\fill}\\
 \hlstd{>p\ }\hlsym{$<${-}\ }\hlstd{ggplot}\hlsym{(}\hlstd{ret}\hlsym{,\ }\hlstd{aes}\hlsym{(}\hlstd{Stock}\hlsym{,}\hlstd{ConvPrice}\hlsym{,\ }\hlstd{colour}\hlsym{=}\hlstd{}\hlkwc{factor}\hlstd{}\hlsym{(}\hlstd{z}\hlsym{)))}\hspace*{\fill}\\
 \hlstd{>p\ }\hlsym{+\ }\hlstd{geom\textunderscore line}\hlsym{()\ +\ }\hlstd{scale\textunderscore colour\textunderscore discrete}\hlsym{(}\hlstd{}\hlstr{"Spread"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
