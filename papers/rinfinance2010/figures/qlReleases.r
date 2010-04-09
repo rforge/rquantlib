@@ -44,12 +44,14 @@ overplot <- c(4,7,18)  # skip these
 #text(ql[overplot, "Date"], 0.5, labels=ql[overplot,"Version"], srt=90, cex=0.75)
 
 pdf("qlReleases.pdf", 8, 8)
-oldpar <- par(mar=c(3,5,8,1))
-plot(ql$Date, ql$Size, xlim=range(ql$Date), ylab="", yaxt="n", pch=16, type='b')
+oldpar <- par(mar=c(3,4,8,4))
+plot(ql$Date, ql$Size, xlim=range(ql$Date), ylab="Release size in mb", pch=16, type='b', las=1)
 axis(3, ql[-overplot, "Date"], label=ql[-overplot, "Version"], line=0, las=2, cex=0.5)
-axis(2, ql[-overplot, "Size"], label=format(ql[-overplot, "Size"], digit=2), line=0, las=1, cex=0.5)
+axis(4, ql[-overplot, "Size"], label=format(ql[-overplot, "Size"], digit=2), line=0, las=1, cex=0.5)
 title(main="Growth of QuantLib code over its initial decade:\n From version 0.1.1 in Nov 2000 to 1.0 in Feb 2010", line=4)
-mtext("Release size in mb", side=2, line=4)
+#abline(v=ql$Date, h=ql$Size, col="lightgray")
+abline(v=c(as.Date("2002-01-01"), as.Date("2004-01-01"), as.Date("2006-01-01"), as.Date("2008-01-01"), as.Date("2010-01-01")),
+       h=seq(-0.5, 3.5, by=0.5), col="lightgray")
 par(oldpar)
 dev.off()
 
