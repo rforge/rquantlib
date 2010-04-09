@@ -277,9 +277,47 @@ Other examples include \texttt{SwapValuation}, \texttt{Repo},
 \end{frame}
 
 \subsection{Examples}
+\begin{frame}[fragile]
+  \frametitle{Option Valuation and Greeks}
+  \framesubtitle{Analytical results where available}
+\tiny   \begin{verbatim}
+R> example(EuropeanOption)
+
+ErpnOpR> # simple call with unnamed parameters
+ErpnOpR> EuropeanOption("call", 100, 100, 0.01, 0.03, 0.5, 0.4)
+Concise summary of valuation for EuropeanOption 
+   value    delta    gamma     vega    theta      rho   divRho 
+ 11.6365   0.5673   0.0138  27.6336 -11.8390  22.5475 -28.3657 
+
+ErpnOpR> # simple call with some explicit parameters, and slightly increased vol:
+ErpnOpR> EuropeanOption(type="call", underlying=100, strike=100, dividendYield=0.01, 
+ErpnOp+ riskFreeRate=0.03, maturity=0.5, volatility=0.5)
+Concise summary of valuation for EuropeanOption 
+   value    delta    gamma     vega    theta      rho   divRho 
+ 14.3927   0.5783   0.0110  27.4848 -14.4673  21.7206 -28.9169 
+R> example(BinaryOption)
+
+BnryOpR> BinaryOption(binType="asset", type="call", excType="european",
+BnryOp+               underlying=100, strike=100, dividendYield=0.02,
+BnryOp+               riskFreeRate=0.03, maturity=0.5, volatility=0.4, cashPayoff=10)
+Concise summary of valuation for BinaryOption 
+  value   delta   gamma    vega   theta     rho  divRho 
+ 55.760   1.937   0.006  12.065  -5.090  68.944 -96.824 
+R> example(BarrierOption)
+
+BrrrOpR> BarrierOption(barrType="downin", type="call", underlying=100,
+BrrrOp+ 	strike=100, dividendYield=0.02, riskFreeRate=0.03,
+BrrrOp+ 	maturity=0.5, volatility=0.4, barrier=90)
+Concise summary of valuation for BarrierOption 
+ value  delta  gamma   vega  theta    rho divRho 
+ 3.738    NaN    NaN    NaN    NaN    NaN    NaN 
+ 
+\end{verbatim}
+\end{frame}
+%$# 
 \begin{frame}
   \frametitle{Option Valuation and Greeks}
-  \framesubtitle{Without \textsl{very poot man's} animation}
+  \framesubtitle{The \texttt{demo(OptionSurfaces)} provides some animation}
 
   %\animategraphics[controls,autoplay,palindrome,width=1in]{10}{figures/animation/Value}{01}{24}
   %\animategraphics[controls,autoplay,palindrome,width=1in]{10}{figures/animation/Delta}{01}{24}
@@ -302,9 +340,7 @@ Other examples include \texttt{SwapValuation}, \texttt{Repo},
   \includegraphics[width=0.82in]{figures/animation/Theta07}
   \includegraphics[width=0.82in]{figures/animation/Vega07}
 
-
 \end{frame}
-
 
 
 \section{Fixed Income}
