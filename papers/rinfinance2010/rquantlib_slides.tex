@@ -1,6 +1,6 @@
 
 %% add 'handout' option for handouts, and pgfpages for 2-on-1
-%\documentclass[smaller,compress]{beamer}   
+%\documentclass[handout,compress]{beamer}   
 \documentclass[compress]{beamer}   
   
 %\usepackage{pgfpages}
@@ -64,31 +64,6 @@
 \section{QuantLib}
 \subsection{Overview}
 \begin{frame}
-  \frametitle{A brief introduction to QuantLib}
-  \framesubtitle{What is it, and who wrote is behind it?}
-  \begin{columns}
-    \begin{column}{1.5in}
-      \includegraphics[width=1.5in]{figures/ql-svn.pdf}
-    \end{column}
-    
-    \begin{column}{3.1in}
-      \begin{itemize}
-      \item \QL is a C++ library for financial quantitative analysts and developers.
-      \item \QL was started in 2000 and is hosted on Sourceforge.Net
-      \item \QL is a free software project under a very liberal license allowing
-        for inclusion in commercial projects.
-      \item \QL is primarily the work of Ferdinando Ametrano and Luigi Ballabio.
-        %with a supporting cast of other contributors. 
-      \item \QL is sponsored by the Italian consultancy StatPro which derives
-        consulting income from it. 
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-\subsection{Timeline}
-\begin{frame}
   \frametitle{QuantLib releases}
   \framesubtitle{Showing the growth of QuantLib over time}
 
@@ -147,22 +122,51 @@
       \includegraphics[height=2.9in]{figures/qlReleases.pdf}
     \end{column}
     
+    \pause
     \begin{column}{2in}
-      \begin{itemize}
-      \item The initial release was 0.1.1 in Nov 2000
-      \item The first Debian package was prepared in May 2001
-      \item Boost has been a requirement since July 2004
-      \item The long awaited 1.0.0 release appeared in Feb 2010
+      \begin{itemize}[<+-|alert@+>]
+      \item The initial \QL release was 0.1.1 in Nov 2000
+      \item The first Debian \QL package was prepared in May 2001
+      \item Boost has been a \QL requirement since July 2004
+      \item The long awaited \QL 1.0.0 release appeared in Feb 2010
       \end{itemize}
     \end{column}
   \end{columns}
 \end{frame}
 
+\begin{frame}
+  \frametitle{A brief introduction to QuantLib}
+  \framesubtitle{What is it, and who wrote is behind it?}
+  \begin{columns}
+    
+    \begin{column}{1.5in}
+      \includegraphics[width=1.5in]{figures/ql-svn.pdf}
+    \end{column}
+
+    \pause
+    \begin{column}{3.1in}
+      \begin{itemize}[<+-|alert@+>]
+      \item \QL is a C++ library for financial quantitative analysts and developers.
+      \item \QL was started in 2000 and is hosted on Sourceforge.Net
+      \item \QL is a free software project under a very liberal license allowing
+        for inclusion in commercial projects.
+      \item \QL is primarily the work of Ferdinando Ametrano and Luigi Ballabio.
+        %with a supporting cast of other contributors. 
+      \item \QL is sponsored by the Italian consultancy StatPro which derives
+        consulting income from it. 
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\subsection{Timeline}
+
 \subsection{Architecture}
 \begin{frame}
   \frametitle{QuantLib Architecture}
   \framesubtitle{How is it put togetherm and how do I use it?}
-  \begin{itemize}
+  \begin{itemize}[<+-|alert@+>]
   \item \QL is written in C++ and fairly rigourously designed. 
   \item Luigi Ballabio has draft chapters on the \QL design and
     implementation at \url{http://sites.google.com/site/luigiballabio/qlbook}.
@@ -180,7 +184,7 @@
 \begin{frame}
   \frametitle{Key Modules}
   \framesubtitle{A rough guide, slight re-arranged from the QuantLib documentation}
-  \begin{itemize}
+  \begin{itemize}[<+-|alert@+>]
   \item Currencies and FX rates
   \item Date and time calculations (Calendars, Day Counters)
   \item Pricing engines (Asian, Barrier, Basket, Cap/Floor, Cliquet, Forward, Quanto,
@@ -208,8 +212,11 @@ Strike = 40
 Risk-free interest rate = 6.000000 %
 Dividend yield = 0.000000 %
 Volatility = 20.000000 %
+  \end{verbatim}
 
+\pause
 
+  \begin{verbatim}
 Method                             European      Bermudan      American
 Black-Scholes                      3.844308      N/A           N/A
 Barone-Adesi/Whaley                N/A           N/A           4.459628
@@ -234,8 +241,8 @@ Run completed in 5 s
 
 \begin{frame}[fragile]
   \frametitle{Errors from discrete hedging (Derman and Kamal)}
-{ \tiny
-  \begin{verbatim}
+  { \tiny
+\begin{verbatim}
 $ DiscreteHedging
 
 Option value: 2.51207
@@ -248,12 +255,13 @@ Option value: 2.51207
 
 Run completed in 16 s
   \end{verbatim}
-}
+  }
 
-Other examples include \texttt{SwapValuation}, \texttt{Repo},
-\texttt{Replication}, \texttt{FRA}, \texttt{FittedBondCurve}, \texttt{Bonds},
-\texttt{BermudanSwaption}, \texttt{CDS}, \texttt{ConvertibleBonds},
-\texttt{CallableBonds} and \texttt{MarketModels}
+  \pause
+  Other examples include \texttt{SwapValuation}, \texttt{Repo},
+  \texttt{Replication}, \texttt{FRA}, \texttt{FittedBondCurve}, \texttt{Bonds},
+  \texttt{BermudanSwaption}, \texttt{CDS}, \texttt{ConvertibleBonds},
+  \texttt{CallableBonds} and \texttt{MarketModels}
 
 \end{frame}
 
@@ -262,9 +270,9 @@ Other examples include \texttt{SwapValuation}, \texttt{Repo},
 \subsection{Key components}
 \begin{frame}
   \frametitle{Overview}
-  \begin{itemize}
+  \begin{itemize}[<+-|alert@+>]
   \item Initial implementation: Standard equity option pricing:
-    \begin{itemize}
+    \begin{itemize}[<+-|alert@+>]
       \item pricers and greeks for European and American options
       \item first set of exotics using barrier and binaries
       \item also implied volatility calculations where available
@@ -280,7 +288,8 @@ Other examples include \texttt{SwapValuation}, \texttt{Repo},
 \begin{frame}[fragile]
   \frametitle{Option Valuation and Greeks}
   \framesubtitle{Analytical results where available}
-\tiny   \begin{verbatim}
+  \tiny   
+\begin{verbatim}
 R> example(EuropeanOption)
 
 ErpnOpR> # simple call with unnamed parameters
@@ -314,7 +323,7 @@ Concise summary of valuation for BarrierOption
  
 \end{verbatim}
 \end{frame}
-%$# 
+
 \begin{frame}
   \frametitle{Option Valuation and Greeks}
   \framesubtitle{The \texttt{demo(OptionSurfaces)} provides some animation}
@@ -328,12 +337,14 @@ Concise summary of valuation for BarrierOption
   \includegraphics[width=0.82in]{figures/animation/Theta01}
   \includegraphics[width=0.82in]{figures/animation/Vega01}
 
+  \pause
   \includegraphics[width=0.82in]{figures/animation/Value04}
   \includegraphics[width=0.82in]{figures/animation/Delta04}
   \includegraphics[width=0.82in]{figures/animation/Gamma04}
   \includegraphics[width=0.82in]{figures/animation/Theta04}
   \includegraphics[width=0.82in]{figures/animation/Vega04}
 
+  \pause
   \includegraphics[width=0.82in]{figures/animation/Value07}
   \includegraphics[width=0.82in]{figures/animation/Delta07}
   \includegraphics[width=0.82in]{figures/animation/Gamma07}
@@ -341,7 +352,6 @@ Concise summary of valuation for BarrierOption
   \includegraphics[width=0.82in]{figures/animation/Vega07}
 
 \end{frame}
-
 
 \section{Fixed Income}
 \subsection{Overview and development}
