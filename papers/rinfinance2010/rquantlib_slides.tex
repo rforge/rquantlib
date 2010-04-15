@@ -1,7 +1,7 @@
 
 %% add 'handout' option for handouts, and pgfpages for 2-on-1
-%\documentclass[handout,compress]{beamer}   
-\documentclass[compress]{beamer}   
+\documentclass[handout,compress]{beamer}   
+%\documentclass[compress]{beamer}   
   
 %\usepackage{pgfpages}
 %\pgfpagesuselayout{2 on 1}[letterpaper,border shrink=5mm]
@@ -406,7 +406,7 @@ Concise summary of valuation for BarrierOption
 \end{frame}
 \begin{frame}
 	\frametitle{Fixed Income Development}
-	And recently, we have a \textcolor{red}{GUI}
+	And recently, we have started to add \textcolor{red}{GUIs}
 	\begin{center}
 		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide8.PNG}}
 	\end{center}
@@ -480,7 +480,8 @@ Concise summary of valuation for BarrierOption
 \begin{frame}[shrink]
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Curve fitting with DiscountCurve function}
-Building a discount curve from the market data. This data is taken from codes shipped with QuantLib 0.9.7. 
+    Building a discount curve from the market data. This data is taken from 
+    from examples included with QuantLib 0.9.7. 
 \vskip15pt
 \pagecolor{bgcolor}
 \noindent
@@ -553,7 +554,7 @@ Building a discount curve from the market data. This data is taken from codes sh
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
 	\framesubtitle{Examples: Curve fitting with FittedBondCurve function}
-Fitting a curve to a set of bonds. The data is taken from codes shipped with QuantLib 0.9.7.
+Fitting a curve to a set of bonds. The data is taken from examples included with QuantLib 0.9.7.
 \vskip5pt
 \pagecolor{bgcolor}
 \noindent
@@ -852,8 +853,8 @@ Doing it in R using RQuantLib....
 
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Graphical User Interface}		
-RQuantLib also comes with an user interface via the 'traitr' package by professor John Verzani.
+	\framesubtitle{Graphical User Interface: Fitted Curve}		
+RQuantLibGUI provides a graphical user interface via the 'traitr' package by John Verzani.
 \begin{center}
 	\resizebox{90mm}{!}{\includegraphics{figures/fbGUI.png}}
 \end{center}
@@ -861,7 +862,7 @@ RQuantLib also comes with an user interface via the 'traitr' package by professo
 
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Graphical User Interface}	
+	\framesubtitle{Graphical User Interface: Discount Curve}	
 \begin{center}
 	\resizebox{110mm}{!}{\includegraphics{figures/dcGUI.png}}
 \end{center}
@@ -870,10 +871,33 @@ RQuantLib also comes with an user interface via the 'traitr' package by professo
 
 \begin{frame}
 	\frametitle{Fixed Income in RQuantLib}
-	\framesubtitle{Graphical User Interface}		
+	\framesubtitle{Graphical User Interface: Bonds}		
 \begin{center}
 	\resizebox{90mm}{!}{\includegraphics{figures/bondGUI.PNG}}
 \end{center}
+\end{frame}
+
+\section{Summary}
+
+\begin{frame}
+	\frametitle{Summary and Outlook}
+
+    \begin{itemize}[<+-|alert@+>]
+      \item \QL represents a decade of work leading to the recent 1.0 release.
+      \item RQuantLib (still) exposes only a subset of the available
+        functionality.
+%      \item A lot of \QL functionality could still be added to RQuantLib.
+      \item We are thinking about
+        \begin{itemize}[<+-|alert@+>]
+        \item Conversion to the new Rcpp API
+        %\item Expand the FI functionality
+        %\item Expanding the calendar / date functionality
+        \item Expanding the GUIs to the option pricers
+        \item And of course add more products and \QL functionality
+        \end{itemize}
+      \item We welcome feedback as well as contributions -- just register at
+        the R-Forge project site.
+      \end{itemize}
 \end{frame}
 
 
