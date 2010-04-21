@@ -1,7 +1,7 @@
 
 %% add 'handout' option for handouts, and pgfpages for 2-on-1
-\documentclass[handout,compress]{beamer}   
-%\documentclass[compress]{beamer}   
+%\documentclass[handout,compress]{beamer}   
+\documentclass[compress]{beamer}   
   
 %\usepackage{pgfpages}
 %\pgfpagesuselayout{2 on 1}[letterpaper,border shrink=5mm]
@@ -135,24 +135,25 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{A brief introduction to QuantLib}
-  \framesubtitle{What is it, and who wrote is behind it?}
+  \frametitle{A few key points about QuantLib}
+  %\framesubtitle{What is it, and who wrote is behind it?}
   \begin{columns}
     
-    \begin{column}{1.5in}
-      \includegraphics[width=1.5in]{figures/ql-svn.pdf}
+    \begin{column}{1.75in}
+      \includegraphics[width=1.625in]{figures/ql-svn.pdf}
     \end{column}
 
     \pause
     \begin{column}{3.1in}
+    \QL ...
       \begin{itemize}[<+-|alert@+>]
-      \item \QL is a C++ library for financial quantitative analysts and developers.
-      \item \QL was started in 2000 and is hosted on Sourceforge.Net
-      \item \QL is a free software project under a very liberal license allowing
+      \item is a C++ library for financial quantitative analysts and developers.
+      \item was started in 2000 and is hosted on Sourceforge.Net
+      \item is a free software project under a very liberal license allowing
         for inclusion in commercial projects.
-      \item \QL is primarily the work of Ferdinando Ametrano and Luigi Ballabio.
+      \item is primarily the work of Ferdinando Ametrano and Luigi Ballabio.
         %with a supporting cast of other contributors. 
-      \item \QL is sponsored by the Italian consultancy StatPro which derives
+      \item is sponsored by the Italian consultancy StatPro which derives
         consulting income from it. 
       \end{itemize}
     \end{column}
@@ -185,14 +186,14 @@
   \frametitle{Key Modules}
   \framesubtitle{A rough guide, slight re-arranged from the QuantLib documentation}
   \begin{itemize}[<+-|alert@+>]
-  \item Currencies and FX rates
-  \item Date and time calculations (Calendars, Day Counters)
   \item Pricing engines (Asian, Barrier, Basket, Cap/Floor, Cliquet, Forward, Quanto,
     Swaption, Vanilla)
   \item Finite-differences framework
   \item Fixed-Income (Short-rate modelling, Term structures)
+  \item Currencies and FX rates
   \item Financial instruments
   \item Math tools (Lattice method, Monte Carlo Framework, Stochastic Process)
+  \item Date and time calculations (Calendars, Day Counters)
   \item Utilities (Numeric types, Design patterns, Output manipulators)
   \item QuantLib macros (Numeric limits, Debugging)
   \end{itemize}
@@ -261,7 +262,11 @@ Run completed in 16 s
   Other examples include \texttt{SwapValuation}, \texttt{Repo},
   \texttt{Replication}, \texttt{FRA}, \texttt{FittedBondCurve}, \texttt{Bonds},
   \texttt{BermudanSwaption}, \texttt{CDS}, \texttt{ConvertibleBonds},
-  \texttt{CallableBonds} and \texttt{MarketModels}
+  \texttt{CallableBonds} and \texttt{MarketModels}.
+
+  \pause
+  Also available are \texttt{quantlib-benchmark} (running 85 tests) and
+  \texttt{quantlib-test-suite} (running 446 tests cases).
 
 \end{frame}
 
@@ -893,10 +898,11 @@ RQuantLibGUI provides a graphical user interface via the 'traitr' package by Joh
         %\item Expand the FI functionality
         %\item Expanding the calendar / date functionality
         \item Expanding the GUIs to the option pricers
-        \item And of course add more products and \QL functionality
+        \item And of course adding more products and \QL features
         \end{itemize}
       \item We welcome feedback as well as contributions -- just register at
         the R-Forge project site.
+      \item Thank you!
       \end{itemize}
 \end{frame}
 
