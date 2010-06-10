@@ -1,0 +1,13 @@
+2010-04-03  Khanh Nguyen  <knguyen@cs.umb.edu>
+
+	* Added Fixed-Incom tab for GUI
+
+2010-03-15  Khanh Nguyen  <knguyen@cs.umb.edu>
+
+	* man/GUI.Rd: added documentation
+
+2010-03-15  Khanh Nguyen  <knguyen@cs.umb.edu>
+
+	* R/GUIs.R: first GUI verion
+	* NAMESPACE: add export GUI functions
+
