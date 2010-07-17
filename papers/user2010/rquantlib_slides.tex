@@ -1,0 +1,921 @@
+
+%% add 'handout' option for handouts, and pgfpages for 2-on-1
+%\documentclass[handout,compress]{beamer}   
+\documentclass[compress]{beamer}   
+  
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{2 on 1}[letterpaper,border shrink=5mm]
+%\pgfpagesuselayout{4 on 1}[letterpaper,border shrink=5mm]
+%\pgfpagesuselayout{2 on 1}[a4,border shrink=5mm]
+
+\usepackage{color}
+\include{includes/beamer_setup}  %% has all definitions etc
+
+\title{RQuantLib: Interfacing QuantLib from R}  %% better title welcome...
+%\subtitle{\textsl{useR2010!} Presentation}
+\subject{useR! 2010 Presentation}
+\author[Eddelbuettel and Nguyen]{Dirk Eddelbuettel\inst{1} \and Khanh Nguyen\inst{2}}
+\institute[Debian and UMASS]{
+  \inst{1}%
+  Debian Project
+  \and 
+  \inst{2}
+  UMASS at Boston
+} 
+\date[\textsl{useR! 2010}]{
+  Presentation on 23 July 2010 at 
+  \textsl{useR! 2010} \\
+  National Institute of Standards and Technology (NIST)\\
+  Gaithersburg, Maryland, USA }
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% \section{Introduction (draft, just an idea)}
+% \begin{frame}
+%   \frametitle{Overview}
+%   \framesubtitle{Presentation details}
+%   \begin{itemize}
+% \small
+%   \item Brief overview of QuantLib
+%     \begin{itemize}
+%     \item History, about to release 1.0 after eight long years
+%     \item Luigi's design document draft, mention rigorous design, unit
+%       tests, boost, 'grown up C++'
+%     \item Maybe mention different language bindings
+%     \item Maybe mention liberal QL license; R / RQuantLib with GPL somewhat
+%       tighter but in spirit of R community
+%     \end{itemize}
+%   \item RQuantLib maybe chronologically
+%     \begin{itemize}
+%     \item Equity options part
+%     \item Simple calendaring
+%     \item Mention the older fixed income / curve stuff without dwelling on it
+%     \end{itemize}
+%   \item Fixed Income / GSoC 2009
+%     \begin{itemize}
+%     \item Khanh ....
+%     \item More Khanh ...
+%     \end{itemize}
+%   \item Total of somewhere between 20 and 30 pages
+%   \item Finish with Outlook / Agenda / Areas not yet covered
+%   \end{itemize}
+% \end{frame}
+
+\section{QuantLib}
+\subsection{Overview}
+\begin{frame}
+  \frametitle{QuantLib releases}
+  \framesubtitle{Showing the growth of QuantLib over time}
+
+  \begin{columns}
+    % \begin{column}{1.25in}
+    %   \scriptsize
+    %   \begin{tabular}{lrl}
+    %     % \toprule
+    %     Version & Date &\\ 
+    %     % \midrule
+    %     1.0   & 24 Feb 2010 & \\
+    %     0.9.9 & 11 Nov 2009 & \\
+    %     0.9.7 & 18 Nov 2008 & \\
+    %     0.9.6 & 06 Aug 2008 & \\
+    %     0.9.5 & 30 Jul 2008 & \\
+    %     0.9.0 & 24 Dec 2007 & \\
+    %     0.8.1 & 04 Jun 2007 & \\
+    %     0.8.0 & 30 May 2007 & \\
+    %     0.4.0 & 20 Feb 2007 & \\
+    %     0.3.14& 06 Nov 2006 & \\
+    %     0.3.13& 31 Jul 2006 & \\
+    %     0.3.12& 27 Mar 2006 & \\
+    %     0.3.11& 20 Oct 2005 & \\
+    %     \phantom{X} & & 
+    %   \end{tabular}
+    % \end{column}
+
+    % \begin{column}{0.25in}
+    %   \phantom{XX}  % empty, not shown
+    % \end{column}
+
+    % \begin{column}{2.75in}
+    %   \scriptsize
+    %   \begin{tabular}{lrl}
+    %     % \toprule
+    %     Version & Date &\\ 
+    %     % \midrule
+    %     0.3.10& 14 Jul 2005 & \\
+    %     0.3.9 & 02 May 2005 & \\
+    %     0.3.8 & 22 Dec 2004 & \\
+    %     0.3.7 & 23 Jul 2004 & 1st \QL with Boost \\
+    %     0.3.6 & 15 Apr 2004 & \\
+    %     0.3.5 & 31 Mar 2004 & \\
+    %     0.3.4 & 12 Nov 2003 & \\
+    %     0.3.3 & 03 Sep 2003 & \\
+    %     0.3.1 & 04 Feb 2003 & \\
+    %     0.3.0 & 06 May 2002 & \\
+    %     0.2.1 & 03 Dec 2001 & (first RQuantLib Feb 2002) \\
+    %     0.2.0 & 18 Sep 2001 & \\
+    %     0.1.9 & 31 May 2001 & 1st \QL Debian package \\
+    %     0.1.1 & 21 Nov 2000 & \\
+    %   \end{tabular}
+    % \end{column}
+
+    \begin{column}{2.9in}
+      \includegraphics[height=2.9in]{figures/qlReleases.pdf}
+    \end{column}
+    
+    \begin{column}{2in}
+      \begin{itemize}
+      \item The initial \QL release was 0.1.1 in Nov 2000
+      \item The first Debian \QL package was prepared in May 2001
+      \item Boost has been a \QL requirement since July 2004
+      \item The long awaited \QL 1.0.0 release appeared in Feb 2010
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{A few key points about QuantLib}
+  %\framesubtitle{What is it, and who wrote is behind it?}
+  \begin{columns}
+    
+    \begin{column}{1.75in}
+      \includegraphics[width=1.625in]{figures/ql-svn.pdf}
+    \end{column}
+
+    \begin{column}{3.1in}
+    \QL ...
+      \begin{itemize}
+      \item is a C++ library for financial quantitative analysts and developers.
+      \item was started in 2000 and is hosted on Sourceforge.Net
+      \item is a free software project under a very liberal license allowing
+        for inclusion in commercial projects.
+      \item is primarily the work of Ferdinando Ametrano and Luigi Ballabio.
+        %with a supporting cast of other contributors. 
+      \item is sponsored by the Italian consultancy StatPro which derives
+        consulting income from it. 
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\subsection{Timeline}
+
+\subsection{Architecture}
+\begin{frame}
+  \frametitle{QuantLib Architecture}
+  \framesubtitle{How is it put together and how do I use it?}
+  \begin{itemize}
+  \item \QL is written in C++ and fairly rigourously designed. 
+  \item Luigi Ballabio has draft chapters on the \QL design and
+    implementation at \url{http://sites.google.com/site/luigiballabio/qlbook}.
+  \item \QL use the Boost testing framework and employs hundreds
+    of detailed unit tests. 
+  \item \QL makes extensive use of Swig and bindings for Java, Perl, 
+    Python, Ruby, C\#, Guile ... exist. 
+  \item QuantLibAddin exports a procedural interface to a number of platforms
+    including Excel and Oo Calc.
+  \item Several \textsl{manual} (non-SWIG) extension such as \pkg{RQuantLib}
+    exist as well.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Key Modules}
+  \framesubtitle{A rough guide, slight re-arranged from the QuantLib documentation}
+  \begin{itemize}
+  \item Pricing engines (Asian, Barrier, Basket, Cap/Floor, Cliquet, Forward, Quanto,
+    Swaption, Vanilla)
+  \item Finite-differences framework
+  \item Fixed-Income (Short-rate modelling, Term structures)
+  \item Currencies and FX rates
+  \item Financial instruments
+  \item Math tools (Lattice method, Monte Carlo Framework, Stochastic Process)
+  \item Date and time calculations (Calendars, Day Counters)
+  \item Utilities (Numeric types, Design patterns, Output manipulators)
+  \item QuantLib macros (Numeric limits, Debugging)
+  \end{itemize}
+\end{frame}
+
+\subsection{Examples}
+\begin{frame}[fragile]
+  \frametitle{Options: Fifteen solutions and three different exercises}
+\tiny
+  \begin{verbatim}
+$ EquityOption
+
+Option type = Put
+Maturity = May 17th, 1999
+Underlying price = 36
+Strike = 40
+Risk-free interest rate = 6.000000 %
+Dividend yield = 0.000000 %
+Volatility = 20.000000 %
+  \end{verbatim}
+
+\Pause
+
+  \begin{verbatim}
+Method                             European      Bermudan      American
+Black-Scholes                      3.844308      N/A           N/A
+Barone-Adesi/Whaley                N/A           N/A           4.459628
+Bjerksund/Stensland                N/A           N/A           4.453064
+Integral                           3.844309      N/A           N/A
+Finite differences                 3.844342      4.360807      4.486118
+Binomial Jarrow-Rudd               3.844132      4.361174      4.486552
+Binomial Cox-Ross-Rubinstein       3.843504      4.360861      4.486415
+Additive equiprobabilities         3.836911      4.354455      4.480097
+Binomial Trigeorgis                3.843557      4.360909      4.486461
+Binomial Tian                      3.844171      4.361176      4.486413
+Binomial Leisen-Reimer             3.844308      4.360713      4.486076
+Binomial Joshi                     3.844308      4.360713      4.486076
+MC (crude)                         3.834522      N/A           N/A
+QMC (Sobol)                        3.844613      N/A           N/A
+MC (Longstaff Schwartz)            N/A           N/A           4.481675
+
+Run completed in 5 s
+
+  \end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Errors from discrete hedging (Derman and Kamal)}
+  { \tiny
+\begin{verbatim}
+$ DiscreteHedging
+
+Option value: 2.51207
+
+         |          |      P&L |      P&L | Derman&Kamal |      P&L |      P&L
+ samples |   trades |     mean | std.dev. |      formula | skewness | kurtosis
+------------------------------------------------------------------------------
+   50000 |       21 |   -0.001 |     0.43 |         0.44 |    -0.33 |     1.56
+   50000 |       84 |    0.000 |     0.22 |         0.22 |    -0.20 |     1.68
+
+Run completed in 16 s
+  \end{verbatim}
+  }
+
+  \Pause
+  Other examples include \texttt{SwapValuation}, \texttt{Repo},
+  \texttt{Replication}, \texttt{FRA}, \texttt{FittedBondCurve}, \texttt{Bonds},
+  \texttt{BermudanSwaption}, \texttt{CDS}, \texttt{ConvertibleBonds},
+  \texttt{CallableBonds} and \texttt{MarketModels}.
+
+  \Pause
+  Also available are \texttt{quantlib-benchmark} (running 85 tests) and
+  \texttt{quantlib-test-suite} (running 446 tests cases).
+
+\end{frame}
+
+\section{RQuantLib}
+\subsection{Overview}
+\subsection{Key components}
+\begin{frame}
+  \frametitle{Overview}
+  \begin{itemize}
+  \item Initial implementation: Standard equity option pricing:
+    \begin{itemize}
+      \item pricers and greeks for European and American options
+      \item first set of exotics using barrier and binaries
+      \item also implied volatility calculations where available
+    \end{itemize}
+  \item First external contribution: Curves and Swaption pricing.
+  \item Second external contribution (as Google Summer of Code): Fixed Income
+    Functionality (more on this below)
+  \item Other small extensions on date and holiday calculations.
+  \end{itemize}
+\end{frame}
+
+\subsection{Examples}
+\begin{frame}[fragile]
+  \frametitle{Option Valuation and Greeks}
+  \framesubtitle{Analytical results where available}
+  \tiny   
+\begin{verbatim}
+R> example(EuropeanOption)
+
+ErpnOpR> # simple call with unnamed parameters
+ErpnOpR> EuropeanOption("call", 100, 100, 0.01, 0.03, 0.5, 0.4)
+Concise summary of valuation for EuropeanOption 
+   value    delta    gamma     vega    theta      rho   divRho 
+ 11.6365   0.5673   0.0138  27.6336 -11.8390  22.5475 -28.3657 
+
+ErpnOpR> # simple call with some explicit parameters, and slightly increased vol:
+ErpnOpR> EuropeanOption(type="call", underlying=100, strike=100, dividendYield=0.01, 
+ErpnOp+ riskFreeRate=0.03, maturity=0.5, volatility=0.5)
+Concise summary of valuation for EuropeanOption 
+   value    delta    gamma     vega    theta      rho   divRho 
+ 14.3927   0.5783   0.0110  27.4848 -14.4673  21.7206 -28.9169 
+R> example(BinaryOption)
+
+BnryOpR> BinaryOption(binType="asset", type="call", excType="european",
+BnryOp+               underlying=100, strike=100, dividendYield=0.02,
+BnryOp+               riskFreeRate=0.03, maturity=0.5, volatility=0.4, cashPayoff=10)
+Concise summary of valuation for BinaryOption 
+  value   delta   gamma    vega   theta     rho  divRho 
+ 55.760   1.937   0.006  12.065  -5.090  68.944 -96.824 
+R> example(BarrierOption)
+
+BrrrOpR> BarrierOption(barrType="downin", type="call", underlying=100,
+BrrrOp+ 	strike=100, dividendYield=0.02, riskFreeRate=0.03,
+BrrrOp+ 	maturity=0.5, volatility=0.4, barrier=90)
+Concise summary of valuation for BarrierOption 
+ value  delta  gamma   vega  theta    rho divRho 
+ 3.738    NaN    NaN    NaN    NaN    NaN    NaN 
+ 
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Option Valuation and Greeks}
+  \framesubtitle{The \texttt{demo(OptionSurfaces)} provides some animation}
+
+  %\animategraphics[controls,autoplay,palindrome,width=1in]{10}{figures/animation/Value}{01}{24}
+  %\animategraphics[controls,autoplay,palindrome,width=1in]{10}{figures/animation/Delta}{01}{24}
+
+  \includegraphics[width=0.82in]{figures/animation/Value01}
+  \includegraphics[width=0.82in]{figures/animation/Delta01}
+  \includegraphics[width=0.82in]{figures/animation/Gamma01}
+  \includegraphics[width=0.82in]{figures/animation/Theta01}
+  \includegraphics[width=0.82in]{figures/animation/Vega01}
+
+  \Pause
+  \includegraphics[width=0.82in]{figures/animation/Value04}
+  \includegraphics[width=0.82in]{figures/animation/Delta04}
+  \includegraphics[width=0.82in]{figures/animation/Gamma04}
+  \includegraphics[width=0.82in]{figures/animation/Theta04}
+  \includegraphics[width=0.82in]{figures/animation/Vega04}
+
+  \Pause
+  \includegraphics[width=0.82in]{figures/animation/Value07}
+  \includegraphics[width=0.82in]{figures/animation/Delta07}
+  \includegraphics[width=0.82in]{figures/animation/Gamma07}
+  \includegraphics[width=0.82in]{figures/animation/Theta07}
+  \includegraphics[width=0.82in]{figures/animation/Vega07}
+
+\end{frame}
+
+\section{Fixed Income}
+\subsection{Overview and development}
+
+\begin{frame}
+	\frametitle{Fixed Income Development}
+	RQuantLib before GSOC 2009...
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide1.PNG}}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Fixed Income Development}
+	GSOC started. April 2009...
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide2.PNG}}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Fixed Income Development}
+
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide3.PNG}}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Fixed Income Development}
+	\textcolor{white}{}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide4.PNG}}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Fixed Income Development}
+	Making curve fitting and bond pricing work together...
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide5.PNG}}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Fixed Income Development}
+
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide6.PNG}}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Fixed Income Development}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide7.PNG}}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Fixed Income Development}
+	And recently, we have started to add \textcolor{red}{GUIs}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide8.PNG}}
+	\end{center}
+\end{frame}
+\begin{frame}
+	\frametitle{Fixed Income Development}
+	\begin{center}\huge In summary\end{center}
+	\begin{center}
+		\resizebox{95mm}{!}{\includegraphics{figures/fixedIncomeDev/Slide9.png}}
+	\end{center}
+
+\end{frame}
+
+%
+%\begin{frame}
+%	\frametitle{Fixed Income in RQuantLib}
+%	In summary,
+%	\begin{itemize}
+%		\item Fixed Income functions are added during the summer of 2009 as part of the Google Summer of Code program. 
+%		\item  RQuantLib offeres strong support for fixed income pricing whereas several other packages (e.g. termstrc, YieldCurve, fBonds) focus on modelling term structure.		
+%		\item The functions aim to support two primary tasks: pricing and curve fitting. 		
+%	\end{itemize}
+%\end{frame}
+%
+%
+%\begin{frame}
+%	\frametitle{Fixed Income in RQuantLib}
+%	\framesubtitle{Primary tasks: Curve fitting}
+%	\begin{itemize}
+%		\item Curve fitting functions
+%			\begin{itemize}
+%				\item Curve fitting functions return a DiscountCurve object that contains a two column dates/zeroRates data frame.
+%				\item The returned DiscountCurve object are used as inputs for pricing functions. 
+%			\end{itemize}
+%		\item Currently, there are two curve fitting functions
+%			\begin{itemize}
+%				\item DiscountCurve - constructs the spot term structure of interest rates based on input market data including the settltment date, deposit rates, future prices, FRA rates or swap rates in various combination.
+%				\item FittedBondCurve - fits a term structure to a set of bonds using three different fitting methods (ExponentialSplinesFitting, SimplePolynomialFitting, NelsonSiegelFitting).
+%			\end{itemize}
+%	\end{itemize}
+%\end{frame}
+%
+%\begin{frame}
+%	\frametitle{Fixed Income in RQuantLib}
+%	\framesubtitle{Primary tasks: Bond pricing}
+%	\begin{itemize}
+%		\item Bond pricing functions return clean price, dirty price, NPV and cash flow of a bond
+%		\item Currently, the following bonds are supported
+%			\begin{itemize}
+%				\item Zero Coupon Bond
+%				\item Fixed Rate Bond
+%				\item Floating Rate Bond
+%				\item Convertible Zero Coupon Bond
+%				\item Convertible Fixed Rate Bond												
+%				\item Convertible Floating Rate Bond
+%				\item Callable Bond
+%			\end{itemize}
+%		\item The bonds available in QuantLib that yet are implemented are AmortizingCmsRateBond, AmortizingFixedRateBond, AmortizingFloatingRateBond, CallableFixedRateBond, CmsRateBond.
+%	\end{itemize}
+%\end{frame}
+
+\subsection{Examples}
+
+\begin{frame}
+
+	\begin{center}
+		\resizebox{105mm}{!}{\includegraphics{figures/examples.PNG}}
+	\end{center}
+\end{frame}
+
+\iffalse
+\begin{frame}[shrink]
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Curve fitting with DiscountCurve function}
+    Building a discount curve from the market data. This data is taken from 
+    from examples included with QuantLib 0.9.7. 
+\vskip15pt
+\pagecolor{bgcolor}
+\noindent
+\scriptsize
+\ttfamily
+\hlstd{params\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{tradeDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2004{-}09{-}20'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settleDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2004{-}09{-}22'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{interpWhat}\hlsym{=}\hlstd{}\hlstr{"discount"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{interpHow}\hlsym{=}\hlstd{}\hlstr{"loglinear"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{tsQuotes\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{d1w}\hlsym{=}\hlstd{}\hlnum{0.0382}\hlstd{}\hlsym{,\ }\hlstd{d1m}\hlsym{=}\hlstd{}\hlnum{0.0372}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{d3m}\hlsym{=}\hlstd{}\hlnum{0.0363}\hlstd{}\hlsym{,\ }\hlstd{d6m}\hlsym{=}\hlstd{}\hlnum{0.0353}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{d9m}\hlsym{=}\hlstd{}\hlnum{0.0348}\hlstd{}\hlsym{,\ }\hlstd{d1y}\hlsym{=}\hlstd{}\hlnum{0.0345}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{fut2}\hlsym{=}\hlstd{}\hlnum{96.7875}\hlstd{}\hlsym{,\ }\hlstd{fut3}\hlsym{=}\hlstd{}\hlnum{96.9875}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{fut4}\hlsym{=}\hlstd{}\hlnum{96.6875}\hlstd{}\hlsym{,\ }\hlstd{fut5}\hlsym{=}\hlstd{}\hlnum{96.4875}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{fut7}\hlsym{=}\hlstd{}\hlnum{96.2875}\hlstd{}\hlsym{,\ }\hlstd{s2y}\hlsym{=}\hlstd{}\hlnum{0.037125}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{s3y}\hlsym{=}\hlstd{}\hlnum{0.0398}\hlstd{}\hlsym{,\ }\hlstd{s5y}\hlsym{=}\hlstd{}\hlnum{0.0443}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{s10y}\hlsym{=}\hlstd{}\hlnum{0.05165}\hlstd{}\hlsym{,\ }\hlstd{s15y}\hlsym{=}\hlstd{}\hlnum{0.055175}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{curves\ }\hlsym{$<${-}\ }\hlstd{DiscountCurve}\hlsym{(}\hlstd{params}\hlsym{,\ }\hlstd{tsQuotes}\hlsym{)}\hlstd{}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Curve fitting with DiscountCurve function}
+\pagecolor{bgcolor}
+\noindent
+\scriptsize
+\ttfamily
+\hlstd{}\hlkwc{plot}\hlstd{}\hlsym{(}\hlstd{curves)}
+\normalfont
+\begin{center}
+\resizebox{60mm}{!}{\includegraphics{figures/discountCurve.png}}
+\end{center}
+\end{frame}
+
+%\begin{frame}[fragile]
+%	\frametitle{Fixed Income in RQuantLib}
+%	\framesubtitle{Examples: Curve fitting}
+%	\begin{itemize}
+%		\item DiscountCurve example:		
+%
+%			\lstset{language=R,basicstyle=\tiny}
+%				\begin{lstlisting}		
+%params <- list(tradeDate=as.Date('2004-09-20'),
+%               settleDate=as.Date('2004-09-22'),
+%               interpWhat="discount",
+%               interpHow="loglinear")
+%tsQuotes <- list(d1w = 0.0382,
+%                 d1m = 0.0372,
+%                 d3m = 0.0363,
+%                 d6m = 0.0353,
+%                 d9m = 0.0348,
+%                 d1y = 0.0345,
+%                 fut2=96.7875,
+%                 fut3=96.9875,
+%                 fut4=96.6875,
+%                 fut5=96.4875,
+%                 fut7=96.2875,
+%                 s2y = 0.037125,
+%                 s3y = 0.0398,
+%                 s5y = 0.0443,
+%                 s10y = 0.05165,
+%                 s15y = 0.055175)
+%curves <- DiscountCurve(params, tsQuotes)		
+%\end{lstlisting}
+%\end{itemize}
+%\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Curve fitting with FittedBondCurve function}
+Fitting a curve to a set of bonds. The data is taken from examples included with QuantLib 0.9.7.
+\vskip5pt
+\pagecolor{bgcolor}
+\noindent
+\scriptsize
+\ttfamily
+\hlstd{lengths\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{2}\hlstd{}\hlsym{,}\hlstd{}\hlnum{4}\hlstd{}\hlsym{,}\hlstd{}\hlnum{6}\hlstd{}\hlsym{,}\hlstd{}\hlnum{8}\hlstd{}\hlsym{,}\hlstd{}\hlnum{10}\hlstd{}\hlsym{,}\hlstd{}\hlnum{12}\hlstd{}\hlsym{,}\hlstd{}\hlnum{14}\hlstd{}\hlsym{,}\hlstd{}\hlnum{16}\hlstd{}\hlsym{,}\hlstd{}\hlnum{18}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{20}\hlstd{}\hlsym{,}\hlstd{}\hlnum{22}\hlstd{}\hlsym{,}\hlstd{}\hlnum{24}\hlstd{}\hlsym{,}\hlstd{}\hlnum{26}\hlstd{}\hlsym{,}\hlstd{}\hlnum{28}\hlstd{}\hlsym{,}\hlstd{}\hlnum{30}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{coupons\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0.0200}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0225}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0250}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0275}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.0300}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0325}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0350}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0375}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.0400}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0425}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0450}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0475}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.0500}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0525}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.0550\ }\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{marketQuotes\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rep}\hlstd{}\hlsym{(}\hlstd{}\hlnum{100}\hlstd{}\hlsym{,\ }\hlstd{}\hlkwc{length}\hlstd{}\hlsym{(}\hlstd{lengths}\hlsym{))}\hspace*{\fill}\\
+\hlstd{dateparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{settlementDays}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{period}\hlsym{=}\hlstd{}\hlstr{"Annual"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dayCounter}\hlsym{=}\hlstd{}\hlstr{"ActualActual"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{businessDayConvention}\hlsym{=}\hlstd{}\hlstr{"Unadjusted"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{curveparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{method}\hlsym{=}\hlstd{}\hlstr{"ExponentialSplinesFitting"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{origDate\ }\hlsym{=\ }\hlstd{}\hlkwc{Sys.Date}\hlstd{}\hlsym{())}\hspace*{\fill}\\
+\hlstd{}\hlkwc{curve\ }\hlstd{}\hlsym{$<${-}\ }\hlstd{FittedBondCurve}\hlsym{(}\hlstd{curveparams}\hlsym{,\ }\hlstd{lengths}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{coupons}\hlsym{,\ }\hlstd{marketQuotes}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dateparams}\hlsym{)}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Curve fitting with FittedBondCurve function}
+\pagecolor{bgcolor}
+\noindent
+\scriptsize
+\ttfamily
+\vskip5pt
+\hlstd{}\hlkwc{library}\hlstd{}\hlsym{(}\hlstd{zoo}\hlsym{)}\hspace*{\fill}\\
+\hlstd{z\ }\hlsym{$<${-}\ }\hlstd{zoo}\hlsym{(}\hlstd{}\hlkwc{curve}\hlstd{\$}\hlkwc{table}\hlstd{\$zeroRates}\hlsym{,\ }\hlstd{order.by}\hlsym{=}\hlstd{}\hlkwc{curve}\hlstd{\$}\hlkwc{table}\hlstd{\$}\hlkwc{date}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlkwc{plot}\hlstd{}\hlsym{(}\hlstd{z, xlab='Date', ylab='Zero Rates')}
+\normalfont
+\begin{center}
+\resizebox{60mm}{!}{\includegraphics{figures/fittedBondCurve.png}}
+\end{center}
+\end{frame}
+\fi
+
+
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Bond pricing}	
+We construct a bond discounting term structure and then use it to price a zero coupon bond and a fixed rate bond. 
+\newline
+\newline
+All the input data and dates are taken from the bond pricing example shipped with QuantLib.
+\newline
+\vskip5pt
+\pagecolor{bgcolor}
+\noindent
+\scriptsize
+\ttfamily
+\hlslc{\#we\ start\ with\ date\ parameters}\hspace*{\fill}\\
+\hlstd{fixingDays\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{3}\hspace*{\fill}\\
+\hlstd{settlementDays\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{3}\hspace*{\fill}\\
+\hlstd{settlementDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2008{-}09{-}18'}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{todaysDate\ }\hlsym{$<${-}\ }\hlstd{settlementDate\ }\hlsym{{-}\ }\hlstd{fixingDays}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Bond pricing}	
+\vskip5pt
+\pagecolor{bgcolor}
+\noindent
+\scriptsize
+\ttfamily
+\hlslc{\#set\ up\ bond\ discounting\ term\ structure}\hspace*{\fill}\\
+\hlstd{lengths\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{5}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{6}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{7}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{16}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{48}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{coupons\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0.02375}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.04625}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.03125}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{0.04000}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.04500}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{marketQuotes\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{100.390625}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{106.21875}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{}\hlnum{100.59375}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{101.6875}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{102.140625}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{dateparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{settlementDays}\hlsym{=}\hlstd{settlementDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{period}\hlsym{=}\hlstd{}\hlnum{2}\hlstd{}\hlsym{,\ }\hlstd{dayCounter}\hlsym{=}\hlstd{}\hlstr{"ActualActual"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{businessDayConvention\ }\hlsym{=}\hlstd{}\hlstr{"Unadjusted"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{curveparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{method}\hlsym{=}\hlstd{}\hlstr{"ExponentialSplinesFitting"}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{origDate}\hlsym{=}\hlstd{todaysDate}\hlsym{)}\hspace*{\fill}\\
+\hlstd{bondDsctTsr\ }\hlsym{$<${-}\ }\hlstd{FittedBondCurve}\hlsym{(}\hlstd{curveparams}\hlsym{,\ }\hlstd{lengths}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{coupons}\hlsym{,\ }\hlstd{marketQuotes}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dateparams}\hlsym{)}\hlstd{}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Bond pricing}	
+\pagecolor{bgcolor}
+\noindent
+\scriptsize
+\ttfamily
+\hlstd{}\hlslc{\#Set\ up\ a\ Zero{-}Coupon\ Bond}\hspace*{\fill}\\
+\hlstd{zc.bond.param\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{maturityDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2013{-}08{-}15'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{issueDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2003{-}08{-}15'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{redemption}\hlsym{=}\hlstd{}\hlnum{116.92}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{zc.bond.dateparam\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{refDate}\hlsym{=}\hlstd{todaysDate}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settlementDays}\hlsym{=}\hlstd{settlementDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{businessDayConvention}\hlsym{=}\hlstd{}\hlstr{'Following'}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#Call\ the\ pricing\ function}\hspace*{\fill}\\
+\hlstd{ZeroCouponBond}\hlsym{(}\hlstd{zc.bond.param}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{bondDsctTsr}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{zc.bond.dateparam}\hlsym{)}\hlstd{}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Bond pricing}
+\pagecolor{bgcolor}
+\noindent
+\scriptsize
+\ttfamily
+\hlstd{}\hlslc{\#Set\ up\ a\ Fixed{-}Coupon\ Bond}\hspace*{\fill}\\
+\hlstd{fixed.bond.param\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{maturityDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2017{-}05{-}15'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{issueDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2007{-}05{-}15'}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{redemption}\hlsym{=}\hlstd{}\hlnum{100}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{effectiveDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{'2007{-}05{-}15'}\hlstd{}\hlsym{))}\hspace*{\fill}\\
+\hlstd{fixed.bond.dateparam\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{settlementDays}\hlsym{=}\hlstd{settlementDays}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dayCounter}\hlsym{=}\hlstd{}\hlstr{'ActualActual'}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{period}\hlsym{=}\hlstd{}\hlstr{'Semiannual'}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{businessDayConvention}\hlsym{=}\hlstd{}\hlstr{'Unadjusted'}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{terminationDateConvention}\hlsym{=}\hlstd{}\hlstr{'Unadjusted'}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dateGeneration}\hlsym{=}\hlstd{}\hlstr{'Backward'}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{endOfMonth}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{fixed.bond.coupon\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0.045}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#Call\ the\ pricing\ function}\hspace*{\fill}\\
+\hlstd{FixedRateBond}\hlsym{(}\hlstd{fixed.bond.param}\hlsym{,\ }\hlstd{fixed.bond.coupon}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{bondDsctTsr}\hlsym{,\ }\hlstd{fixed.bond.dateparam}\hlsym{)}\hlstd{}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Convertible Bond from Matlab's Fixed Income Toolbox}	
+	\scriptsize
+Perform a spread effect analysis of a 4\%-coupon convertible bond callable at 110 at the end of the second year, maturing at par in 5 years, with yield to maturity of 5\% and spread (of YTM versus 5-year treasury) of 0, 50, 100, and 150 basis points. The underlying stock pays no dividend. 
+\lstset{language=Matlab,basicstyle=\tiny}
+	\begin{lstlisting}
+RiskFreeRate = 0.05;	Sigma        = 0.3;
+ConvRatio    = 1;   	NumSteps     = 200;
+IssueDate    = datenum('2-Jan-2002');
+Settle       = datenum('2-Jan-2002');
+Maturity     = datenum('2-Jan-2007');
+CouponRate   = 0.04;    Period       = 2; Basis        = 1;		EndMonthRule = 1;
+DividendType = 0;		DividendInfo = [];
+CallInfo     = [datenum('2-Jan-2004'), 110]; 
+CallType     = 1;		TreeType     = 1;   
+% Nested loop accross prices and static spread dimensions to compute convertible prices.
+for j = 0:0.005:0.015;
+StaticSpread = j;
+      for i = 0:10:100
+          Price = 40+i;
+          [CbMatrix, UndMatrix, DebtMatrix, EqtyMatrix] =  cbprice(RiskFreeRate, StaticSpread, Sigma, Price, ConvRatio, NumSteps, IssueDate, Settle, Maturity, CouponRate, Period, Basis, EndMonthRule, DividendType, DividendInfo, CallType, CallInfo, TreeType);   
+           convprice(i/10+1,j*200+1) =  CbMatrix(1,1);
+           stock(i/10+1,j*200+1)     =  Price;
+        end    
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Convertible Bond from Matlab's Fixed Income Toolbox}	
+\tiny
+Source: \url{http://www.mathworks.com/access/helpdesk/help/toolbox/finfixed/cbprice.html}
+ \begin{columns}
+ \column{1.5in}
+\lstset{language=Matlab,basicstyle=\tiny}
+	\begin{lstlisting}
+   plot(stock, convprice);
+    legend({'+0 bp'; '+50 bp'; '+100 bp'; '+150 bp'});
+    title ('Effect of Spread using Trinomial tree - 200 steps')
+    xlabel('Stock Price');
+    ylabel('Convertible Price');
+    text(50, 150, ['Coupon 4% semiannual.', sprintf('\n'), ...
+         '110 Call-on-clean after two years.' sprintf('\n'), ...
+         'Maturing at par in five years.'],'fontweight','Bold')
+ 	\end{lstlisting}
+ 	
+  \column{2.8in}
+\begin{center}
+\resizebox{75mm}{!}{\includegraphics{figures/cbspread.png}}
+\end{center}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Convertible Bond from Matlab's Fixed Income Toolbox}	
+
+Doing it in R using RQuantLib....
+\vskip5pt
+\tiny
+
+\pagecolor{bgcolor}
+\noindent
+\ttfamily
+\hlstd{}\hlslc{\#set\ up\ a\ flat\ risk\ free\ curve}\hspace*{\fill}\\
+\hlstd{params\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{tradeDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2002{-}01{-}02"}\hlstd{}\hlsym{),\ }\hlstd{settleDate}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2002{-}01{-}02"}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{interpWhat}\hlsym{=}\hlstd{}\hlstr{"discount"}\hlstd{}\hlsym{,\ }\hlstd{interpHow}\hlsym{=}\hlstd{}\hlstr{"loglinear"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{RiskFreeRate\ }\hlsym{$<${-}\ }\hlstd{DiscountCurve}\hlsym{(}\hlstd{params}\hlsym{,\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{flat}\hlsym{=}\hlstd{}\hlnum{0.05}\hlstd{}\hlsym{),}\hlstd{times}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#parameters\ of\ the\ convertible\ bond}\hspace*{\fill}\\
+\hlstd{ConvRatio\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{1}\hspace*{\fill}\\
+\hlstd{issueDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2002{-}01{-}02"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{settleDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2002{-}01{-}02"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{maturityDate\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2007{-}01{-}02"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{dividendYield\ }\hlsym{$<${-}\ }\hlstd{DiscountCurve}\hlsym{(}\hlstd{params}\hlsym{,\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{flat}\hlsym{=}\hlstd{}\hlnum{0.01}\hlstd{}\hlsym{),}\hlstd{times}\hlsym{)}\hspace*{\fill}\\
+\hlstd{dividendSchedule\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Type}\hlsym{=}\hlstd{}\hlkwc{character}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{),\ }\hlstd{Amount}\hlsym{=}\hlstd{}\hlkwc{numeric}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{),}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{Rate}\hlsym{=}\hlstd{}\hlkwc{numeric}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{),\ }\hlstd{Date}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlkwc{character}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{)))}\hspace*{\fill}\\
+\hlstd{callabilitySchedule\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Price}\hlsym{=}\hlstd{}\hlnum{110}\hlstd{}\hlsym{,\ }\hlstd{Type}\hlsym{=}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,\ }\hlstd{Date}\hlsym{=}\hlstd{}\hlkwc{as.Date}\hlstd{}\hlsym{(}\hlstd{}\hlstr{"2004{-}01{-}02"}\hlstd{}\hlsym{))}\hspace*{\fill}\\
+\hlstd{coupon\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{0.04}\hspace*{\fill}\\
+\hlstd{dateparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{settlementDays}\hlsym{=}\hlstd{}\hlnum{3}\hlstd{}\hlsym{,\ }\hlstd{period}\hlsym{=}\hlstd{}\hlstr{"Semiannual"}\hlstd{}\hlsym{,\ }\hlstd{todayDate}\hlsym{=}\hlstd{issueDate}\hlsym{)}\hspace*{\fill}\\
+\hlstd{bondparams\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{exercise}\hlsym{=}\hlstd{}\hlstr{"eu"}\hlstd{}\hlsym{,\ }\hlstd{faceAmount}\hlsym{=}\hlstd{}\hlnum{100}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{divSch}\hlsym{=}\hlstd{dividendSchedule}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{callSch}\hlsym{=}\hlstd{callabilitySchedule}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{redemption}\hlsym{=}\hlstd{}\hlnum{100}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{creditSpread}\hlsym{=}\hlstd{}\hlnum{0.005}\hlstd{}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{conversionRatio}\hlsym{=}\hlstd{ConvRatio}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{issueDate}\hlsym{=}\hlstd{issueDate}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{maturityDate}\hlsym{=}\hlstd{maturityDate}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Convertible Bond from Matlab's Fixed Income Toolbox}	
+\scriptsize
+\pagecolor{bgcolor}
+\noindent
+\tiny
+\ttfamily
+\hlslc{\#arguments\ to\ construct\ a\ BlackScholes\ process\ and\ set\ up\ the\ binomial\ pricing\ process}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#engine\ for\ this\ bond.}\hspace*{\fill}\\
+\hlstd{Sigma\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{0.3}\hspace*{\fill}\\
+\hlstd{process\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{list}\hlstd{}\hlsym{(}\hlstd{underlying}\hlsym{=}\hlstd{}\hlnum{40}\hlstd{}\hlsym{,\ }\hlstd{divYield}\hlsym{=}\hlstd{dividendYield}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{rff}\hlsym{=}\hlstd{RiskFreeRate}\hlsym{,\ }\hlstd{volatility}\hlsym{=}\hlstd{Sigma}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlslc{\#loop\ through\ underlying\ price\ and\ spread\ to\ produce\ similar\ analysis\ to\ Matlab}\hspace*{\fill}\\
+\hlstd{ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlstd{}\hlkwa{for\ }\hlstd{}\hlsym{(}\hlstd{s\ }\hlkwa{in\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.005}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.010}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{0.015}\hlstd{}\hlsym{))\{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{x\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{y\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{c}\hlstd{}\hlsym{()}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{i\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{1}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{}\hlkwa{for\ }\hlstd{}\hlsym{(}\hlstd{p\ }\hlkwa{in\ }\hlstd{}\hlkwc{seq}\hlstd{}\hlsym{(}\hlstd{}\hlnum{0}\hlstd{}\hlsym{,\ }\hlstd{}\hlnum{100}\hlstd{}\hlsym{,\ }\hlstd{}\hlkwc{by\ }\hlstd{}\hlsym{=\ }\hlstd{}\hlnum{10}\hlstd{}\hlsym{))\ \{}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ }\hlstd{process\$underlying\ }\hlsym{$<${-}\ }\hlstd{}\hlnum{40}\hlstd{}\hlsym{+}\hlstd{p\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ }\hlstd{bondparams\$creditSpread\ }\hlsym{$<${-}\ }\hlstd{s\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ }\hlstd{}\hlkwc{t\ }\hlstd{}\hlsym{$<${-}\ }\hlstd{ConvertibleFixedCouponBond}\hlsym{(}\hlstd{bondparams}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{coupon}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{process}\hlsym{,}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\hlstd{dateparams}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ }\hlstd{x}\hlsym{{[}}\hlstd{i}\hlsym{{]}\ $<${-}\ }\hlstd{p\ }\hlsym{+\ }\hlstd{}\hlnum{40}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ \ \ \ }\hlstd{y}\hlsym{{[}}\hlstd{i}\hlsym{{]}\ $<${-}\ }\hlstd{}\hlkwc{t}\hlstd{\$cleanPrice\hspace*{\fill}\\
+}\hlstd{\ \ \ \ \ \ }\hlstd{i\ }\hlsym{$<${-}\ }\hlstd{i\ }\hlsym{+\ }\hlstd{}\hlnum{1}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{}\hlsym{\}}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{z\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rep}\hlstd{}\hlsym{(}\hlstd{s}\hlsym{,\ }\hlstd{}\hlnum{11}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlstd{\ \ \ }\hlstd{ret\ }\hlsym{$<${-}\ }\hlstd{}\hlkwc{rbind}\hlstd{}\hlsym{(}\hlstd{ret}\hlsym{,\ }\hlstd{}\hlkwc{data.frame}\hlstd{}\hlsym{(}\hlstd{Stock}\hlsym{=}\hlstd{x}\hlsym{,}\hlstd{ConvPrice}\hlsym{=}\hlstd{y}\hlsym{,}\hlstd{z}\hlsym{))}\hspace*{\fill}\\
+\hlstd{}\hlsym{\}}\hspace*{\fill}\\
+\hlstd{}\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Examples: Convertible Bond from Matlab's Fixed Income Toolbox}	
+
+\tiny
+\pagecolor{bgcolor}
+\noindent
+\ttfamily
+\hlslc{\#plot\ the\ result}\hspace*{\fill}\\
+\hlstd{}\hlkwc{>library}\hlstd{}\hlsym{(}\hlstd{ggplot2}\hlsym{)}\hspace*{\fill}\\
+\hlstd{>p\ }\hlsym{$<${-}\ }\hlstd{ggplot}\hlsym{(}\hlstd{ret}\hlsym{,\ }\hlstd{aes}\hlsym{(}\hlstd{Stock}\hlsym{,}\hlstd{ConvPrice}\hlsym{,\ }\hlstd{colour}\hlsym{=}\hlstd{}\hlkwc{factor}\hlstd{}\hlsym{(}\hlstd{z}\hlsym{)))}\hspace*{\fill}\\
+\hlstd{>p\ }\hlsym{+\ }\hlstd{geom\textunderscore line}\hlsym{()\ +\ }\hlstd{scale\textunderscore colour\textunderscore discrete}\hlsym{(}\hlstd{}\hlstr{"Spread"}\hlstd{}\hlsym{)}\hspace*{\fill}\\
+\hlstd{}\hlsym{+\ }\hlstd{opts}\hlsym{(}\hlstd{}\hlkwc{title}\hlstd{}\hlsym{=}\hlstd{}\hlstr{'Effect\ of\ spread\ on\ a\ convertible\ bond'}
+\normalfont
+\begin{center}
+\resizebox{60mm}{!}{\includegraphics{figures/matlab_cbond.png}}
+\end{center}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Graphical User Interface: Fitted Curve}		
+RQuantLibGUI provides a graphical user interface via the 'traitr' package by John Verzani.
+\begin{center}
+	\resizebox{90mm}{!}{\includegraphics{figures/fbGUI.png}}
+\end{center}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Graphical User Interface: Discount Curve}	
+\begin{center}
+	\resizebox{110mm}{!}{\includegraphics{figures/dcGUI.png}}
+\end{center}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Fixed Income in RQuantLib}
+	\framesubtitle{Graphical User Interface: Bonds}		
+\begin{center}
+	\resizebox{90mm}{!}{\includegraphics{figures/bondGUI.PNG}}
+\end{center}
+\end{frame}
+
+\section{Summary}
+
+\begin{frame}
+	\frametitle{Summary and Outlook}
+
+    \begin{itemize}
+      \item \QL represents a decade of work leading to the recent 1.0 release.
+      \item RQuantLib (still) exposes only a subset of the available
+        functionality.
+      \item The conversion to the new Rcpp API (just completed, release
+        pending) should make additions easier.
+%      \item A lot of \QL functionality could still be added to RQuantLib.
+      \item Next steps we are thinking about
+        \begin{itemize}
+        %\item Expand the FI functionality
+        %\item Expanding the calendar / date functionality
+        \item Expanding the GUIs to the option pricers
+        \item And of course adding more products and \QL features
+        \end{itemize}
+      \item We welcome feedback as well as contributions -- just register at
+        the R-Forge project site.
+      \item Thank you!
+      \end{itemize}
+\end{frame}
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
