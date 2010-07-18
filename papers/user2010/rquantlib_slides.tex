@@ -8,8 +8,15 @@
 %\pgfpagesuselayout{4 on 1}[letterpaper,border shrink=5mm]
 %\pgfpagesuselayout{2 on 1}[a4,border shrink=5mm]
 
-\usepackage{color}
+
 \include{includes/beamer_setup}  %% has all definitions etc
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment the following command:
+%\beamerdefaultoverlayspecification{<+->}
+%\newcommand{\Pause}{\pause}
+\newcommand{\Pause}{}
+
 
 \title{RQuantLib: Interfacing QuantLib from R}  %% better title welcome...
 %\subtitle{\textsl{useR2010!} Presentation}
