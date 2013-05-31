@@ -1,0 +1,3 @@
+
+useDynLib(QuantLib)
+exportPattern("^[[:alpha:]]+")

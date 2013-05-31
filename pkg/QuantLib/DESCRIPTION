@@ -1,0 +1,12 @@
+Package: QuantLib
+Title: QuantLib bindings for R
+Version: 1.2-1
+Date: $Date$
+Maintainer: Dirk Eddelbuettel <edd@debian.org>
+Author: Dirk Eddelbuettel <edd@debian.org>, QuantLib Group
+Description: This package provides the SWIG-generated binding from QuantLib to R
+Depends: R (>= 2.10.0)
+SystemRequirements: QuantLib library (>= 0.9.9) from http://quantlib.org, 
+ Boost library from http://www.boost.org
+License: QuantLib License
+URL: http://quantlib.org 
