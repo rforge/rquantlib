@@ -266,23 +266,26 @@ df <- data.frame(zeroCoupon=c(Instrument_NPV(zeroCouponBond),
                    Bond_dirtyPrice(zeroCouponBond),
                    Bond_accruedAmount(zeroCouponBond),
                    NA,
-                   NA),
+                   NA,
+                   100*Bond_yield(zeroCouponBond, Actual360(), "Compounded", "Annual")),
                  fixedRate=c(Instrument_NPV(fixedRateBond),
                    Bond_cleanPrice(fixedRateBond),
                    Bond_dirtyPrice(fixedRateBond),
                    Bond_accruedAmount(fixedRateBond),
-                   Bond_previousCouponRate(fixedRateBond),
-                   Bond_nextCouponRate(fixedRateBond)),
+                   100*Bond_previousCouponRate(fixedRateBond),
+                   100*Bond_nextCouponRate(fixedRateBond),
+                   100*Bond_yield(fixedRateBond, Actual360(), "Compounded", "Annual")),
                  floatingRate=c(Instrument_NPV(floatingRateBond),
                    Bond_cleanPrice(floatingRateBond),
                    Bond_dirtyPrice(floatingRateBond),
                    Bond_accruedAmount(floatingRateBond),
-                   Bond_previousCouponRate(floatingRateBond),
-                   Bond_nextCouponRate(floatingRateBond)),
+                   100*Bond_previousCouponRate(floatingRateBond),
+                   100*Bond_nextCouponRate(floatingRateBond),
+                   100*Bond_yield(floatingRateBond, Actual360(), "Compounded", "Annual")),
                  row.names=c("NPV", "Clean Price", "Dirty Price",
-                 "Accrued Amount", "Previous Coupon", "Next Coupon"))
+                 "Accrued Amount", "Previous Coupon", "Next Coupon", "Yield"))
 cat("\nResults:\n")
-print(df)
+print(df, digits=5)
 
 # Other computations
 
